@@ -1,0 +1,141 @@
+<header class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md shadow-sm dark:bg-neutral-900/90 dark:border-b dark:border-neutral-800 transition-colors duration-300">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div class="relative w-10 h-10 flex items-center justify-center bg-purple-600 rounded-xl shadow-lg">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          <div class="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-white dark:border-neutral-800"></div>
+        </div>
+        <span class="text-2xl font-extrabold tracking-tight text-neutral-900 dark:text-white">IRIS</span>
+      </div>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center space-x-6">
+        <div class="flex items-baseline space-x-2">
+          <button (click)="navigateTo('inicio')" 
+                  [class.active]="isActive('inicio')" 
+                  class="nav-link">
+            {{ translationService.translate('nav_home') }}
+          </button>
+          <button (click)="navigateTo('problema')" 
+                  [class.active]="isActive('problema')" 
+                  class="nav-link">
+            {{ translationService.translate('nav_problem') }}
+          </button>
+          <button (click)="navigateTo('solucion')" 
+                  [class.active]="isActive('solucion')" 
+                  class="nav-link">
+            {{ translationService.translate('nav_solution') }}
+          </button>
+          <button (click)="navigateTo('alineacion')" 
+                  [class.active]="isActive('alineacion')" 
+                  class="nav-link">
+            {{ translationService.translate('nav_alignment') }}
+          </button>
+          <button (click)="navigateTo('modelo')" 
+                  [class.active]="isActive('modelo')" 
+                  class="nav-link">
+            {{ translationService.translate('nav_model') }}
+          </button>
+          <button (click)="navigateTo('impacto')" 
+                  [class.active]="isActive('impacto')" 
+                  class="nav-link">
+            {{ translationService.translate('nav_impact') }}
+          </button>
+          <button (click)="navigateTo('contacto')" 
+                  [class.active]="isActive('contacto')" 
+                  class="nav-link">
+            {{ translationService.translate('nav_contact') }}
+          </button>
+        </div>
+        
+        <div class="h-6 w-px bg-gray-300 dark:bg-gray-700"></div>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-3">
+          <button (click)="toggleLanguage()" 
+                  class="px-3 py-1 text-xs font-bold rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors uppercase tracking-wide">
+            {{ currentLang.toUpperCase() }}
+          </button>
+          <button (click)="toggleTheme()" 
+                  class="p-2 rounded-full transition-all duration-300 ease-in-out bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md dark:bg-neutral-800 dark:text-yellow-400 dark:hover:bg-neutral-700"
+                  [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'">
+            <svg *ngIf="!isDarkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+            <svg *ngIf="isDarkMode" class="w-5 h-5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+              <path d="M20.354 24.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden flex items-center gap-4">
+        <button (click)="toggleLanguage()" 
+                class="text-xs font-bold border border-gray-300 dark:border-gray-600 px-2 py-1 rounded">
+          {{ currentLang.toUpperCase() }}
+        </button>
+        <button (click)="toggleTheme()" 
+                class="text-neutral-600 dark:text-yellow-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        </button>
+        <button (click)="toggleMobileMenu()" 
+                class="inline-flex items-center justify-center p-2 rounded-md text-neutral-600 hover:text-purple-700 hover:bg-purple-100 dark:text-gray-300 dark:hover:bg-purple-900 focus:outline-none">
+          <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+            <path *ngIf="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            <path *ngIf="isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Mobile Menu -->
+  <div *ngIf="isMobileMenuOpen" 
+       class="md:hidden bg-white dark:bg-neutral-900 border-b dark:border-neutral-800">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      <button (click)="navigateTo('inicio')" 
+              [class.active]="isActive('inicio')" 
+              class="nav-link block w-full text-left">
+        {{ translationService.translate('nav_home') }}
+      </button>
+      <button (click)="navigateTo('problema')" 
+              [class.active]="isActive('problema')" 
+              class="nav-link block w-full text-left">
+        {{ translationService.translate('nav_problem') }}
+      </button>
+      <button (click)="navigateTo('solucion')" 
+              [class.active]="isActive('solucion')" 
+              class="nav-link block w-full text-left">
+        {{ translationService.translate('nav_solution') }}
+      </button>
+      <button (click)="navigateTo('alineacion')" 
+              [class.active]="isActive('alineacion')" 
+              class="nav-link block w-full text-left">
+        {{ translationService.translate('nav_alignment') }}
+      </button>
+      <button (click)="navigateTo('modelo')" 
+              [class.active]="isActive('modelo')" 
+              class="nav-link block w-full text-left">
+        {{ translationService.translate('nav_model') }}
+      </button>
+      <button (click)="navigateTo('impacto')" 
+              [class.active]="isActive('impacto')" 
+              class="nav-link block w-full text-left">
+        {{ translationService.translate('nav_impact') }}
+      </button>
+      <button (click)="navigateTo('contacto')" 
+              [class.active]="isActive('contacto')" 
+              class="nav-link block w-full text-left">
+        {{ translationService.translate('nav_contact') }}
+      </button>
+    </div>
+  </div>
+</header>

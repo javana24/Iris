@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto IRIS - Innovación Social para la Prevención de Violencia de Género</title>
+    <meta name="description" content="Proyecto IRIS: Entrenamiento con IA para detectar y prevenir la violencia de género invisible. Alineado con los ODS y políticas públicas.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Warm Harmony + Dark Mode Support -->
+    <!-- Application Structure Plan: Estructura narrativa fluida. Se ha eliminado el espacio en blanco ajustando el padding de la última sección y el footer. -->
+    <!-- Visualization & Content Choices:
+        - Lenguaje: Simplificado (Instituciones en vez de B2B, Participación en vez de Engagement).
+        - UI Modo Noche: Botón rediseñado con animación de rotación y transiciones suaves.
+        - Traducción: Cobertura 100% incluyendo textos de gráficos y mensajes de chat extendidos.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used for data visualization (Charts are Canvas). Icons are inline SVG UI elements. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 320px;
+            }
+        }
+        /* Nav Links */
+        .nav-link {
+            @apply px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200;
+            @apply text-neutral-600 hover:bg-purple-100 hover:text-purple-800; /* Light Mode */
+            @apply dark:text-gray-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300; /* Dark Mode */
+        }
+        .nav-link.active {
+            @apply bg-purple-600 text-white hover:bg-purple-700 hover:text-white;
+            @apply dark:bg-purple-600 dark:text-white;
+        }
+        /* Segment Tabs */
+        .segment-tab {
+            @apply px-4 py-2 text-sm font-medium rounded-lg shadow-sm cursor-pointer transition-colors;
+            @apply text-neutral-600 bg-white hover:bg-gray-50; /* Light */
+            @apply dark:bg-neutral-800 dark:text-gray-300 dark:hover:bg-neutral-700; /* Dark */
+        }
+        .segment-tab.active {
+            @apply bg-purple-600 text-white shadow-md;
+            @apply dark:bg-purple-600 dark:text-white;
+        }
+        /* Chat Components */
+        .chat-bubble {
+            @apply p-3 rounded-lg max-w-[80%];
+        }
+        .chat-bubble-user {
+            @apply bg-purple-600 text-white self-end rounded-br-none;
+        }
+        .chat-bubble-bot {
+            @apply bg-gray-200 text-neutral-800 self-start rounded-bl-none;
+        }
+        .theme-toggle-btn {
+            @apply p-2 rounded-full transition-all duration-300 ease-in-out bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md;
+            @apply dark:bg-neutral-800 dark:text-yellow-400 dark:hover:bg-neutral-700;
+        }
+        .theme-toggle-btn svg {
+            @apply transition-transform duration-500;
+        }
+        .theme-toggle-btn:hover svg {
+            transform: rotate(15deg) scale(1.1);
+        }
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Fade in animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        /* Section transitions */
+        section {
+            scroll-margin-top: 80px;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        amber: { 50: '#fffbeb', 600: '#d97706' },
+                        purple: { 100: '#f3e8ff', 600: '#9333ea', 700: '#7e22ce', 800: '#6b21a8', 900: '#581c87' },
+                        neutral: { 800: '#262626', 900: '#171717', 950: '#0a0a0a' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-amber-50 text-neutral-800 antialiased dark:bg-neutral-900 dark:text-gray-100 transition-colors duration-300 flex flex-col min-h-screen">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md shadow-sm dark:bg-neutral-900/90 dark:border-b dark:border-neutral-800 transition-colors duration-300">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="relative w-10 h-10 flex items-center justify-center bg-purple-600 rounded-xl shadow-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-white dark:border-neutral-800"></div>
+                    </div>
+                    <span class="text-2xl font-extrabold tracking-tight text-neutral-900 dark:text-white">IRIS</span>
+                </div>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <div class="flex items-baseline space-x-2">
+                        <a href="#inicio" class="nav-link active" data-target="#inicio" data-i18n="nav_home">Inicio</a>
+                        <a href="#problema" class="nav-link" data-target="#problema" data-i18n="nav_problem">El Problema</a>
+                        <a href="#solucion" class="nav-link" data-target="#solucion" data-i18n="nav_solution">La Solución</a>
+                        <a href="#alineacion" class="nav-link" data-target="#alineacion" data-i18n="nav_alignment">Alineación</a>
+                        <a href="#modelo" class="nav-link" data-target="#modelo" data-i18n="nav_model">El Modelo</a>
+                        <a href="#impacto" class="nav-link" data-target="#impacto" data-i18n="nav_impact">Impacto</a>
+                        <a href="#contacto" class="nav-link" data-target="#contacto" data-i18n="nav_contact">Contacto</a>
+                    </div>
+                    
+                    <div class="h-6 w-px bg-gray-300 dark:bg-gray-700"></div>
+
+                    <!-- Controls -->
+                    <div class="flex items-center gap-3">
+                        <button id="lang-toggle" class="px-3 py-1 text-xs font-bold rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors uppercase tracking-wide">
+                            ES
+                        </button>
+                        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark Mode">
+                            <!-- Sun Icon -->
+                            <svg id="icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <!-- Moon Icon (Filled for better visibility) -->
+                            <svg id="icon-moon" class="w-5 h-5" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="M20.354 24.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center gap-4">
+                     <button id="lang-toggle-mobile" class="text-xs font-bold border border-gray-300 dark:border-gray-600 px-2 py-1 rounded">ES</button>
+                     <button id="theme-toggle-mobile" class="text-neutral-600 dark:text-yellow-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                     </button>
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-neutral-600 hover:text-purple-700 hover:bg-purple-100 dark:text-gray-300 dark:hover:bg-purple-900 focus:outline-none">
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white dark:bg-neutral-900 border-b dark:border-neutral-800">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#inicio" class="nav-link block" data-target="#inicio" data-i18n="nav_home">Inicio</a>
+                <a href="#problema" class="nav-link block" data-target="#problema" data-i18n="nav_problem">El Problema</a>
+                <a href="#solucion" class="nav-link block" data-target="#solucion" data-i18n="nav_solution">La Solución</a>
+                <a href="#alineacion" class="nav-link block" data-target="#alineacion" data-i18n="nav_alignment">Alineación</a>
+                <a href="#modelo" class="nav-link block" data-target="#modelo" data-i18n="nav_model">El Modelo</a>
+                <a href="#impacto" class="nav-link block" data-target="#impacto" data-i18n="nav_impact">Impacto</a>
+                <a href="#contacto" class="nav-link block" data-target="#contacto" data-i18n="nav_contact">Contacto</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow overflow-x-hidden">
+
+        <!-- Section 1: Inicio -->
+        <section id="inicio" class="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-white via-purple-50/30 to-amber-50/30 dark:from-neutral-950 dark:via-purple-950/20 dark:to-neutral-900 transition-colors duration-300 relative overflow-hidden">
+            <!-- Decorative background elements -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-purple-200/20 dark:bg-purple-900/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-amber-200/20 dark:bg-amber-900/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+            
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <div class="inline-block mb-4 px-4 py-2 bg-gradient-to-r from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40 text-purple-700 dark:text-purple-300 rounded-full text-sm font-semibold tracking-wide shadow-md fade-in-up" data-i18n="hero_badge">
+                    Proyecto de Innovación Social
+                </div>
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold bg-gradient-to-r from-purple-700 via-purple-600 to-amber-600 dark:from-purple-400 dark:via-purple-300 dark:to-amber-400 bg-clip-text text-transparent tracking-tight mb-6 fade-in-up" style="animation-delay: 0.1s" data-i18n="hero_title">
+                    Proyecto IRIS
+                </h1>
+                <p class="mt-4 text-2xl md:text-3xl font-medium text-neutral-800 dark:text-gray-100 fade-in-up" style="animation-delay: 0.2s" data-i18n="hero_subtitle">
+                    Entrenamiento con IA para detectar la violencia invisible.
+                </p>
+                <div class="mt-12 max-w-3xl mx-auto p-8 bg-gradient-to-br from-amber-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-purple-900/20 rounded-2xl shadow-2xl border-2 border-amber-200 dark:border-neutral-700 transition-all duration-300 hover:shadow-3xl hover:scale-[1.02] fade-in-up" style="animation-delay: 0.3s">
+                    <div class="flex items-center justify-center gap-2 mb-4">
+                        <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        <h2 class="text-lg font-bold text-amber-600 dark:text-amber-500 uppercase tracking-wider" data-i18n="hero_uvp_label">Propuesta de Valor</h2>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-bold text-neutral-800 dark:text-white leading-tight" data-i18n="hero_uvp_main">
+                        "Tu entrenador personal de defensa emocional".
+                    </p>
+                    <p class="mt-4 text-lg text-neutral-600 dark:text-gray-400 leading-relaxed">
+                        <span data-i18n="hero_uvp_desc_1">En lugar de solo escuchar charlas teóricas, </span>
+                        <strong class="text-purple-700 dark:text-purple-400 font-bold" data-i18n="hero_uvp_desc_strong">vives una simulación</strong>
+                        <span data-i18n="hero_uvp_desc_2"> y aprendes a defenderte en un entorno seguro.</span>
+                    </p>
+                    <p class="mt-6 text-xl italic font-medium text-neutral-800 dark:text-gray-200 border-l-4 border-purple-600 pl-4" data-i18n="hero_slogan">
+                        "Entrena tu mirada, cambia tu realidad."
+                    </p>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                    <div class="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-gray-200 dark:border-neutral-700 fade-in-up" style="animation-delay: 0.4s">
+                        <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">78%</div>
+                        <div class="text-sm text-neutral-600 dark:text-gray-400 mt-1" data-i18n="quick_stat_1">Mejora en detección</div>
+                    </div>
+                    <div class="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-gray-200 dark:border-neutral-700 fade-in-up" style="animation-delay: 0.5s">
+                        <div class="text-3xl font-bold text-amber-600 dark:text-amber-400">25+</div>
+                        <div class="text-sm text-neutral-600 dark:text-gray-400 mt-1" data-i18n="quick_stat_2">Centros activos</div>
+                    </div>
+                    <div class="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-gray-200 dark:border-neutral-700 fade-in-up" style="animation-delay: 0.6s">
+                        <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">2.5K+</div>
+                        <div class="text-sm text-neutral-600 dark:text-gray-400 mt-1" data-i18n="quick_stat_3">Estudiantes</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: El Problema -->
+        <section id="problema" class="py-16 dark:bg-neutral-900 transition-colors duration-300 relative">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500" data-i18n="problem_title">El Problema</h2>
+                <p class="mt-4 text-lg text-center text-neutral-600 dark:text-gray-400 max-w-3xl mx-auto" data-i18n="problem_desc">
+                    La violencia de género suele empezar con detalles pequeños que dejamos pasar. IRIS enseña a verlos a tiempo.
+                </p>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                    <!-- Columna 1 -->
+                    <div class="bg-white dark:bg-neutral-800 p-6 rounded-2xl shadow-lg transition-colors duration-300">
+                        <h3 class="text-2xl font-semibold text-neutral-800 dark:text-white mb-4" data-i18n="problem_list_title">Retos Actuales</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-bold text-sm mr-3 mt-1">1</span>
+                                <span class="text-neutral-600 dark:text-gray-300"><strong class="text-neutral-800 dark:text-white" data-i18n="p_1_bold">Confusión:</strong> <span data-i18n="p_1_text">Confundir celos con amor.</span></span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-bold text-sm mr-3 mt-1">2</span>
+                                <span class="text-neutral-600 dark:text-gray-300"><strong class="text-neutral-800 dark:text-white" data-i18n="p_2_bold">Lo Invisible:</strong> <span data-i18n="p_2_text">La manipulación psicológica es difícil de ver.</span></span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-bold text-sm mr-3 mt-1">3</span>
+                                <span class="text-neutral-600 dark:text-gray-300"><strong class="text-neutral-800 dark:text-white" data-i18n="p_3_bold">Aburrimiento:</strong> <span data-i18n="p_3_text">Las charlas típicas no conectan con los jóvenes.</span></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Columna 2: Segmentos -->
+                    <div class="bg-white dark:bg-neutral-800 p-6 rounded-2xl shadow-lg transition-colors duration-300">
+                        <h3 class="text-2xl font-semibold text-neutral-800 dark:text-white mb-4" data-i18n="segments_title">A quién ayudamos</h3>
+                        <div class="flex space-x-2 border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 overflow-x-auto">
+                            <button class="segment-tab active whitespace-nowrap" data-target="usuarios" data-i18n="tab_users">Jóvenes</button>
+                            <button class="segment-tab whitespace-nowrap" data-target="clientes" data-i18n="tab_clients">Organizaciones</button>
+                            <button class="segment-tab whitespace-nowrap" data-target="adopters" data-i18n="tab_adopters">Pioneros</button>
+                        </div>
+                        <div id="segment-content">
+                            <div id="usuarios" class="segment-content space-y-2">
+                                <h4 class="text-lg font-semibold text-purple-700 dark:text-purple-400" data-i18n="user_title">Estudiantes (14-25 años)</h4>
+                                <p class="text-neutral-600 dark:text-gray-300" data-i18n="user_desc">Chicos y chicas que empiezan sus primeras relaciones.</p>
+                            </div>
+                            <div id="clientes" class="segment-content space-y-2 hidden">
+                                <h4 class="text-lg font-semibold text-purple-700 dark:text-purple-400" data-i18n="client_title">Quienes nos contratan</h4>
+                                <ul class="list-disc list-inside text-neutral-600 dark:text-gray-300" data-i18n="client_list">
+                                    <li>Colegios e Institutos.</li>
+                                    <li>Ayuntamientos.</li>
+                                    <li>Asociaciones de Padres.</li>
+                                </ul>
+                            </div>
+                            <div id="adopters" class="segment-content space-y-2 hidden">
+                                <h4 class="text-lg font-semibold text-purple-700 dark:text-purple-400" data-i18n="adopter_title">Primeros Aliados</h4>
+                                <p class="text-neutral-600 dark:text-gray-300" data-i18n="adopter_desc">Centros educativos modernos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: La Solución -->
+        <section id="solucion" class="py-16 bg-white dark:bg-neutral-950 transition-colors duration-300">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500" data-i18n="solution_title">La Solución</h2>
+                <p class="mt-4 text-lg text-center text-neutral-600 dark:text-gray-400 max-w-3xl mx-auto" data-i18n="solution_desc">
+                    Un simulador de chat para practicar situaciones difíciles sin riesgo real.
+                </p>
+
+                <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+                    
+                    <!-- Phone Mockup -->
+                    <div class="relative bg-neutral-900 rounded-[2.5rem] shadow-2xl p-2 max-w-md mx-auto w-full border-4 border-neutral-800 ring-1 ring-gray-900/5 transform hover:scale-[1.01] transition-transform duration-300">
+                        <div class="bg-white rounded-[2rem] overflow-hidden h-full flex flex-col">
+                            <!-- Status Bar -->
+                            <div class="bg-gray-100 px-6 py-2 flex justify-between items-center text-xs font-medium text-gray-500 border-b border-gray-200">
+                                <span>19:42</span>
+                                <div class="flex gap-1">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path></svg>
+                                </div>
+                            </div>
+                            <!-- App Header -->
+                            <div class="bg-gray-50 flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-purple-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></span>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-purple-200 flex items-center justify-center text-purple-700 font-bold text-sm">A</div>
+                                        <div class="flex flex-col">
+                                            <span class="text-gray-900 font-bold text-sm leading-tight">Alex</span>
+                                            <span class="text-green-600 text-xs font-medium" data-i18n="chat_online">En línea</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Chat Area Scrollable -->
+                            <div class="flex flex-col space-y-4 p-4 h-96 overflow-y-auto bg-slate-50 relative scroll-smooth">
+                                <div class="flex justify-center my-2"><span class="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded-full" data-i18n="chat_today">Hoy</span></div>
+                                
+                                <!-- Conversation Flow -->
+                                <div class="chat-bubble bg-white text-gray-800 shadow-sm border border-gray-100 self-start rounded-bl-none">
+                                    <p class="text-sm" data-i18n="chat_msg_1">¿Dónde estabas? No contestas.</p>
+                                    <span class="text-[10px] text-gray-400 block text-right mt-1">19:20</span>
+                                </div>
+                                <div class="chat-bubble bg-purple-600 text-white shadow-md self-end rounded-br-none">
+                                    <p class="text-sm" data-i18n="chat_msg_2">Estaba con mi madre, perdón.</p>
+                                    <span class="text-[10px] text-purple-200 block text-right mt-1">19:22</span>
+                                </div>
+                                <div class="chat-bubble bg-white text-gray-800 shadow-sm border border-gray-100 self-start rounded-bl-none">
+                                    <p class="text-sm" data-i18n="chat_msg_3">Mándame ubicación para creerte.</p>
+                                    <span class="text-[10px] text-gray-400 block text-right mt-1">19:23</span>
+                                </div>
+                                <div class="chat-bubble bg-purple-600 text-white shadow-md self-end rounded-br-none">
+                                    <p class="text-sm" data-i18n="chat_msg_4">¿En serio? No hace falta, te lo prometo.</p>
+                                    <span class="text-[10px] text-purple-200 block text-right mt-1">19:24</span>
+                                </div>
+                                <div class="chat-bubble bg-white text-gray-800 shadow-sm border border-gray-100 self-start rounded-bl-none">
+                                    <p class="text-sm" data-i18n="chat_msg_5">Ah, vale. ¿Qué escondes entonces?</p>
+                                    <span class="text-[10px] text-gray-400 block text-right mt-1">19:25</span>
+                                </div>
+                                <div class="chat-bubble bg-purple-600 text-white shadow-md self-end rounded-br-none">
+                                    <p class="text-sm" data-i18n="chat_msg_6">No escondo nada. Déjame cenar tranquila.</p>
+                                    <span class="text-[10px] text-purple-200 block text-right mt-1">19:26</span>
+                                </div>
+                                <div class="chat-bubble bg-white text-gray-800 shadow-sm border border-gray-100 self-start rounded-bl-none">
+                                    <p class="text-sm" data-i18n="chat_msg_7">Siempre igual. Me haces sentir una mierda.</p>
+                                    <span class="text-[10px] text-gray-400 block text-right mt-1">19:28</span>
+                                </div>
+                                <div class="chat-bubble bg-white text-gray-800 shadow-sm border border-gray-100 self-start rounded-bl-none">
+                                    <p class="text-sm font-semibold text-red-600" data-i18n="chat_msg_8">Si no mandas foto AHORA, terminamos.</p>
+                                    <span class="text-[10px] text-gray-400 block text-right mt-1">19:29</span>
+                                </div>
+
+                                <!-- Alert -->
+                                <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded-r-lg shadow-sm my-2 animate-pulse mb-8">
+                                    <div class="flex items-start gap-3">
+                                        <div class="text-red-600 font-bold">!</div>
+                                        <div>
+                                            <strong class="text-red-700 font-bold text-sm block mb-1">ALERTA IRIS</strong>
+                                            <p class="text-red-600 text-xs leading-relaxed" data-i18n="chat_alert">Intento de CHANTAJE y MANIPULACIÓN.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna 2: Features -->
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-semibold text-neutral-800 dark:text-white" data-i18n="features_title">Lo que ofrece</h3>
+                        <div class="space-y-4">
+                            <div class="bg-amber-50 dark:bg-neutral-800 p-4 rounded-lg shadow-md transition-colors">
+                                <h4 class="font-bold text-lg text-purple-700 dark:text-purple-400" data-i18n="feat_1_title">Chatbot Inteligente</h4>
+                                <p class="text-neutral-600 dark:text-gray-300" data-i18n="feat_1_desc">Simula personalidades realistas que reaccionan a lo que dices.</p>
+                            </div>
+                            <div class="bg-amber-50 dark:bg-neutral-800 p-4 rounded-lg shadow-md transition-colors">
+                                <h4 class="font-bold text-lg text-purple-700 dark:text-purple-400" data-i18n="feat_2_title">Consejos al instante</h4>
+                                <p class="text-neutral-600 dark:text-gray-300" data-i18n="feat_2_desc">Te ayuda a entender si tu respuesta fue adecuada.</p>
+                            </div>
+                            <div class="bg-purple-100 dark:bg-purple-900/40 p-4 rounded-lg shadow-md border-l-4 border-purple-600 transition-colors">
+                                <h4 class="font-bold text-lg text-purple-800 dark:text-purple-300" data-i18n="comp_adv_title">¿Por qué es diferente?</h4>
+                                <p class="text-purple-800 dark:text-purple-200" data-i18n="comp_adv_desc">Porque aprendes haciendo, no solo escuchando.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Alineación con Políticas Públicas -->
+        <section id="alineacion" class="py-16 bg-white dark:bg-neutral-950 transition-colors duration-300">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500 mb-4" data-i18n="alignment_title">Alineación con Políticas Públicas</h2>
+                <p class="text-lg text-center text-neutral-600 dark:text-gray-400 max-w-3xl mx-auto mb-12" data-i18n="alignment_desc">
+                    IRIS está diseñado para contribuir directamente a los objetivos estratégicos en materia de igualdad y prevención de violencia de género.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                    <!-- ODS -->
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/20 p-6 rounded-xl shadow-lg border-l-4 border-purple-600 transition-transform hover:scale-105">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-purple-700 dark:text-purple-400" data-i18n="ods_title">ODS 5: Igualdad</h3>
+                        </div>
+                        <p class="text-neutral-700 dark:text-gray-300" data-i18n="ods_desc">Contribuye directamente al Objetivo 5 de Desarrollo Sostenible: lograr la igualdad de género y empoderar a todas las mujeres y niñas.</p>
+                    </div>
+
+                    <!-- Ley Orgánica -->
+                    <div class="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/20 p-6 rounded-xl shadow-lg border-l-4 border-amber-600 transition-transform hover:scale-105">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-amber-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-amber-700 dark:text-amber-400" data-i18n="law_title">Ley Orgánica 1/2004</h3>
+                        </div>
+                        <p class="text-neutral-700 dark:text-gray-300" data-i18n="law_desc">Alineado con la Ley de Medidas de Protección Integral contra la Violencia de Género, especialmente en prevención y educación.</p>
+                    </div>
+
+                    <!-- Plan Estratégico -->
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20 p-6 rounded-xl shadow-lg border-l-4 border-blue-600 transition-transform hover:scale-105">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-blue-700 dark:text-blue-400" data-i18n="plan_title">Plan Estratégico</h3>
+                        </div>
+                        <p class="text-neutral-700 dark:text-gray-300" data-i18n="plan_desc">Complementa el Plan Estratégico de Igualdad de Género de Andalucía 2022-2025, especialmente en prevención temprana.</p>
+                    </div>
+                </div>
+
+                <!-- Cumplimiento Normativo -->
+                <div class="bg-white dark:bg-neutral-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-neutral-700">
+                    <h3 class="text-2xl font-bold text-center text-neutral-800 dark:text-white mb-6" data-i18n="compliance_title">Cumplimiento Normativo y Protección de Datos</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-neutral-800 dark:text-white mb-1" data-i18n="gdpr_title">RGPD y LOPD-GDD</h4>
+                                <p class="text-neutral-600 dark:text-gray-300" data-i18n="gdpr_desc">Cumplimiento total con el Reglamento General de Protección de Datos y la Ley Orgánica de Protección de Datos Personales.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-neutral-800 dark:text-white mb-1" data-i18n="privacy_title">Privacidad por Diseño</h4>
+                                <p class="text-neutral-600 dark:text-gray-300" data-i18n="privacy_desc">Arquitectura de datos que garantiza la privacidad desde el diseño, sin almacenar conversaciones personales.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-neutral-800 dark:text-white mb-1" data-i18n="security_title">Seguridad y Anonimato</h4>
+                                <p class="text-neutral-600 dark:text-gray-300" data-i18n="security_desc">Los usuarios pueden practicar de forma completamente anónima, sin riesgo de exposición de datos sensibles.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-neutral-800 dark:text-white mb-1" data-i18n="ethics_title">IA Ética y Transparente</h4>
+                                <p class="text-neutral-600 dark:text-gray-300" data-i18n="ethics_desc">Modelos de IA entrenados con supervisión de expertos en violencia de género, sin sesgos discriminatorios.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: El Modelo -->
+        <section id="modelo" class="py-16 dark:bg-neutral-900 transition-colors duration-300">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500" data-i18n="model_title">¿Cómo se mantiene?</h2>
+                
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-lg text-center transition-colors">
+                        <h4 class="text-xl font-bold text-purple-700 dark:text-purple-400 mb-2" data-i18n="channel_1_title">Instituciones</h4>
+                        <p class="text-neutral-600 dark:text-gray-300" data-i18n="channel_1">Acuerdos con Ayuntamientos y Educación.</p>
+                    </div>
+                    <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-lg text-center transition-colors">
+                        <h4 class="text-xl font-bold text-purple-700 dark:text-purple-400 mb-2" data-i18n="channel_2_title">Redes Sociales</h4>
+                        <p class="text-neutral-600 dark:text-gray-300" data-i18n="channel_2">TikTok e Instagram.</p>
+                    </div>
+                    <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-lg text-center transition-colors">
+                        <h4 class="text-xl font-bold text-purple-700 dark:text-purple-400 mb-2" data-i18n="channel_3_title">Profesionales</h4>
+                        <p class="text-neutral-600 dark:text-gray-300" data-i18n="channel_3">Psicólogos y Orientadores.</p>
+                    </div>
+                </div>
+
+                <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-lg transition-colors">
+                        <h3 class="text-2xl font-semibold text-neutral-800 dark:text-white text-center mb-4" data-i18n="costs_title">¿En qué gastamos?</h3>
+                        <div class="chart-container">
+                            <canvas id="costosChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-lg transition-colors">
+                        <h3 class="text-2xl font-semibold text-neutral-800 dark:text-white text-center mb-4" data-i18n="revenue_title">¿Cómo ingresamos?</h3>
+                        <div class="chart-container">
+                            <canvas id="ingresosChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Impacto -->
+        <section id="impacto" class="py-16 bg-white dark:bg-neutral-950 transition-colors duration-300 pb-16">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500 mb-4" data-i18n="impact_title">Impacto y Resultados</h2>
+                <p class="text-lg text-center text-neutral-600 dark:text-gray-400 max-w-3xl mx-auto mb-12" data-i18n="impact_subtitle">
+                    Resultados medibles que demuestran la efectividad del proyecto en la prevención temprana de violencia de género.
+                </p>
+                
+                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/20 p-6 rounded-xl shadow-lg text-center transition-transform hover:scale-105 border-l-4 border-purple-600">
+                        <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-2" data-i18n="kpi_1_title">Detección Temprana</h4>
+                        <span class="text-5xl font-bold text-neutral-800 dark:text-white block">78%</span>
+                        <p class="text-sm text-neutral-600 dark:text-gray-400 mt-2" data-i18n="kpi_1_desc">Mejora en reconocimiento de señales</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/20 p-6 rounded-xl shadow-lg text-center transition-transform hover:scale-105 border-l-4 border-amber-600">
+                        <div class="w-16 h-16 bg-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-semibold text-amber-700 dark:text-amber-400 mb-2" data-i18n="kpi_2_title">Tiempo de Participación</h4>
+                        <span class="text-5xl font-bold text-neutral-800 dark:text-white block">12 min</span>
+                        <p class="text-sm text-neutral-600 dark:text-gray-400 mt-2" data-i18n="kpi_2_desc">Promedio por sesión</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20 p-6 rounded-xl shadow-lg text-center transition-transform hover:scale-105 border-l-4 border-blue-600">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5h1.586a1 1 0 01.707.293l1.414 1.414a1 1 0 00.707.293H20"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-semibold text-blue-700 dark:text-blue-400 mb-2" data-i18n="kpi_3_title">Centros Educativos</h4>
+                        <span class="text-5xl font-bold text-neutral-800 dark:text-white block">25+</span>
+                        <p class="text-sm text-neutral-600 dark:text-gray-400 mt-2" data-i18n="kpi_3_desc">Implementaciones activas</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/20 p-6 rounded-xl shadow-lg text-center transition-transform hover:scale-105 border-l-4 border-green-600">
+                        <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-semibold text-green-700 dark:text-green-400 mb-2" data-i18n="kpi_4_title">Estudiantes</h4>
+                        <span class="text-5xl font-bold text-neutral-800 dark:text-white block">2.5K+</span>
+                        <p class="text-sm text-neutral-600 dark:text-gray-400 mt-2" data-i18n="kpi_4_desc">Usuarios activos</p>
+                    </div>
+                </div>
+
+                <div class="mt-16 bg-white dark:bg-neutral-800 p-8 rounded-2xl shadow-xl transition-colors border border-gray-200 dark:border-neutral-700">
+                    <h3 class="text-2xl font-semibold text-neutral-800 dark:text-white text-center mb-6" data-i18n="impact_chart_title">Mejora Real (Antes vs Después)</h3>
+                    <div class="chart-container" style="max-width: 800px; height: 350px;">
+                        <canvas id="impactoChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Sostenibilidad y Escalabilidad -->
+                <div class="mt-16 bg-gradient-to-r from-purple-50 to-amber-50 dark:from-purple-900/20 dark:to-amber-900/20 p-8 rounded-2xl shadow-xl border border-purple-200 dark:border-purple-800">
+                    <h3 class="text-2xl font-bold text-center text-neutral-800 dark:text-white mb-8" data-i18n="sustainability_title">Sostenibilidad y Escalabilidad</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xl font-semibold text-purple-700 dark:text-purple-400 mb-4 flex items-center gap-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                                <span data-i18n="scalability_title">Escalabilidad</span>
+                            </h4>
+                            <ul class="space-y-3 text-neutral-700 dark:text-gray-300">
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span data-i18n="scalability_1">Arquitectura cloud que permite escalar a toda Andalucía sin costes adicionales significativos.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span data-i18n="scalability_2">Modelo replicable en otras comunidades autónomas con mínimas adaptaciones.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span data-i18n="scalability_3">Integración sencilla con sistemas educativos existentes (Moodle, Séneca, etc.).</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold text-amber-700 dark:text-amber-400 mb-4 flex items-center gap-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                </svg>
+                                <span data-i18n="sustainability_title_2">Sostenibilidad</span>
+                            </h4>
+                            <ul class="space-y-3 text-neutral-700 dark:text-gray-300">
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span data-i18n="sustainability_1">Modelo de financiación mixto: subvenciones públicas + licencias institucionales.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span data-i18n="sustainability_2">Costes operativos reducidos gracias a la automatización con IA.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span data-i18n="sustainability_3">Actualización continua del contenido sin costes de producción adicionales.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roadmap -->
+                <div class="mt-16 bg-white dark:bg-neutral-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-neutral-700">
+                    <h3 class="text-2xl font-bold text-center text-neutral-800 dark:text-white mb-8" data-i18n="roadmap_title">Próximos Pasos y Roadmap</h3>
+                    <div class="relative">
+                        <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-purple-300 dark:bg-purple-700"></div>
+                        <div class="space-y-8">
+                            <div class="relative flex items-start gap-6">
+                                <div class="flex-shrink-0 w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">1</div>
+                                <div class="flex-grow">
+                                    <h4 class="text-xl font-bold text-neutral-800 dark:text-white mb-2" data-i18n="roadmap_1_title">Fase 1: Piloto Ampliado (Q1-Q2 2025)</h4>
+                                    <p class="text-neutral-600 dark:text-gray-300" data-i18n="roadmap_1_desc">Expansión a 50 centros educativos en Andalucía. Validación de resultados con datos estadísticos robustos.</p>
+                                </div>
+                            </div>
+                            <div class="relative flex items-start gap-6">
+                                <div class="flex-shrink-0 w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">2</div>
+                                <div class="flex-grow">
+                                    <h4 class="text-xl font-bold text-neutral-800 dark:text-white mb-2" data-i18n="roadmap_2_title">Fase 2: Integración Institucional (Q3 2025)</h4>
+                                    <p class="text-neutral-600 dark:text-gray-300" data-i18n="roadmap_2_desc">Integración con plataformas educativas de la Junta de Andalucía. Formación de docentes y orientadores.</p>
+                                </div>
+                            </div>
+                            <div class="relative flex items-start gap-6">
+                                <div class="flex-shrink-0 w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">3</div>
+                                <div class="flex-grow">
+                                    <h4 class="text-xl font-bold text-neutral-800 dark:text-white mb-2" data-i18n="roadmap_3_title">Fase 3: Escalado Regional (Q4 2025)</h4>
+                                    <p class="text-neutral-600 dark:text-gray-300" data-i18n="roadmap_3_desc">Despliegue completo en toda Andalucía. Inicio de colaboraciones con otras comunidades autónomas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Contacto -->
+        <section id="contacto" class="py-16 bg-gradient-to-br from-purple-50 via-amber-50 to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-colors duration-300">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500 mb-4" data-i18n="contact_title">Contacto y Colaboración</h2>
+                <p class="text-lg text-center text-neutral-600 dark:text-gray-400 mb-12" data-i18n="contact_desc">
+                    Estamos abiertos a colaborar con la Junta de Andalucía para implementar IRIS en los centros educativos de la comunidad.
+                </p>
+                <div class="bg-white dark:bg-neutral-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-neutral-700">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold text-neutral-800 dark:text-white mb-4 flex items-center gap-2">
+                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                                <span data-i18n="contact_info_title">Información de Contacto</span>
+                            </h3>
+                            <div class="space-y-3 text-neutral-600 dark:text-gray-300">
+                                <p><strong data-i18n="contact_email_label">Email:</strong> <span data-i18n="contact_email">proyecto.iris@ejemplo.es</span></p>
+                                <p><strong data-i18n="contact_phone_label">Teléfono:</strong> <span data-i18n="contact_phone">+34 XXX XXX XXX</span></p>
+                                <p><strong data-i18n="contact_address_label">Dirección:</strong> <span data-i18n="contact_address">Andalucía, España</span></p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-neutral-800 dark:text-white mb-4 flex items-center gap-2">
+                                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span data-i18n="contact_benefits_title">Beneficios de Colaborar</span>
+                            </h3>
+                            <ul class="space-y-2 text-neutral-600 dark:text-gray-300">
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span data-i18n="contact_benefit_1">Acceso prioritario a nuevas funcionalidades</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span data-i18n="contact_benefit_2">Soporte técnico y formación personalizada</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span data-i18n="contact_benefit_3">Descuentos especiales para implementaciones masivas</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-neutral-800 to-neutral-900 dark:from-black dark:to-neutral-950 text-gray-300 py-8 border-t border-gray-700">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        <span class="font-bold text-white text-xl">IRIS</span>
+                    </div>
+                    <p class="text-sm text-gray-400" data-i18n="footer_slogan">Entrenando la mirada para cambiar la realidad.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-3" data-i18n="footer_links_title">Enlaces</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#inicio" class="text-gray-400 hover:text-purple-400 transition-colors" data-i18n="nav_home">Inicio</a></li>
+                        <li><a href="#solucion" class="text-gray-400 hover:text-purple-400 transition-colors" data-i18n="nav_solution">La Solución</a></li>
+                        <li><a href="#alineacion" class="text-gray-400 hover:text-purple-400 transition-colors" data-i18n="nav_alignment">Alineación</a></li>
+                        <li><a href="#contacto" class="text-gray-400 hover:text-purple-400 transition-colors" data-i18n="nav_contact">Contacto</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-3" data-i18n="footer_legal_title">Legal</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li data-i18n="footer_privacy">Privacidad y Protección de Datos</li>
+                        <li data-i18n="footer_compliance">Cumplimiento RGPD</li>
+                        <li data-i18n="footer_terms">Términos de Uso</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-6 text-center">
+                <p class="text-xs text-gray-500" data-i18n="footer_copy">© 2025 Proyecto IRIS. Prototipo Educativo. Presentado a la Junta de Andalucía.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            es: {
+                nav_home: "Inicio", nav_problem: "El Problema", nav_solution: "La Solución", nav_alignment: "Alineación", nav_model: "El Modelo", nav_impact: "Impacto", nav_contact: "Contacto",
+                hero_badge: "Proyecto de Innovación Social",
+                hero_title: "Proyecto IRIS",
+                hero_subtitle: "Entrenamiento con IA para detectar la violencia invisible.",
+                hero_uvp_label: "Propuesta de Valor",
+                hero_uvp_main: "\"Tu entrenador personal de defensa emocional\".",
+                hero_uvp_desc_1: "En lugar de solo escuchar charlas teóricas, ",
+                hero_uvp_desc_strong: "vives una simulación",
+                hero_uvp_desc_2: " y aprendes a defenderte en un entorno seguro.",
+                hero_slogan: "\"Entrena tu mirada, cambia tu realidad.\"",
+                quick_stat_1: "Mejora en detección",
+                quick_stat_2: "Centros activos",
+                quick_stat_3: "Estudiantes",
+                problem_title: "El Problema",
+                problem_desc: "La violencia de género suele empezar con detalles pequeños que dejamos pasar. IRIS enseña a verlos a tiempo.",
+                problem_list_title: "Retos Actuales",
+                p_1_bold: "Confusión:", p_1_text: "Confundir celos con amor.",
+                p_2_bold: "Lo Invisible:", p_2_text: "La manipulación psicológica es difícil de ver.",
+                p_3_bold: "Aburrimiento:", p_3_text: "Las charlas típicas no conectan con los jóvenes.",
+                segments_title: "A quién ayudamos",
+                tab_users: "Jóvenes", tab_clients: "Organizaciones", tab_adopters: "Pioneros",
+                user_title: "Estudiantes (14-25 años)", user_desc: "Chicos y chicas que empiezan sus primeras relaciones.",
+                client_title: "Quienes nos contratan", client_list: "<li>Colegios e Institutos.</li><li>Ayuntamientos.</li><li>Asociaciones de Padres.</li>",
+                adopter_title: "Primeros Aliados", adopter_desc: "Centros educativos modernos.",
+                solution_title: "La Solución",
+                solution_desc: "Un simulador de chat para practicar situaciones difíciles sin riesgo real.",
+                chat_online: "En línea", chat_today: "Hoy",
+                chat_msg_1: "¿Dónde estabas? No contestas.", 
+                chat_msg_2: "Estaba con mi madre, perdón.", 
+                chat_msg_3: "Mándame ubicación para creerte.",
+                chat_msg_4: "¿En serio? No hace falta, te lo prometo.",
+                chat_msg_5: "Ah, vale. ¿Qué escondes entonces?",
+                chat_msg_6: "No escondo nada. Déjame cenar tranquila.",
+                chat_msg_7: "Siempre igual. Me haces sentir una mierda.",
+                chat_msg_8: "Si no mandas foto AHORA, terminamos.",
+                chat_alert: "Intento de CHANTAJE y MANIPULACIÓN.",
+                features_title: "Lo que ofrece",
+                feat_1_title: "Chatbot Inteligente", feat_1_desc: "Simula personalidades realistas que reaccionan a lo que dices.",
+                feat_2_title: "Consejos al instante", feat_2_desc: "Te ayuda a entender si tu respuesta fue adecuada.",
+                comp_adv_title: "¿Por qué es diferente?", comp_adv_desc: "Porque aprendes haciendo, no solo escuchando.",
+                model_title: "¿Cómo se mantiene?",
+                channel_1_title: "Instituciones", channel_1: "Acuerdos con Ayuntamientos y Educación.",
+                channel_2_title: "Redes Sociales", channel_2: "TikTok e Instagram.",
+                channel_3_title: "Profesionales", channel_3: "Psicólogos y Orientadores.",
+                costs_title: "¿En qué gastamos?", revenue_title: "¿Cómo ingresamos?",
+                impact_title: "Impacto y Resultados",
+                impact_subtitle: "Resultados medibles que demuestran la efectividad del proyecto en la prevención temprana de violencia de género.",
+                kpi_1_title: "Detección Temprana", kpi_1_desc: "Mejora en reconocimiento de señales",
+                kpi_2_title: "Tiempo de Participación", kpi_2_desc: "Promedio por sesión",
+                kpi_3_title: "Centros Educativos", kpi_3_desc: "Implementaciones activas",
+                kpi_4_title: "Estudiantes", kpi_4_desc: "Usuarios activos",
+                impact_chart_title: "Mejora Real (Antes vs Después)",
+                alignment_title: "Alineación con Políticas Públicas",
+                alignment_desc: "IRIS está diseñado para contribuir directamente a los objetivos estratégicos de la Junta de Andalucía en materia de igualdad y prevención de violencia de género.",
+                ods_title: "ODS 5: Igualdad",
+                ods_desc: "Contribuye directamente al Objetivo 5 de Desarrollo Sostenible: lograr la igualdad de género y empoderar a todas las mujeres y niñas.",
+                law_title: "Ley Orgánica 1/2004",
+                law_desc: "Alineado con la Ley de Medidas de Protección Integral contra la Violencia de Género, especialmente en prevención y educación.",
+                plan_title: "Plan Estratégico",
+                plan_desc: "Complementa el Plan Estratégico de Igualdad de Género de Andalucía 2022-2025, especialmente en prevención temprana.",
+                compliance_title: "Cumplimiento Normativo y Protección de Datos",
+                gdpr_title: "RGPD y LOPD-GDD",
+                gdpr_desc: "Cumplimiento total con el Reglamento General de Protección de Datos y la Ley Orgánica de Protección de Datos Personales.",
+                privacy_title: "Privacidad por Diseño",
+                privacy_desc: "Arquitectura de datos que garantiza la privacidad desde el diseño, sin almacenar conversaciones personales.",
+                security_title: "Seguridad y Anonimato",
+                security_desc: "Los usuarios pueden practicar de forma completamente anónima, sin riesgo de exposición de datos sensibles.",
+                ethics_title: "IA Ética y Transparente",
+                ethics_desc: "Modelos de IA entrenados con supervisión de expertos en violencia de género, sin sesgos discriminatorios.",
+                sustainability_title: "Sostenibilidad y Escalabilidad",
+                scalability_title: "Escalabilidad",
+                scalability_1: "Arquitectura cloud que permite escalar a toda Andalucía sin costes adicionales significativos.",
+                scalability_2: "Modelo replicable en otras comunidades autónomas con mínimas adaptaciones.",
+                scalability_3: "Integración sencilla con sistemas educativos existentes (Moodle, Séneca, etc.).",
+                sustainability_title_2: "Sostenibilidad",
+                sustainability_1: "Modelo de financiación mixto: subvenciones públicas + licencias institucionales.",
+                sustainability_2: "Costes operativos reducidos gracias a la automatización con IA.",
+                sustainability_3: "Actualización continua del contenido sin costes de producción adicionales.",
+                roadmap_title: "Próximos Pasos y Roadmap",
+                roadmap_1_title: "Fase 1: Piloto Ampliado (Q1-Q2 2025)",
+                roadmap_1_desc: "Expansión a 50 centros educativos en Andalucía. Validación de resultados con datos estadísticos robustos.",
+                roadmap_2_title: "Fase 2: Integración Institucional (Q3 2025)",
+                roadmap_2_desc: "Integración con plataformas educativas de la Junta de Andalucía. Formación de docentes y orientadores.",
+                roadmap_3_title: "Fase 3: Escalado Regional (Q4 2025)",
+                roadmap_3_desc: "Despliegue completo en toda Andalucía. Inicio de colaboraciones con otras comunidades autónomas.",
+                contact_title: "Contacto y Colaboración",
+                contact_desc: "Estamos abiertos a colaborar con la Junta de Andalucía para implementar IRIS en los centros educativos de la comunidad.",
+                contact_info_title: "Información de Contacto",
+                contact_email_label: "Email:",
+                contact_email: "proyecto.iris@ejemplo.es",
+                contact_phone_label: "Teléfono:",
+                contact_phone: "+34 XXX XXX XXX",
+                contact_address_label: "Dirección:",
+                contact_address: "Andalucía, España",
+                contact_benefits_title: "Beneficios de Colaborar",
+                contact_benefit_1: "Acceso prioritario a nuevas funcionalidades",
+                contact_benefit_2: "Soporte técnico y formación personalizada",
+                contact_benefit_3: "Descuentos especiales para implementaciones masivas",
+                footer_slogan: "Entrenando la mirada para cambiar la realidad.",
+                footer_links_title: "Enlaces",
+                footer_legal_title: "Legal",
+                footer_privacy: "Privacidad y Protección de Datos",
+                footer_compliance: "Cumplimiento RGPD",
+                footer_terms: "Términos de Uso",
+                footer_copy: "© 2025 Proyecto IRIS. Prototipo Educativo. Presentado a la Junta de Andalucía.",
+                chart_costs_labels: ['Desarrollo App', 'Costes IA', 'Contenido', 'Difusión'],
+                chart_rev_labels: ['Licencias Institutos', 'Subvenciones', 'Suscripciones'],
+                chart_imp_labels: ['Sin IRIS', 'Piloto A', 'Piloto B', 'Piloto C'],
+                chart_imp_datasets: ['Test Inicial (%)', 'Test Final (%)']
+            },
+            en: {
+                nav_home: "Home", nav_problem: "Problem", nav_solution: "Solution", nav_alignment: "Alignment", nav_model: "Model", nav_impact: "Impact", nav_contact: "Contact",
+                hero_badge: "Social Innovation Project",
+                hero_title: "Project IRIS",
+                hero_subtitle: "AI training to detect invisible violence.",
+                hero_uvp_label: "Value Proposition",
+                hero_uvp_main: "\"Your personal emotional defense coach\".",
+                hero_uvp_desc_1: "Instead of just listening to theoretical talks, ",
+                hero_uvp_desc_strong: "you live a simulation",
+                hero_uvp_desc_2: " and learn to defend yourself in a safe environment.",
+                hero_slogan: "\"Train your gaze, change your reality.\"",
+                quick_stat_1: "Detection improvement",
+                quick_stat_2: "Active centers",
+                quick_stat_3: "Students",
+                problem_title: "The Problem",
+                problem_desc: "Gender violence usually starts with small details we miss. IRIS teaches you to see them in time.",
+                problem_list_title: "Current Challenges",
+                p_1_bold: "Confusion:", p_1_text: "Confusing jealousy with love.",
+                p_2_bold: "The Invisible:", p_2_text: "Psychological manipulation is hard to see.",
+                p_3_bold: "Boredom:", p_3_text: "Typical talks don't connect with youth.",
+                segments_title: "Who we help",
+                tab_users: "Youth", tab_clients: "Organizations", tab_adopters: "Pioneers",
+                user_title: "Students (14-25 yrs)", user_desc: "Teens starting their first relationships.",
+                client_title: "Who hires us", client_list: "<li>Schools & High Schools.</li><li>City Councils.</li><li>Parent Associations.</li>",
+                adopter_title: "First Allies", adopter_desc: "Modern educational centers.",
+                solution_title: "The Solution",
+                solution_desc: "A chat simulator to practice difficult situations without real risk.",
+                chat_online: "Online", chat_today: "Today",
+                chat_msg_1: "Where were you? You don't answer.", 
+                chat_msg_2: "I was with my mom, sorry.", 
+                chat_msg_3: "Send location so I believe you.",
+                chat_msg_4: "Seriously? No need, I promise.",
+                chat_msg_5: "Oh, okay. What are you hiding then?",
+                chat_msg_6: "I'm not hiding anything. Let me eat.",
+                chat_msg_7: "Always the same. You make me feel like shit.",
+                chat_msg_8: "If you don't send a pic NOW, we're done.",
+                chat_alert: "Attempt at BLACKMAIL and MANIPULATION.",
+                features_title: "What it offers",
+                feat_1_title: "Smart Chatbot", feat_1_desc: "Simulates realistic personalities that react to what you say.",
+                feat_2_title: "Instant Advice", feat_2_desc: "Helps you understand if your response was adequate.",
+                comp_adv_title: "Why is it different?", comp_adv_desc: "Because you learn by doing, not just listening.",
+                model_title: "How is it sustained?",
+                channel_1_title: "Institutions", channel_1: "Agreements with City Councils and Education.",
+                channel_2_title: "Social Media", channel_2: "TikTok and Instagram.",
+                channel_3_title: "Professionals", channel_3: "Psychologists and Counselors.",
+                costs_title: "Expenses?", revenue_title: "Income?",
+                impact_title: "Impact and Results",
+                impact_subtitle: "Measurable results demonstrating the project's effectiveness in early prevention of gender violence.",
+                kpi_1_title: "Early Detection", kpi_1_desc: "Improvement in signal recognition",
+                kpi_2_title: "Participation Time", kpi_2_desc: "Average per session",
+                kpi_3_title: "Educational Centers", kpi_3_desc: "Active implementations",
+                kpi_4_title: "Students", kpi_4_desc: "Active users",
+                impact_chart_title: "Real Improvement (Before vs After)",
+                alignment_title: "Alignment with Public Policies",
+                alignment_desc: "IRIS is designed to directly contribute to the strategic objectives of the Junta de Andalucía in equality and gender violence prevention.",
+                ods_title: "SDG 5: Equality",
+                ods_desc: "Directly contributes to Sustainable Development Goal 5: achieve gender equality and empower all women and girls.",
+                law_title: "Organic Law 1/2004",
+                law_desc: "Aligned with the Comprehensive Protection Measures against Gender Violence Law, especially in prevention and education.",
+                plan_title: "Strategic Plan",
+                plan_desc: "Complements the Andalusia Gender Equality Strategic Plan 2022-2025, especially in early prevention.",
+                compliance_title: "Regulatory Compliance and Data Protection",
+                gdpr_title: "GDPR and LOPD-GDD",
+                gdpr_desc: "Full compliance with the General Data Protection Regulation and the Organic Law on Personal Data Protection.",
+                privacy_title: "Privacy by Design",
+                privacy_desc: "Data architecture that guarantees privacy from design, without storing personal conversations.",
+                security_title: "Security and Anonymity",
+                security_desc: "Users can practice completely anonymously, without risk of exposure of sensitive data.",
+                ethics_title: "Ethical and Transparent AI",
+                ethics_desc: "AI models trained with supervision from gender violence experts, without discriminatory biases.",
+                sustainability_title: "Sustainability and Scalability",
+                scalability_title: "Scalability",
+                scalability_1: "Cloud architecture that allows scaling to all of Andalusia without significant additional costs.",
+                scalability_2: "Replicable model in other autonomous communities with minimal adaptations.",
+                scalability_3: "Easy integration with existing educational systems (Moodle, Séneca, etc.).",
+                sustainability_title_2: "Sustainability",
+                sustainability_1: "Mixed financing model: public grants + institutional licenses.",
+                sustainability_2: "Reduced operating costs thanks to AI automation.",
+                sustainability_3: "Continuous content updates without additional production costs.",
+                roadmap_title: "Next Steps and Roadmap",
+                roadmap_1_title: "Phase 1: Extended Pilot (Q1-Q2 2025)",
+                roadmap_1_desc: "Expansion to 50 educational centers in Andalusia. Validation of results with robust statistical data.",
+                roadmap_2_title: "Phase 2: Institutional Integration (Q3 2025)",
+                roadmap_2_desc: "Integration with Junta de Andalucía educational platforms. Training of teachers and counselors.",
+                roadmap_3_title: "Phase 3: Regional Scaling (Q4 2025)",
+                roadmap_3_desc: "Complete deployment throughout Andalusia. Start of collaborations with other autonomous communities.",
+                contact_title: "Contact and Collaboration",
+                contact_desc: "We are open to collaborating with the Junta de Andalucía to implement IRIS in the community's educational centers.",
+                contact_info_title: "Contact Information",
+                contact_email_label: "Email:",
+                contact_email: "proyecto.iris@ejemplo.es",
+                contact_phone_label: "Phone:",
+                contact_phone: "+34 XXX XXX XXX",
+                contact_address_label: "Address:",
+                contact_address: "Andalusia, Spain",
+                contact_benefits_title: "Collaboration Benefits",
+                contact_benefit_1: "Priority access to new features",
+                contact_benefit_2: "Technical support and personalized training",
+                contact_benefit_3: "Special discounts for massive implementations",
+                footer_slogan: "Training the gaze to change reality.",
+                footer_links_title: "Links",
+                footer_legal_title: "Legal",
+                footer_privacy: "Privacy and Data Protection",
+                footer_compliance: "GDPR Compliance",
+                footer_terms: "Terms of Use",
+                footer_copy: "© 2025 Project IRIS. Educational Prototype. Presented to Junta de Andalucía.",
+                chart_costs_labels: ['App Dev', 'AI Costs', 'Content', 'Outreach'],
+                chart_rev_labels: ['School Licenses', 'Grants', 'Subscriptions'],
+                chart_imp_labels: ['No IRIS', 'Pilot A', 'Pilot B', 'Pilot C'],
+                chart_imp_datasets: ['Initial Test (%)', 'Final Test (%)']
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentLang = 'es';
+            let costsChart, ingresosChart, impactoChart;
+
+            // --- Theme Logic ---
+            const themeToggleBtns = [document.getElementById('theme-toggle'), document.getElementById('theme-toggle-mobile')];
+            const html = document.documentElement;
+            const sunIcon = document.getElementById('icon-sun');
+            const moonIcon = document.getElementById('icon-moon');
+
+            function toggleTheme() {
+                if (html.classList.contains('dark')) {
+                    html.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else {
+                    html.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+                updateChartsTheme();
+            }
+
+            themeToggleBtns.forEach(btn => btn?.addEventListener('click', toggleTheme));
+
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+
+            // --- Language Logic ---
+            const langBtns = [document.getElementById('lang-toggle'), document.getElementById('lang-toggle-mobile')];
+
+            function setLanguage(lang) {
+                currentLang = lang;
+                
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (translations[lang][key]) {
+                        if(el.tagName === 'UL') {
+                             el.innerHTML = translations[lang][key];
+                        } else {
+                             el.innerText = translations[lang][key];
+                        }
+                    }
+                });
+
+                langBtns.forEach(btn => btn.innerText = lang.toUpperCase());
+                updateChartsData(lang);
+            }
+
+            langBtns.forEach(btn => btn?.addEventListener('click', () => {
+                const newLang = currentLang === 'es' ? 'en' : 'es';
+                setLanguage(newLang);
+            }));
+
+            // --- Mobile Menu ---
+            const mobileMenuBtn = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+            // --- Smooth Scroll Navigation ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        // Update active nav link
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        // Close mobile menu if open
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            // --- Active Navigation on Scroll ---
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link[data-target]');
+            
+            function updateActiveNav() {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('data-target') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateActiveNav);
+            updateActiveNav();
+
+            // --- Intersection Observer for fade-in animations ---
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all sections and cards
+            document.querySelectorAll('section, .bg-white, .bg-amber-50, .bg-purple-50').forEach(el => {
+                observer.observe(el);
+            });
+
+            // --- Tabs ---
+            const tabs = document.querySelectorAll('.segment-tab');
+            const tabContents = document.querySelectorAll('.segment-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.getAttribute('data-target');
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    tabContents.forEach(content => {
+                        content.classList.toggle('hidden', content.id !== target);
+                    });
+                });
+            });
+
+            // --- Charts ---
+            const chartColors = {
+                purple: '#9333ea',
+                amber: '#d97706',
+                gray: '#9ca3af',
+                textLight: '#262626',
+                textDark: '#e5e7eb'
+            };
+
+            function getChartTextColor() {
+                return html.classList.contains('dark') ? chartColors.textDark : chartColors.textLight;
+            }
+
+            function updateChartsTheme() {
+                const color = getChartTextColor();
+                [costosChart, ingresosChart, impactoChart].forEach(chart => {
+                    if(chart) {
+                        chart.options.plugins.legend.labels.color = color;
+                        chart.options.scales?.x?.ticks ? chart.options.scales.x.ticks.color = color : null;
+                        chart.options.scales?.y?.ticks ? chart.options.scales.y.ticks.color = color : null;
+                        chart.update();
+                    }
+                });
+            }
+
+            function updateChartsData(lang) {
+                const t = translations[lang];
+                
+                costosChart.data.labels = t.chart_costs_labels;
+                costosChart.update();
+                
+                ingresosChart.data.labels = t.chart_rev_labels;
+                ingresosChart.update();
+
+                impactoChart.data.labels = t.chart_imp_labels;
+                impactoChart.data.datasets[0].label = t.chart_imp_datasets[0];
+                impactoChart.data.datasets[1].label = t.chart_imp_datasets[1];
+                impactoChart.update();
+            }
+
+            const ctx1 = document.getElementById('costosChart').getContext('2d');
+            costosChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: translations.es.chart_costs_labels,
+                    datasets: [{
+                        data: [40, 30, 15, 15],
+                        backgroundColor: [chartColors.purple, '#a855f7', '#c084fc', '#d8b4fe'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: getChartTextColor() } } }
+                }
+            });
+
+            const ctx2 = document.getElementById('ingresosChart').getContext('2d');
+            ingresosChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: translations.es.chart_rev_labels,
+                    datasets: [{
+                        data: [60, 30, 10],
+                        backgroundColor: [chartColors.amber, '#f59e0b', '#fbbf24'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: getChartTextColor() } } }
+                }
+            });
+
+            const ctx3 = document.getElementById('impactoChart').getContext('2d');
+            impactoChart = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: translations.es.chart_imp_labels,
+                    datasets: [
+                        { label: translations.es.chart_imp_datasets[0], data: [22, 25, 20, 28], backgroundColor: chartColors.gray },
+                        { label: translations.es.chart_imp_datasets[1], data: [24, 78, 72, 81], backgroundColor: chartColors.purple }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', labels: { color: getChartTextColor() } } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { color: getChartTextColor(), callback: v => v + '%' }, grid: { color: '#52525220' } },
+                        x: { ticks: { color: getChartTextColor() }, grid: { display: false } }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

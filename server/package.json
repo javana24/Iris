@@ -1,0 +1,16 @@
+{
+  "name": "iris-server",
+  "version": "1.0.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest"
+  }
+}
