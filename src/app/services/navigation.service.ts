@@ -38,7 +38,7 @@ export class NavigationService {
   }
 
   updateActiveSectionOnScroll(): void {
-    const sections = ['inicio', 'problema', 'solucion', 'alineacion', 'modelo', 'impacto', 'contacto'];
+    const sections = ['inicio', 'problema', 'solucion', 'simuladores', 'alineacion', 'modelo', 'impacto', 'contacto'];
     const scrollPosition = window.pageYOffset + 100;
 
     for (let i = sections.length - 1; i >= 0; i--) {

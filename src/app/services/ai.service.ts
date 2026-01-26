@@ -11,6 +11,8 @@ export interface ChatMessagePayload {
 
 export interface ChatResponse {
   response: string;
+  safetyAlert?: boolean;
+  safetyMessage?: string;
 }
 
 @Injectable({
@@ -65,13 +67,14 @@ export class AiService {
     return false;
   }
 
-  chat(messages: ChatMessagePayload[], language: 'es' | 'en'): Observable<ChatResponse> {
+  chat(messages: ChatMessagePayload[], language: 'es' | 'en', simulatorMode: 'iris' | 'partner' = 'iris'): Observable<ChatResponse> {
     const url = `${this.baseUrl}/api/chat`;
-    console.log('🚀 Enviando petición a:', url);
+    console.log('🚀 Enviando petición a:', url, 'mode:', simulatorMode);
     
     return this.http.post<ChatResponse>(url, {
       messages,
-      language
+      language,
+      simulatorMode
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('❌ Error en petición HTTP:');

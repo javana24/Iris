@@ -31,6 +31,11 @@
                   class="nav-link">
             {{ translationService.translate('nav_solution') }}
           </button>
+          <button (click)="navigateTo('simuladores')" 
+                  [class.active]="isActive('simuladores')" 
+                  class="nav-link">
+            {{ translationService.translate('nav_simulators') }}
+          </button>
           <button (click)="navigateTo('alineacion')" 
                   [class.active]="isActive('alineacion')" 
                   class="nav-link">
@@ -115,6 +120,11 @@
               [class.active]="isActive('solucion')" 
               class="nav-link block w-full text-left">
         {{ translationService.translate('nav_solution') }}
+      </button>
+      <button (click)="navigateTo('simuladores')" 
+              [class.active]="isActive('simuladores')" 
+              class="nav-link block w-full text-left">
+        {{ translationService.translate('nav_simulators') }}
       </button>
       <button (click)="navigateTo('alineacion')" 
               [class.active]="isActive('alineacion')" 

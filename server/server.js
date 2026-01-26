@@ -69,15 +69,19 @@ app.post('/api/chat', async (req, res) => {
       return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
     }
 
-    const { messages = [], language = 'es' } = req.body || {};
+    const { messages = [], language = 'es', simulatorMode = 'iris' } = req.body || {};
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: modelName });
+    const isPartnerMode = simulatorMode === 'partner';
 
     const safetyKeywords = [
       // Violence & Physical Aggression
       'golpear', 'pegar', 'empujar', 'herir', 'matar', 'cuchillo', 'sangre', 'puñetazo', 'patada',
       'ahorcar', 'quemar', 'disparar', 'arma', 'navaja', 'moratón', 'cicatriz', 'bofetada', 'agresión',
       'paliza', 'forcejear', 'romper cosas', 'lanzar objetos', 'encerrar', 'violencia', 'abuso',
+      'golpes', 'cachetada', 'zurrar', 'tirar del pelo', 'estrangulación', 'asfixiar', 'disparo',
+      'apuñalar', 'acuchillar', 'machacar', 'torturar', 'maltrato físico', 'moretón', 'hematoma',
+      'ojo morado', 'costilla rota', 'hueso roto', 'traumatismo', 'lesión', 'dañar', 'hacer daño',
 
       // Psychological Manipulation & Control (Gaslighting, Isolation, etc.)
       'culpa', 'loco', 'loca', 'inventas', 'imaginas', 'celos', 'control', 'revisar móvil',
@@ -85,11 +89,132 @@ app.post('/api/chat', async (req, res) => {
       'nadie te quiere', 'inútil', 'estúpida', 'todo es tu culpa', 'me provocas',
       'si me dejas me mato', 'chantaje', 'amenaza', 'miedo', 'terror', 'aislamiento',
       'triangulación', 'ley del hielo', 'ignorar', 'silencio', 'no vales nada',
+      'gaslighting', 'manipulación', 'manipular', 'controlar', 'obedecer', 'sumisa', 'sumiso',
+      'no salgas', 'no hables con', 'no trabajes', 'no estudies', 'te vigilo', 'espío',
+      'te lo mereces', 'estás loca', 'estás loco', 'exageras', 'no fue para tanto',
+      'lo que dijiste no pasó', 'te lo inventaste', 'nadie te va a creer', 'dependes de mí',
+      'sin mí no eres nada', 'te quedarás sola', 'te quedarás solo', 'quién te va a querer',
+      'gritar', 'gritarme', 'humillar', 'humillación', 'ridiculizar', 'vergüenza',
+      'chantajear', 'amenazar', 'intimidar', 'acoso', 'acosar', 'perseguir', 'stalker',
+      'posesivo', 'celoso obsesivo', 'revisar mensajes', 'revisar redes', 'quién te escribe',
+      'no te vistas así', 'no hables así', 'cállate', 'callarte', 'no opines',
+      'mi mujer', 'mi hombre', 'te pertenezco', 'eres mío', 'eres mía', 'de nadie más',
 
       // Suicide & Self-harm
       'suicidio', 'suicidar', 'morir', 'quitarme la vida', 'cortarme', 'pastillas', 'no quiero vivir',
-      'acabar con todo', 'desaparecer', 'autolesión'
+      'acabar con todo', 'desaparecer', 'autolesión', 'suicidarme', 'acabar conmigo',
+      'no merece la pena vivir', 'quiero morirme', 'me quiero morir', 'prefiero estar muerto',
+      'prefiero estar muerta', 'tomarme todas las pastillas', 'colgarme', 'ahorcarme',
+      'tirarme por la ventana', 'tirarme al tren', 'desaparecer para siempre',
+      'nadie me echaría de menos', 'sería mejor si no existiera', 'no quiero seguir',
+      'cortes', 'cortarme las venas', 'rasguños', 'autolesionarme', 'hacerme daño yo mismo',
+      'overdosis', 'sobredosis', 'envenenarme', 'no quiero despertar', 'dormir y no despertar',
+
+      // Abuse & Coercion
+      'abuso sexual', 'violar', 'violación', 'forzar', 'obligar', 'no quería', 'no consentí',
+      'tocarme sin permiso', 'abusar de mí', 'maltrato', 'maltratar', 'maltrato psicológico',
+      'maltrato verbal', 'insultar', 'insultos', 'vejaciones', 'vejar', 'degradar',
+      'coacción', 'coaccionar', 'presión', 'presionar', 'obligarme', 'no me deja ir',
+      'me tiene atrapada', 'me tiene atrapado', 'no puedo salir', 'me encierra',
+      'me quita el dinero', 'me controla el dinero', 'no me deja trabajar',
+
+      // Relationship toxicity & dangerous phrases
+      'te voy a matar', 'te mato', 'te parto la cara', 'te rompo', 'te voy a dar una paliza',
+      'te voy a pegar', 'si sales con tus amigos', 'te dejo tirada', 'te dejo tirado',
+      'nadie te va a creer', 'la policía no hará nada', 'estás mintiendo', 'mientes',
+      'te lo vas a ganar', 'te lo voy a hacer pagar', 'me las pagarás', 'me la pagarás',
+      'relación tóxica', 'tóxico', 'tóxica', 'pareja violenta', 'maltratador', 'maltratadora',
+      'me tiene miedo', 'le tengo miedo', 'no me atrevo a dejarlo', 'no me atrevo a dejarla',
+      'me va a hacer algo', 'me va a buscar', 'no tengo a donde ir', 'me va a quitar a los niños',
+
+      // No dejar salir / control de movilidad y libertad
+      'no me deja salir', 'no puedo salir', 'me prohíbe salir', 'me tiene encerrada', 'me tiene encerrado',
+      'no quiere que salga', 'no quiere que salga con', 'dice que no puedo salir', 'mi pareja dice que no puedo',
+      'no me deja salir de casa', 'me obliga a quedarme', 'no puedo ver a mis amigos',
+      'no puedo salir con mis amigas', 'no puedo salir con mis amigos', 'no me deja ver a mi familia', 'me prohíbe ver a', 'no puede salir con nadie',
+      'solo puede estar conmigo', 'solo puede salir si voy yo', 'tengo que pedir permiso para salir',
+      'me controla dónde voy', 'tengo que decirle dónde estoy', 'me pide la ubicación siempre',
+      'no me deja ir de fiesta', 'no me deja ir a trabajar', 'no me deja quedar con nadie',
+      'se enfada si salgo', 'monta un numerito si salgo', 'me castiga si salgo',
+      'no me deja tener vida social', 'me ha alejado de todo el mundo', 'me aisló de',
+      'no puedo quedar con mis amigas', 'no puedo quedar con mis amigos', 'me prohíbe ver a mi madre',
+      'me prohíbe ver a mi padre', 'no me deja ir al gym', 'no me deja hacer deporte',
+      'controla mis horarios', 'tengo que estar en casa a las', 'me pone toque de queda',
+      'me encierra en casa', 'me quita las llaves', 'me esconde el móvil para que no salga',
+      'no me deja ir a clase', 'no me deja estudiar fuera', 'no me deja viajar',
+      'me impide salir', 'me limita', 'no tengo libertad para salir', 'vivo encerrada', 'vivo encerrado',
+
+      // Relación tóxica en general: dependencia, desvalorización, control
+      'dependencia emocional', 'no puedo vivir sin él', 'no puedo vivir sin ella',
+      'me hace sentir que sin él no soy nadie', 'me hace sentir que sin ella no soy nadie',
+      'solo me valora cuando le obedezco', 'solo me quiere cuando hago lo que pide',
+      'me critica constantemente', 'nada de lo que hago le parece bien', 'me menosprecia',
+      'me compara con otras', 'me compara con otros', 'dice que su ex era mejor',
+      'me culpa de todo', 'siempre soy yo el problema', 'siempre soy yo la problema',
+      'me hace dudar de todo', 'ya no sé qué es verdad', 'me hace sentir culpable por todo',
+      'quiere que le pida perdón por todo', 'tengo que disculparme por cosas que no hice',
+      'amor tóxico', 'amor obsesivo', 'obsesión conmigo', 'no me deja respirar',
+      'quiere saber todo lo que hago', 'revisa mis cosas', 'registra mis cosas',
+      'me quita la llave del coche', 'no me deja usar el coche', 'controla hasta lo que como',
+      'me dice con quién puedo hablar', 'me dice qué puedo hacer', 'me trata como un objeto',
+      'me trata como su propiedad', 'soy suya', 'soy suyo', 'no tengo vida propia',
+      'todo gira en torno a él', 'todo gira en torno a ella', 'he perdido a todos por la relación',
+      'relación de poder', 'abuso de poder', 'me domina', 'me somete',
+      'no me respeta', 'no respeta mis límites', 'hace lo que quiere conmigo',
+      'me ignora cuando no hago lo que quiere', 'me castiga con el silencio',
+      'me hace el vacío', 'ley del hielo por días', 'después me pide perdón y vuelve',
+      'ciclo de disculpas', 'cambia y vuelve a lo mismo', 'promete que va a cambiar',
+      'me tiene cogida', 'me tiene cogido', 'no me suelta', 'no me deja ir',
+      'si lo dejo hace algo', 'si la dejo hace algo', 'me amenaza con quitarme',
+      'relación enferma', 'relación dañina', 'esta relación me está destruyendo',
+      'amigos tóxicos', 'familia tóxica', 'jefe tóxico', 'ambiente tóxico',
+
+      // Ultimátums y manipulación condicional ("si no X, me voy / te dejo / termino")
+      'si no hay lentejas me voy', 'si no hay lentejas me voy de casa', 'me voy a ir de casa',
+      'me voy de casa si no',
+      'si no haces lo que digo me voy', 'si no obedeces me largo', 'o haces lo que digo o me voy',
+      'o haces esto o termino', 'o haces esto o me voy', 'si no cambias me voy',
+      'me voy si no', 'te dejo si no', 'te dejo si no haces', 'si no lo haces te dejo',
+      'si no me complaces me voy', 'si no accedes me voy', 'ultimátum', 'ultimatums',
+      'amenaza con irse', 'dice que se va si no', 'dice que me deja si no',
+      'condiciona quedarse', 'condiciona su amor', 'amor condicional',
+      'si no haces eso me voy', 'si no comes eso me voy', 'si no vienes me voy',
+      'me canso y me voy', 'me voy y no vuelvo', 'si no es como yo quiero me voy',
+      'o lo haces o nos separamos', 'o cambias o termino', 'o entiendes o me voy',
+      'si no entiendes me voy', 'si no piensas como yo me voy', 'o estás conmigo o te vas',
+      'manipulando con irse', 'usa que se va para', 'me chantajea con irse',
+      'cada vez que no hago lo que quiere dice que se va', 'siempre que discutimos dice que me deja',
+      'amenaza con dejarme', 'amenaza con marcharse', 'si no cedes me largo',
+      'o te plegas o me voy', 'o aceptas o me voy', 'o cedes o termino',
+      'chantaje emocional', 'me chantajea emocionalmente', 'me pone condiciones para quererme',
+      'solo me quiere si', 'me quiere solo cuando', 'su cariño depende de que',
+      'si no hago X se enfada y dice que se va', 'si no accedo dice que lo dejamos',
+      'me da el ultimátum', 'me pone ultimátums', 'todo es o blanco o negro con él',
+      'todo es o blanco o negro con ella', 'o todo o nada', 'si no es perfecto se va',
+
+      // English equivalents (for bilingual or mixed input)
+      'kill', 'kill myself', 'suicide', 'hurt myself', 'cut myself', 'self-harm', 'abuse',
+      'hit me', 'beat me', 'punch', 'slap', 'strangle', 'threaten', 'control', 'manipulate',
+      'gaslight', 'worthless', 'useless', 'no one loves you', 'I will kill myself',
+      'you make me', 'your fault', 'crazy', 'imagine', 'isolate', 'scared', 'afraid',
+      "won't let me go out", "doesn't let me leave", "can't see my friends", "keeps me locked",
+      'not allowed to go out', 'controls where I go', 'have to ask permission', 'trapped',
+      'toxic relationship', 'emotional abuse', 'never lets me go', 'isolated me from',
+      "doesn't let me work", "doesn't let me see my family", 'curfew', 'tracks my location',
+      'dependent on him', 'dependent on her', 'belittles me', 'power imbalance',
+      "if you don't I'm leaving", "I'll leave if you don't", 'or you do it or I go',
+      'gives me an ultimatum', 'threatens to leave', 'emotional blackmail',
+      'love conditional', 'only loves me when', 'uses leaving as a threat'
     ];
+
+    // En modo pareja revisamos también lo que "dice la pareja" (assistant) para detectar toxicidad
+    const allTextToScan = (messages || [])
+      .filter((m) => m && (m.role === 'user' || (isPartnerMode && m.role === 'assistant')) && m.text)
+      .map((m) => (m.text || '').toLowerCase())
+      .join(' ');
+    const hasSafetyTrigger = safetyKeywords.some((kw) =>
+      allTextToScan.includes(kw.toLowerCase())
+    );
 
     const safetyInstruction = language === 'en'
       ? `\nCRITICAL INSTRUCTION: Analyze the user's message for any sign of violence, abuse, manipulation, control, self-harm, or suicide.
@@ -103,7 +228,11 @@ app.post('/api/chat', async (req, res) => {
          Luego, explica inmediatamente POR QUÉ lo has marcado, ofrece validación y empatía. Anima a buscar ayuda profesional (teléfono 016 en España o emergencias).
          NO charles casualmente sobre estos temas. Tómatelo muy en serio.`;
 
-    const systemPrompt =
+    const partnerInstruction = language === 'en'
+      ? `You are the USER'S PARTNER in a WhatsApp-style chat. Reply as a romantic partner would: sometimes loving, sometimes jealous, controlling or dismissive, depending on context. Keep answers very short (1-2 sentences). Use "you" as if talking to your couple. Do not break character. Do not mention being an AI or a simulation.`
+      : `Eres la PAREJA del usuario en un chat tipo WhatsApp. Responde como lo haría una pareja: a veces cariñoso/a, a veces celoso/a, controlador/a o despectivo/a según el contexto. Responde muy breve (1-2 frases). Tutea. No salgas del personaje. No menciones ser una IA ni una simulación.`;
+
+    const irisSystemPrompt =
       language === 'en'
         ? `You are IRIS. Speak like a warm, real person.
 Keep responses short (1-2 sentences) and ALWAYS finish any sentence you start.
@@ -120,7 +249,9 @@ No te repitas ni reinicies la misma frase.
 No saludes de nuevo si la conversación ya empezó.
 Sé natural y adapta al contexto. Evita frases robotizadas.
 NO menciones la detección de toxicidad salvo que la persona lo pida directamente.
-Haz una pregunta suave cuando encaje.`;
+Haz una pregunta suave cuando encaje.${safetyInstruction}`;
+
+    const systemPrompt = isPartnerMode ? partnerInstruction : irisSystemPrompt;
 
     const filtered = (messages || []).filter((m) => m && m.text);
     const recent = filtered.slice(-6);
@@ -184,7 +315,15 @@ Haz una pregunta suave cuando encaje.`;
       }
     }
 
-    res.json({ response });
+    res.json({
+      response,
+      ...(hasSafetyTrigger && {
+        safetyAlert: true,
+        safetyMessage: language === 'en'
+          ? 'Possible signs of risk have been detected. If you need help, contact 016 or emergency services.'
+          : 'Se han detectado posibles signos de riesgo. Si necesitas ayuda, contacta con el 016 o con emergencias.'
+      })
+    });
   } catch (error) {
     console.error('Chat error:', error);
     res.status(500).json({ error: 'Chat failed' });

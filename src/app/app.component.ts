@@ -11,6 +11,7 @@ import { ModelSectionComponent } from './components/sections/model-section/model
 import { ImpactSectionComponent } from './components/sections/impact-section/impact-section.component';
 import { ContactSectionComponent } from './components/sections/contact-section/contact-section.component';
 import { ManipulationSectionComponent } from './components/sections/manipulation-section/manipulation-section.component';
+import { SimulatorsSectionComponent } from './components/sections/simulators-section/simulators-section.component';
 import { ThemeService } from './services/theme.service';
 
 @Component({
@@ -28,7 +29,8 @@ import { ThemeService } from './services/theme.service';
     ModelSectionComponent,
     ImpactSectionComponent,
     ContactSectionComponent,
-    ManipulationSectionComponent
+    ManipulationSectionComponent,
+    SimulatorsSectionComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
