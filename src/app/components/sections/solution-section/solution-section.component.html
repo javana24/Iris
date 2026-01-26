@@ -1,4 +1,4 @@
-<section id="solucion" class="py-16 bg-white dark:bg-neutral-950 transition-colors duration-300">
+<section id="solucion" class="py-16 bg-transparent dark:bg-neutral-950 transition-colors duration-300">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500">
       {{ translationService.translate('solution_title') }}
@@ -7,8 +7,9 @@
       {{ translationService.translate('solution_desc') }}
     </p>
 
-    <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <div class="bg-white/90 dark:bg-neutral-800/90 p-6 rounded-2xl shadow-xl border border-gray-200/70 dark:border-neutral-700/70 backdrop-blur transition-transform duration-300 hover:-translate-y-0.5">
+    <div class="mt-12 flex justify-center items-center">
+      <div
+        class="bg-white/90 dark:bg-neutral-800/90 p-6 rounded-2xl shadow-xl border border-gray-200/70 dark:border-neutral-700/70 backdrop-blur transition-transform duration-300 hover:-translate-y-0.5">
         <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-2">
           {{ translationService.translate('project_info_title') }}
         </h3>
@@ -44,20 +45,7 @@
         </div>
       </div>
 
-      <div class="bg-white/90 dark:bg-neutral-800/90 p-6 rounded-2xl shadow-xl border border-gray-200/70 dark:border-neutral-700/70 backdrop-blur transition-transform duration-300 hover:-translate-y-0.5">
-        <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-2">
-          {{ translationService.translate('simulators_title') }}
-        </h3>
-        <p class="text-sm text-neutral-600 dark:text-gray-400 mb-6">
-          {{ translationService.translate('solution_go_simulators_desc') }}
-        </p>
-        <a
-          href="#simuladores"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
-        >
-          {{ translationService.translate('solution_go_simulators') }}
-        </a>
-      </div>
+
     </div>
   </div>
 </section>

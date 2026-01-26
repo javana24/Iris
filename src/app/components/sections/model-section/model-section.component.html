@@ -1,22 +1,130 @@
-<section id="modelo" class="py-16 dark:bg-neutral-900 transition-colors duration-300">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500">
-      {{ translationService.translate('model_title') }}
-    </h2>
-    <!-- Contenido completo del HTML original aquí -->
-    <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
-      <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-lg">
-        <h3 class="text-2xl font-semibold text-center mb-4">{{ translationService.translate('costs_title') }}</h3>
-        <div class="chart-container">
-          <canvas #costosChart></canvas>
+<section id="modelo" class="py-16 bg-transparent dark:bg-neutral-950 transition-colors duration-300">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Title -->
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500 mb-12">
+            {{ translationService.translate('model_title') }}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+            <!-- Funding Model (Revenue) -->
+            <div
+                class="bg-white/60 dark:bg-neutral-900/60 p-8 rounded-3xl shadow-xl border border-white/20 backdrop-blur-sm">
+                <h3 class="text-2xl font-bold mb-6 text-neutral-800 dark:text-white flex items-center gap-3">
+                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                        </path>
+                    </svg>
+                    {{ translationService.translate('revenue_title') }}
+                </h3>
+
+                <div class="space-y-6">
+                    <!-- Item 1: Subvenciones -->
+                    <div class="relative">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-base font-medium text-purple-700 dark:text-purple-400">Subvenciones
+                                Públicas (Junta, UE)</span>
+                            <span class="text-sm font-bold text-purple-700 dark:text-purple-400">60%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                            <div class="bg-purple-600 h-2.5 rounded-full" style="width: 60%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Fondos europeos, Pacto de Estado y ayudas autonómicas.</p>
+                    </div>
+
+                    <!-- Item 2: Licencias -->
+                    <div class="relative">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-base font-medium text-amber-600 dark:text-amber-400">Licencias
+                                Institucionales</span>
+                            <span class="text-sm font-bold text-amber-600 dark:text-amber-400">30%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                            <div class="bg-amber-500 h-2.5 rounded-full" style="width: 30%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Suscripciones anuales para Ayuntamientos y Centros
+                            Educativos.</p>
+                    </div>
+
+                    <!-- Item 3: Formación -->
+                    <div class="relative">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-base font-medium text-blue-600 dark:text-blue-400">Formación y
+                                Talleres</span>
+                            <span class="text-sm font-bold text-blue-600 dark:text-blue-400">10%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 10%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Talleres presenciales complementarios en los centros.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Costs Structure -->
+            <div
+                class="bg-white/60 dark:bg-neutral-900/60 p-8 rounded-3xl shadow-xl border border-white/20 backdrop-blur-sm">
+                <h3 class="text-2xl font-bold mb-6 text-neutral-800 dark:text-white flex items-center gap-3">
+                    <svg class="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                    {{ translationService.translate('costs_title') }}
+                </h3>
+
+                <div class="space-y-6">
+                    <!-- Cost 1 -->
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-rose-100 text-rose-600 rounded-xl dark:bg-rose-900/30 dark:text-rose-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-neutral-800 dark:text-white">Desarrollo Tecnológico</h4>
+                            <p class="text-xs text-neutral-500 dark:text-gray-400">Mantenimiento de la IA y servidores
+                                seguros.</p>
+                        </div>
+                    </div>
+
+                    <!-- Cost 2 -->
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="p-3 bg-purple-100 text-purple-600 rounded-xl dark:bg-purple-900/30 dark:text-purple-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-neutral-800 dark:text-white">Contenido Psicoeducativo</h4>
+                            <p class="text-xs text-neutral-500 dark:text-gray-400">Validación por expertos en violencia
+                                de género.</p>
+                        </div>
+                    </div>
+
+                    <!-- Cost 3 -->
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-sky-100 text-sky-600 rounded-xl dark:bg-sky-900/30 dark:text-sky-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-neutral-800 dark:text-white">Difusión Institucional</h4>
+                            <p class="text-xs text-neutral-500 dark:text-gray-400">Implementación en la red de centros
+                                de Andalucía.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-lg">
-        <h3 class="text-2xl font-semibold text-center mb-4">{{ translationService.translate('revenue_title') }}</h3>
-        <div class="chart-container">
-          <canvas #ingresosChart></canvas>
-        </div>
-      </div>
+
     </div>
-  </div>
 </section>
