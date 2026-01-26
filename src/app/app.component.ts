@@ -10,6 +10,7 @@ import { AlignmentSectionComponent } from './components/sections/alignment-secti
 import { ModelSectionComponent } from './components/sections/model-section/model-section.component';
 import { ImpactSectionComponent } from './components/sections/impact-section/impact-section.component';
 import { ContactSectionComponent } from './components/sections/contact-section/contact-section.component';
+import { ManipulationSectionComponent } from './components/sections/manipulation-section/manipulation-section.component';
 import { ThemeService } from './services/theme.service';
 
 @Component({
@@ -26,7 +27,8 @@ import { ThemeService } from './services/theme.service';
     AlignmentSectionComponent,
     ModelSectionComponent,
     ImpactSectionComponent,
-    ContactSectionComponent
+    ContactSectionComponent,
+    ManipulationSectionComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -34,7 +36,7 @@ import { ThemeService } from './services/theme.service';
 export class AppComponent implements OnInit {
   title = 'Proyecto IRIS';
 
-  constructor(private themeService: ThemeService) {}
+  constructor(private themeService: ThemeService) { }
 
   ngOnInit(): void {
     this.themeService.initTheme();

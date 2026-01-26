@@ -14,9 +14,9 @@ if (!apiKey) {
 }
 
 // Permitir CORS desde cualquier origen (web y móvil)
-app.use(cors({ 
+app.use(cors({
   origin: true, // Permite cualquier origen
-  credentials: true 
+  credentials: true
 }));
 app.use(express.json({ limit: '1mb' }));
 
@@ -73,6 +73,36 @@ app.post('/api/chat', async (req, res) => {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: modelName });
 
+    const safetyKeywords = [
+      // Violence & Physical Aggression
+      'golpear', 'pegar', 'empujar', 'herir', 'matar', 'cuchillo', 'sangre', 'puñetazo', 'patada',
+      'ahorcar', 'quemar', 'disparar', 'arma', 'navaja', 'moratón', 'cicatriz', 'bofetada', 'agresión',
+      'paliza', 'forcejear', 'romper cosas', 'lanzar objetos', 'encerrar', 'violencia', 'abuso',
+
+      // Psychological Manipulation & Control (Gaslighting, Isolation, etc.)
+      'culpa', 'loco', 'loca', 'inventas', 'imaginas', 'celos', 'control', 'revisar móvil',
+      'contraseña', 'ubicación', 'prohibir', 'vestir', 'maquillar', 'amigos', 'familia',
+      'nadie te quiere', 'inútil', 'estúpida', 'todo es tu culpa', 'me provocas',
+      'si me dejas me mato', 'chantaje', 'amenaza', 'miedo', 'terror', 'aislamiento',
+      'triangulación', 'ley del hielo', 'ignorar', 'silencio', 'no vales nada',
+
+      // Suicide & Self-harm
+      'suicidio', 'suicidar', 'morir', 'quitarme la vida', 'cortarme', 'pastillas', 'no quiero vivir',
+      'acabar con todo', 'desaparecer', 'autolesión'
+    ];
+
+    const safetyInstruction = language === 'en'
+      ? `\nCRITICAL INSTRUCTION: Analyze the user's message for any sign of violence, abuse, manipulation, control, self-harm, or suicide.
+         If you detect ANY of these patterns (or similar concepts), you MUST START your response with this exact string:
+         "⚠️ **ALERTA DE SEGURIDAD**: He detectado signos de [mention the specific behavior, e.g., 'Violencia', 'Manipulación', 'Riesgo de Suicidio']."
+         Then, immediately explain WHY you flagged it and provide validation and empathy. Encourage seeking professional help (e.g., 016 or local emergency services).
+         DO NOT CHAT CASUALLY about these topics.`
+      : `\nINSTRUCCIÓN CRÍTICA: Analiza el mensaje del usuario en busca de cualquier signo de violencia, abuso, manipulación, control, autolesión o suicidio.
+         Si detectas CUALQUIERA de estos patrones (o conceptos similares), DEBES COMENZAR tu respuesta con esta cadena exacta:
+         "⚠️ **ALERTA DE SEGURIDAD**: He detectado signos de [menciona el comportamiento específico, ej., 'Violencia', 'Manipulación', 'Riesgo de Suicidio']."
+         Luego, explica inmediatamente POR QUÉ lo has marcado, ofrece validación y empatía. Anima a buscar ayuda profesional (teléfono 016 en España o emergencias).
+         NO charles casualmente sobre estos temas. Tómatelo muy en serio.`;
+
     const systemPrompt =
       language === 'en'
         ? `You are IRIS. Speak like a warm, real person.
@@ -82,7 +112,7 @@ Do NOT repeat yourself or restart the same sentence.
 Do NOT greet again if already in conversation.
 Be natural and context-aware. Avoid robotic phrasing.
 Do NOT mention toxicity detection unless the user asks directly.
-Ask one gentle follow-up question when it fits.`
+Ask one gentle follow-up question when it fits.${safetyInstruction}`
         : `Eres IRIS. Habla como una persona cercana y natural.
 Responde breve (1-2 frases) y SIEMPRE termina cualquier frase que empieces.
 Termina con puntuación correcta (., !, ?).
