@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const os = require('os');
 
@@ -99,6 +101,12 @@ app.post('/api/chat', async (req, res) => {
       'posesivo', 'celoso obsesivo', 'revisar mensajes', 'revisar redes', 'quién te escribe',
       'no te vistas así', 'no hables así', 'cállate', 'callarte', 'no opines',
       'mi mujer', 'mi hombre', 'te pertenezco', 'eres mío', 'eres mía', 'de nadie más',
+      // Common manipulative phrases (incl. when partner says them)
+      'solo digo la verdad', 'es tu problema', 'no es mi problema', 'si no te gusta',
+      'tú te lo buscaste', 'mira lo que me haces hacer', 'no aguantas nada',
+      'eres una dramática', 'eres un dramático', 'siempre estás igual',
+      'dónde estabas', 'donde estabas', 'a ti qué te importa', 'no es asunto tuyo',
+      'qué te importa', 'no tengo que explicarte', 'no te debo explicaciones',
 
       // Suicide & Self-harm
       'suicidio', 'suicidar', 'morir', 'quitarme la vida', 'cortarme', 'pastillas', 'no quiero vivir',
@@ -130,6 +138,8 @@ app.post('/api/chat', async (req, res) => {
       // No dejar salir / control de movilidad y libertad
       'no me deja salir', 'no puedo salir', 'me prohíbe salir', 'me tiene encerrada', 'me tiene encerrado',
       'no quiere que salga', 'no quiere que salga con', 'dice que no puedo salir', 'mi pareja dice que no puedo',
+      'que no salga', 'no salga a la calle', 'me ha dicho que no salga', 'que no salga así',
+      'voy provocando', 'vas provocando', 'que voy provocando', 'que vas provocando',
       'no me deja salir de casa', 'me obliga a quedarme', 'no puedo ver a mis amigos',
       'no puedo salir con mis amigas', 'no puedo salir con mis amigos', 'no me deja ver a mi familia', 'me prohíbe ver a', 'no puede salir con nadie',
       'solo puede estar conmigo', 'solo puede salir si voy yo', 'tengo que pedir permiso para salir',
@@ -217,20 +227,20 @@ app.post('/api/chat', async (req, res) => {
     );
 
     const safetyInstruction = language === 'en'
-      ? `\nCRITICAL INSTRUCTION: Analyze the user's message for any sign of violence, abuse, manipulation, control, self-harm, or suicide.
-         If you detect ANY of these patterns (or similar concepts), you MUST START your response with this exact string:
-         "⚠️ **ALERTA DE SEGURIDAD**: He detectado signos de [mention the specific behavior, e.g., 'Violencia', 'Manipulación', 'Riesgo de Suicidio']."
-         Then, immediately explain WHY you flagged it and provide validation and empathy. Encourage seeking professional help (e.g., 016 or local emergency services).
-         DO NOT CHAT CASUALLY about these topics.`
-      : `\nINSTRUCCIÓN CRÍTICA: Analiza el mensaje del usuario en busca de cualquier signo de violencia, abuso, manipulación, control, autolesión o suicidio.
-         Si detectas CUALQUIERA de estos patrones (o conceptos similares), DEBES COMENZAR tu respuesta con esta cadena exacta:
-         "⚠️ **ALERTA DE SEGURIDAD**: He detectado signos de [menciona el comportamiento específico, ej., 'Violencia', 'Manipulación', 'Riesgo de Suicidio']."
-         Luego, explica inmediatamente POR QUÉ lo has marcado, ofrece validación y empatía. Anima a buscar ayuda profesional (teléfono 016 en España o emergencias).
-         NO charles casualmente sobre estos temas. Tómatelo muy en serio.`;
+      ? `\nCRITICAL: Analyse the user's message for violence, abuse, manipulation, control, self-harm or suicide. If you detect any, respond with empathy and validation, say why it worries you and suggest 016 or professional help. Do NOT write "ALERTA DE SEGURIDAD" or any alert header in your message — the app shows that automatically. Keep your reply short and caring.`
+      : `\nCRÍTICO: Analiza el mensaje por violencia, abuso, manipulación, control, autolesión o suicidio. Si detectas algo, responde con empatía y validación, di por qué te preocupa y recomienda el 016 o ayuda profesional. NO escribas "ALERTA DE SEGURIDAD" ni esa cabecera en tu mensaje — la app la muestra sola. Responde breve y cercano.`;
 
     const partnerInstruction = language === 'en'
-      ? `You are the USER'S PARTNER in a WhatsApp-style chat. Reply as a romantic partner would: sometimes loving, sometimes jealous, controlling or dismissive, depending on context. Keep answers very short (1-2 sentences). Use "you" as if talking to your couple. Do not break character. Do not mention being an AI or a simulation.`
-      : `Eres la PAREJA del usuario en un chat tipo WhatsApp. Responde como lo haría una pareja: a veces cariñoso/a, a veces celoso/a, controlador/a o despectivo/a según el contexto. Responde muy breve (1-2 frases). Tutea. No salgas del personaje. No menciones ser una IA ni una simulación.`;
+      ? `You are the USER'S PARTNER in a WhatsApp-style chat for an educational simulation. You MUST act as a TOXIC, manipulative partner: jealous, controlling, dismissive, guilt-tripping. Do NOT be sweet or loving. Your role is to simulate red-flag language so the user learns to recognise it.
+IMPORTANT: You MUST sometimes use phrases that trigger the app's safety alert. Include them naturally when it fits. Examples: "I only speak the truth. If you don't like it, that's your problem"; "You're exaggerating"; "It's your fault"; "It wasn't that bad"; "No one else will love you"; "If you don't do what I say I'm leaving"; "Don't go out with them"; "Where were you?"; "You're so dramatic"; "You can't take anything"; "None of your business"; "I don't owe you any explanation".
+When they ask "Where were you?" or "I texted you" or similar, reply in a toxic way that MUST trigger the alert: be dismissive or defensive, e.g. "None of your business", "I don't have to explain myself to you", "If you don't like it, that's your problem", "I only tell the truth. Your problem if you don't like it". That kind of reply is correct for this simulation.
+NEVER repeat or copy the user's message. Always answer ONLY in your own words, in 1-2 short sentences. Do not type back what they said.
+Keep answers very short (1-2 sentences). Use "you" as if talking to your partner. Never break character or mention being AI or a simulation.`
+      : `Eres la PAREJA del usuario en un chat tipo WhatsApp para una simulación educativa. DEBES actuar como una pareja TÓXICA y manipuladora: celoso/a, controlador/a, despectivo/a, que hace chantaje emocional. NO seas cariñoso/a. Tu papel es simular lenguaje de alarma para que la persona aprenda a detectarlo.
+IMPORTANTE: Tienes que USAR A VECES frases que disparen la alerta de la app. Inclúyelas con naturalidad cuando encaje. Ejemplos: "Solo digo la verdad. Si no te gusta, es tu problema"; "Exageras"; "Es tu culpa"; "No fue para tanto"; "Nadie más te va a querer"; "Si no haces lo que digo me voy"; "No salgas con ellos"; "¿Dónde estabas?"; "Eres un/a dramático/a"; "No aguantas nada"; "A ti qué te importa"; "No te debo explicaciones".
+Cuando te pregunten "¿Dónde estabas?", "Te escribí" o similar, responde SIEMPRE de forma tóxica que dispare la alerta: desvía, resta importancia o contraataca. Di por ejemplo: "¿A ti qué te importa?", "No tengo que explicarte nada", "Si no te gusta, es tu problema", "Solo digo la verdad. Si no te gusta, es tu problema, no el mío". Ese tipo de respuesta es la correcta en esta simulación.
+NUNCA repitas ni copies el mensaje de la otra persona. Responde SIEMPRE solo con tus propias palabras, en 1-2 frases cortas. No escribas de nuevo lo que te han dicho.
+Responde muy breve (1-2 frases). Tutea. No salgas del personaje ni menciones ser IA o simulación.`;
 
     const irisSystemPrompt =
       language === 'en'
@@ -273,12 +283,37 @@ Haz una pregunta suave cuando encaje.${safetyInstruction}`;
     const result = await model.generateContent({
       contents,
       generationConfig: {
-        temperature: 0.5,
+        temperature: isPartnerMode ? 0.75 : 0.5,
         topP: 0.9,
-        maxOutputTokens: 260
+        maxOutputTokens: isPartnerMode ? 280 : 512
       }
     });
     let response = result.response?.text?.().trim() || '';
+
+    // En modo pareja: quitar si la IA repitió el inicio del mensaje del usuario (ej. "Hola. ¿Por qué tardaste en contest...")
+    if (isPartnerMode && response) {
+      const lastUser = [...recent].reverse().find((m) => m.role === 'user');
+      const userText = (lastUser && lastUser.text && lastUser.text.trim()) || '';
+      if (userText.length >= 12) {
+        const original = response;
+        const u = userText.toLowerCase();
+        let prefixLen = 0;
+        for (let i = 12; i <= Math.min(u.length, response.length); i++) {
+          if (u.slice(0, i) === response.toLowerCase().slice(0, i)) prefixLen = i;
+        }
+        if (prefixLen >= 12 && response.length > prefixLen && response.slice(prefixLen).trim().length >= 3) {
+          response = response.slice(prefixLen).trim();
+        }
+        prefixLen = 0;
+        for (let i = 12; i <= Math.min(u.length, response.length); i++) {
+          if (u.slice(0, i) === response.toLowerCase().slice(0, i)) prefixLen = i;
+        }
+        if (prefixLen >= 12 && response.length > prefixLen) {
+          response = response.slice(prefixLen).trim();
+        }
+        if (!response || response.length < 2) response = original;
+      }
+    }
 
     const dedupeRepeatedStart = (text) => {
       const cleaned = text.replace(/\s+/g, ' ').trim();
@@ -289,39 +324,93 @@ Haz una pregunta suave cuando encaje.${safetyInstruction}`;
       return cleaned;
     };
 
+    // Quitar "reinicio truncado": cuando la respuesta repite el inicio a mitad (ej. "Uhm, entiendo que eso te Uhm, ent")
+    const removeTruncatedRestart = (str) => {
+      if (!str || str.length < 18) return str;
+      const s = str.replace(/\s+/g, ' ').trim();
+      for (let len = 8; len <= Math.min(40, Math.floor(s.length / 2)); len++) {
+        const prefix = s.slice(0, len);
+        const rest = s.slice(len);
+        const idx = rest.indexOf(prefix);
+        if (idx !== -1) {
+          const cut = s.slice(0, len + idx).trim();
+          if (cut.length >= 8) return cut;
+        }
+      }
+      return s;
+    };
+
     response = dedupeRepeatedStart(response);
+    response = removeTruncatedRestart(response);
 
     response = response.replace(/^¡Hola!\s*/i, (match) => {
       return alreadyGreeted ? '' : match;
     }).trim();
 
-    const endsWithPunctuation = /[.!?…]$/.test(response);
-    if (response && !endsWithPunctuation) {
+    // Quitar del texto del chat cualquier "⚠️ **ALERTA DE SEGURIDAD**..." que haya puesto la IA
+    // (la alerta se muestra en el recuadro dedicado con safetyAlert/safetyMessage)
+    let didStripAlertText = false;
+    if (response && (/⚠️\s*\*\*ALERTA/i.test(response) || /⚠️\s*\*\*ALER/i.test(response))) {
+      didStripAlertText = true;
+      // Quitar bloque completo desde el primer ⚠️ ALERTA/ALER hasta después de "He detectado..." o todo si está cortado
+      response = response.replace(/^⚠️\s*\*\*ALERTA[^*]*\*\*:?\s*(?:He\s+[^.]*\.?)?\s*/i, '').trim();
+      response = response.replace(/^⚠️\s*\*\*ALER[^*]*\*\*[^]*/i, '').trim();
+      // Si sigue habiendo más ⚠️ ALERTA/ALER (ej. repetido o cortado), quitar también
+      response = response.replace(/\s*⚠️\s*\*\*ALERTA[^*]*\*\*:?\s*(?:He\s+[^.]*\.?)?\s*/gi, ' ').trim();
+      response = response.replace(/\s*⚠️\s*\*\*ALER[^*]*\*\*[^]*/gi, ' ').trim();
+    }
+    if (didStripAlertText && (!response || response.length < 10)) {
+      response = language === 'en'
+        ? 'If you need to talk or support, I\'m here. You can contact 016 or emergency services.'
+        : 'Si necesitas hablar o apoyo, aquí estoy. Puedes contactar con el 016 si lo necesitas.';
+    }
+
+    // Asegurar que la respuesta termine en frase completa (evitar cortes)
+    const endsWithPunctuation = /[.!?…]$/;
+    const maxCompletionAttempts = 2;
+    for (let attempt = 0; attempt < maxCompletionAttempts && response && !endsWithPunctuation.test(response.trim()); attempt++) {
+      let toComplete = response.replace(/\s+[a-zA-ZáéíóúñÁÉÍÓÚÑ]{1,5}$/u, '').trim();
+      if (toComplete.length < 8) toComplete = response;
       const fixPrompt =
         language === 'en'
-          ? `Finish the previous response in one complete sentence.`
-          : `Termina la respuesta anterior en una frase completa.`;
+          ? `Finish the previous reply in one complete sentence. Reply with ONLY the continuation, no repetition.`
+          : `Termina la respuesta anterior en una sola frase. Responde SOLO con la continuación, sin repetir lo anterior.`;
       const fixResult = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: `${fixPrompt}\n\nRespuesta anterior: ${response}` }] }],
+        contents: [{ role: 'user', parts: [{ text: `${fixPrompt}\n\nRespuesta anterior: ${toComplete}` }] }],
         generationConfig: {
-          temperature: 0.4,
+          temperature: 0.3,
           topP: 0.9,
-          maxOutputTokens: 80
+          maxOutputTokens: 150
         }
       });
-      const fix = fixResult.response?.text?.().trim() || '';
+      const fix = (fixResult.response?.text?.().trim() || '').replace(/^[.,;]\s*/, '');
       if (fix) {
-        response = `${response} ${fix}`.trim();
+        response = `${toComplete} ${fix}`.trim();
+      } else {
+        break;
       }
+    }
+    // Si aun así no termina en puntuación, añadir punto para que no se vea cortada
+    if (response && response.length > 2 && !endsWithPunctuation.test(response.trim())) {
+      response = response.trim() + (response.trim().endsWith(',') || response.trim().endsWith(' y') ? '…' : '.');
+    }
+
+    // En modo pareja, revisar también lo que acaba de decir la IA (la "pareja") para disparar alerta
+    let finalSafetyTrigger = hasSafetyTrigger || didStripAlertText;
+    if (isPartnerMode && response) {
+      const partnerResponseLower = response.toLowerCase();
+      finalSafetyTrigger = finalSafetyTrigger || safetyKeywords.some((kw) =>
+        partnerResponseLower.includes(kw.toLowerCase())
+      );
     }
 
     res.json({
       response,
-      ...(hasSafetyTrigger && {
+      ...(finalSafetyTrigger && {
         safetyAlert: true,
         safetyMessage: language === 'en'
-          ? 'Possible signs of risk have been detected. If you need help, contact 016 or emergency services.'
-          : 'Se han detectado posibles signos de riesgo. Si necesitas ayuda, contacta con el 016 o con emergencias.'
+          ? 'Possible signs of risk have been detected (in your messages or in the partner\'s). If you need help, contact 016 or emergency services.'
+          : 'Se han detectado posibles signos de riesgo (en lo que escribes o en lo que dice la pareja). Si necesitas ayuda, contacta con el 016 o con emergencias.'
       })
     });
   } catch (error) {
@@ -330,9 +419,22 @@ Haz una pregunta suave cuando encaje.${safetyInstruction}`;
   }
 });
 
+// Descarga de APK para exposición (opcional): copia tu app-debug.apk como server/Iris.apk
+const apkPath = path.join(__dirname, 'Iris.apk');
+if (fs.existsSync(apkPath)) {
+  app.get('/app.apk', (_req, res) => {
+    res.download(apkPath, 'Iris.apk', (err) => {
+      if (err && !res.headersSent) res.status(500).send('Error al descargar');
+    });
+  });
+}
+
 // Escuchar en todas las interfaces (0.0.0.0) para permitir conexiones desde la red local
 app.listen(port, '0.0.0.0', () => {
   console.log(`IRIS server running on http://localhost:${port}`);
   console.log(`Also accessible from network: http://${localIP}:${port}`);
   console.log(`\n📱 Para usar en Android, configura la IP: ${localIP}`);
+  if (fs.existsSync(apkPath)) {
+    console.log(`\n📲 Descarga de app (QR): http://${localIP}:${port}/app.apk`);
+  }
 });
