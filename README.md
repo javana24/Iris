@@ -261,6 +261,7 @@ Detecta si la app está corriendo en móvil nativo o web para mostrar/ocultar se
 - **[CONFIGURAR_IP_MOVIL.md](./CONFIGURAR_IP_MOVIL.md)** - Cómo configurar la IP para Android
 - **[CONFIGURAR_ANDROID_HTTP.md](./CONFIGURAR_ANDROID_HTTP.md)** - Configurar Android para permitir HTTP
 - **[SOLUCION_ANDROID.md](./SOLUCION_ANDROID.md)** - Solución de problemas comunes en Android
+- **[docs/project-management/README.md](./docs/project-management/README.md)** - Pack de gestión Scrum/Jira/Confluence/GitHub para la beta
 
 ## 🎨 Personalización
 
