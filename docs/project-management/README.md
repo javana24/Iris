@@ -10,6 +10,12 @@ Este directorio contiene la implementación operativa del plan de arranque Scrum
 - `scrum/scrum-operating-model.md`: cadencia semanal, capacidades, DoR/DoD y reglas de WIP.
 - `github/github-governance.md`: estrategia de ramas, commits con clave Jira, PR flow y protección de ramas.
 - `discovery/sprint-0-mvp-discovery.md`: ejecución de sprint 0 para cerrar alcance de MVP y backlog priorizado.
+- `operations/data-retention-policy-pilot.md`: política de datos, retención, acceso y borrado para menores en piloto.
+- `operations/capacity-cost-model-pilot.md`: modelo de capacidad/coste para 50, 100 y 200 concurrentes con IA limitada.
+- `operations/ai-guardrails-and-safety-protocol.md`: guardrails IA por modo y protocolo de escalado de riesgo.
+- `operations/onprem-minimum-blueprint.md`: blueprint técnico on-prem mínimo para operar el piloto.
+- `operations/go-live-checklist-june-pilot.md`: checklist técnico-operativo para salida del 1 de junio.
+- `operations/planning-reconciliation-jira-confluence.md`: contraste de planning entre Jira y Confluence con diferencias normalizadas.
 
 ## Resultado esperado
 
@@ -18,3 +24,4 @@ Con estos documentos el equipo puede:
 1. Arrancar Jira y Confluence desde cero con estructura profesional.
 2. Trabajar con Scrum híbrido (sprint + fast lane) sin perder foco.
 3. Mantener trazabilidad de extremo a extremo entre Jira, Confluence y GitHub.
+4. Operar un piloto con criterios claros de seguridad, coste, capacidad y salida a producción.
