@@ -1,19 +1,19 @@
 <section id="problema" class="py-16 bg-transparent dark:bg-neutral-900 transition-colors duration-300 relative">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <h2
-      class="text-4xl md:text-5xl font-bold text-center mb-6 bg-gradient-to-r from-red-500 to-pink-600 bg-clip-text text-transparent">
+      class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-5 sm:mb-6 bg-gradient-to-r from-red-500 to-pink-600 bg-clip-text text-transparent">
       {{ translationService.translate('problem_title') }}
     </h2>
-    <p class="text-xl text-center mb-16 max-w-3xl mx-auto" [ngClass]="isDarkMode ? 'text-gray-400' : 'text-gray-600'">
+    <p class="text-base sm:text-xl text-center mb-10 sm:mb-16 max-w-3xl mx-auto" [ngClass]="isDarkMode ? 'text-gray-400' : 'text-gray-600'">
       {{ translationService.translate('problem_desc') }}
     </p>
 
     <!-- Problem Cards -->
-    <div class="grid md:grid-cols-3 gap-8 mb-16">
-      <div *ngFor="let problem of problems" class="p-8 rounded-2xl border-2 transition-all hover:scale-105"
+    <div class="grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-10 sm:mb-16">
+      <div *ngFor="let problem of problems" class="p-5 sm:p-6 md:p-8 rounded-2xl border-2 transition-all hover:scale-[1.02] sm:hover:scale-105"
         [ngClass]="[isDarkMode ? 'bg-gray-900 border-gray-800' : 'bg-gray-50 border-gray-200', problem.hoverBorderClass]">
-        <div class="mb-4 text-4xl">{{ problem.icon }}</div>
-        <h3 class="text-2xl font-bold mb-3" [ngClass]="isDarkMode ? 'text-white' : 'text-gray-900'">
+        <div class="mb-3 sm:mb-4 text-3xl sm:text-4xl">{{ problem.icon }}</div>
+        <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-3" [ngClass]="isDarkMode ? 'text-white' : 'text-gray-900'">
           {{ translationService.translate(problem.titleKey) }}
         </h3>
         <p [ngClass]="isDarkMode ? 'text-gray-400' : 'text-gray-600'">
@@ -23,20 +23,20 @@
     </div>
 
     <!-- Statistics Alert -->
-    <div class="border-l-4 border-red-500 p-8 rounded-r-2xl" [ngClass]="isDarkMode ? 'bg-red-900/20' : 'bg-red-50'">
-      <h3 class="text-2xl font-bold text-red-600 mb-6">📊 {{ translationService.translate('problem_stats_title') }}</h3>
-      <div class="grid md:grid-cols-2 gap-8">
+    <div class="border-l-4 border-red-500 p-5 sm:p-6 md:p-8 rounded-r-2xl" [ngClass]="isDarkMode ? 'bg-red-900/20' : 'bg-red-50'">
+      <h3 class="text-xl sm:text-2xl font-bold text-red-600 mb-4 sm:mb-6">📊 {{ translationService.translate('problem_stats_title') }}</h3>
+      <div class="grid md:grid-cols-2 gap-5 sm:gap-8">
         <div>
-          <div class="text-5xl font-black text-red-600 mb-2">{{ translationService.translate('problem_stat_1_num') }}
+          <div class="text-4xl sm:text-5xl font-black text-red-600 mb-2">{{ translationService.translate('problem_stat_1_num') }}
           </div>
-          <p class="text-lg" [ngClass]="isDarkMode ? 'text-gray-300' : 'text-gray-700'">
+          <p class="text-base sm:text-lg" [ngClass]="isDarkMode ? 'text-gray-300' : 'text-gray-700'">
             {{ translationService.translate('problem_stat_1_text') }}
           </p>
         </div>
         <div>
-          <div class="text-5xl font-black text-red-600 mb-2">{{ translationService.translate('problem_stat_2_num') }}
+          <div class="text-4xl sm:text-5xl font-black text-red-600 mb-2">{{ translationService.translate('problem_stat_2_num') }}
           </div>
-          <p class="text-lg" [ngClass]="isDarkMode ? 'text-gray-300' : 'text-gray-700'">
+          <p class="text-base sm:text-lg" [ngClass]="isDarkMode ? 'text-gray-300' : 'text-gray-700'">
             {{ translationService.translate('problem_stat_2_text') }}
           </p>
         </div>
@@ -44,12 +44,12 @@
     </div>
 
     <!-- Visual Examples -->
-    <div class="mt-16">
-      <h3 class="text-3xl font-bold text-center mb-8" [ngClass]="isDarkMode ? 'text-white' : 'text-gray-900'">
+    <div class="mt-10 sm:mt-16">
+      <h3 class="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8" [ngClass]="isDarkMode ? 'text-white' : 'text-gray-900'">
         🎭 {{ translationService.translate('problem_examples_title') }}
       </h3>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div *ngFor="let example of examples" class="p-6 rounded-xl border-2 border-red-300"
+      <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
+        <div *ngFor="let example of examples" class="p-4 sm:p-6 rounded-xl border-2 border-red-300"
           [ngClass]="isDarkMode ? 'bg-gray-900' : 'bg-white'">
           <div class="flex items-start gap-3 mb-3">
             <div

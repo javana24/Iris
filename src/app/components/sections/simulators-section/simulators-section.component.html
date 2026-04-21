@@ -1,26 +1,26 @@
-<section class="py-16 bg-transparent dark:bg-neutral-950 transition-colors duration-300">
+<section class="py-12 sm:py-16 bg-transparent dark:bg-neutral-950 transition-colors duration-300">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500">
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500">
       {{ translationService.translate('simulators_title') }}
     </h2>
-    <p class="mt-4 text-lg text-center text-neutral-600 dark:text-gray-400 max-w-3xl mx-auto">
+    <p class="mt-3 sm:mt-4 text-base sm:text-lg text-center text-neutral-600 dark:text-gray-400 max-w-3xl mx-auto">
       {{ translationService.translate('simulators_desc') }}
     </p>
 
-    <div class="mt-12 flex flex-col lg:flex-row gap-8 items-start">
+    <div class="mt-8 sm:mt-12 flex flex-col lg:flex-row gap-6 sm:gap-8 items-start">
       <!-- Left: Tabs and short info -->
-      <div class="lg:w-80 flex-shrink-0 space-y-4">
+      <div class="w-full lg:w-80 flex-shrink-0 space-y-3 sm:space-y-4">
         <div class="flex rounded-xl overflow-hidden border-2"
           [ngClass]="isDarkMode ? 'border-gray-700' : 'border-gray-200'">
           <button type="button" (click)="selectSimulator('iris')"
-            class="flex-1 py-3 px-4 text-sm font-semibold transition-colors"
+            class="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-colors"
             [ngClass]="selectedSimulator === 'iris'
               ? 'bg-purple-600 text-white'
               : (isDarkMode ? 'bg-gray-800 text-gray-400 hover:bg-gray-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')">
             {{ translationService.translate('chat_role_ai') }}
           </button>
           <button type="button" (click)="selectSimulator('partner')"
-            class="flex-1 py-3 px-4 text-sm font-semibold transition-colors"
+            class="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-colors"
             [ngClass]="selectedSimulator === 'partner'
               ? 'bg-purple-600 text-white'
               : (isDarkMode ? 'bg-gray-800 text-gray-400 hover:bg-gray-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')">
@@ -38,13 +38,13 @@
       </div>
 
       <!-- Right: iPhone Simulator -->
-      <div class="sticky top-24 flex-1 max-w-full flex justify-center lg:justify-end">
+      <div class="w-full lg:sticky lg:top-24 flex-1 max-w-full flex justify-center lg:justify-end">
         <div class="mx-auto w-full" style="max-width: 420px;">
           <!-- iPhone Frame -->
-          <div class="rounded-[3rem] p-3 shadow-2xl bg-gray-900">
-            <div class="rounded-[2.5rem] overflow-hidden flex flex-col bg-black" style="height: 700px;">
+          <div class="rounded-[2.2rem] sm:rounded-[3rem] p-2.5 sm:p-3 shadow-2xl bg-gray-900">
+            <div class="rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden flex flex-col bg-black h-[580px] sm:h-[700px]">
               <!-- Status Bar -->
-              <div class="px-6 py-3 flex items-center justify-between flex-shrink-0 bg-gray-950">
+              <div class="px-4 sm:px-6 py-3 flex items-center justify-between flex-shrink-0 bg-gray-950">
                 <div class="text-xs font-semibold text-white">{{ currentTime }}</div>
                 <div class="w-20 h-6 bg-black rounded-full border border-gray-700"></div>
                 <div class="flex gap-1">
@@ -53,24 +53,24 @@
               </div>
 
               <!-- Chat Header -->
-              <div class="px-6 py-4 flex items-center gap-3 flex-shrink-0 bg-purple-600">
+              <div class="px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-3 flex-shrink-0 bg-purple-600">
                 <div
-                  class="w-12 h-12 bg-purple-400 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                  class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-400 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl">
                   {{ selectedSimulator === 'iris' ? 'AI' : '💬' }}
                 </div>
                 <div class="flex-1 min-w-0">
-                  <div class="text-white font-bold truncate">
+                  <div class="text-white font-bold truncate text-sm sm:text-base">
                     {{ selectedSimulator === 'iris' ? (translationService.translate('chat_role_ai') + ' Simulator') :
                     translationService.translate('sim_partner_role') }}
                   </div>
-                  <div class="text-purple-200 text-xs">{{ translationService.translate('chat_online') }} · Nivel {{
+                  <div class="text-purple-200 text-[11px] sm:text-xs">{{ translationService.translate('chat_online') }} · Nivel {{
                     currentLevel }}</div>
                 </div>
               </div>
 
               <!-- Messages + Input: chat simulator -->
               <div class="flex-1 overflow-hidden min-h-0 flex flex-col bg-gray-950">
-                <div class="flex-1 min-h-0 p-4 overflow-hidden">
+                <div class="flex-1 min-h-0 p-3 sm:p-4 overflow-hidden">
                   <div [hidden]="selectedSimulator !== 'iris'">
                     <app-chat-simulator mode="iris" (safetyAlertTriggered)="onSafetyAlert()">
                     </app-chat-simulator>
@@ -85,7 +85,7 @@
           </div>
 
           <!-- Detected Flags Summary -->
-          <div *ngIf="hasDetectedRisk" class="mt-6 border border-red-500 rounded-2xl p-4"
+          <div *ngIf="hasDetectedRisk" class="mt-4 sm:mt-6 border border-red-500 rounded-2xl p-4"
             [ngClass]="isDarkMode ? 'bg-red-900/20' : 'bg-red-50'">
             <h4 class="font-bold text-red-600 mb-2 flex items-center gap-2">
               <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

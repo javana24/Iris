@@ -6,73 +6,11 @@
             {{ translationService.translate('model_title') }}
         </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
-            <!-- Funding Model (Revenue) -->
-            <div
-                class="bg-white/60 dark:bg-neutral-900/60 p-8 rounded-3xl shadow-xl border border-white/20 backdrop-blur-sm">
-                <h3 class="text-2xl font-bold mb-6 text-neutral-800 dark:text-white flex items-center gap-3">
-                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                        </path>
-                    </svg>
-                    {{ translationService.translate('revenue_title') }}
-                </h3>
-
-                <div class="space-y-6">
-                    <!-- Item 1: Subvenciones -->
-                    <div class="relative">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-base font-medium text-purple-700 dark:text-purple-400">Subvenciones
-                                Públicas (Junta, UE)</span>
-                            <span class="text-sm font-bold text-purple-700 dark:text-purple-400">60%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                            <div class="bg-purple-600 h-2.5 rounded-full" style="width: 60%"></div>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">Fondos europeos, Pacto de Estado y ayudas autonómicas.</p>
-                    </div>
-
-                    <!-- Item 2: Licencias -->
-                    <div class="relative">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-base font-medium text-amber-600 dark:text-amber-400">Licencias
-                                Institucionales</span>
-                            <span class="text-sm font-bold text-amber-600 dark:text-amber-400">30%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                            <div class="bg-amber-500 h-2.5 rounded-full" style="width: 30%"></div>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">Suscripciones anuales para Ayuntamientos y Centros
-                            Educativos.</p>
-                    </div>
-
-                    <!-- Item 3: Formación -->
-                    <div class="relative">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-base font-medium text-blue-600 dark:text-blue-400">Formación y
-                                Talleres</span>
-                            <span class="text-sm font-bold text-blue-600 dark:text-blue-400">10%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 10%"></div>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">Talleres presenciales complementarios en los centros.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="max-w-3xl mx-auto">
 
             <!-- Costs Structure -->
             <div
                 class="bg-white/60 dark:bg-neutral-900/60 p-8 rounded-3xl shadow-xl border border-white/20 backdrop-blur-sm">
-                <h3 class="text-2xl font-bold mb-6 text-neutral-800 dark:text-white flex items-center gap-3">
-                    <svg class="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                    </svg>
-                    {{ translationService.translate('costs_title') }}
-                </h3>
 
                 <div class="space-y-6">
                     <!-- Cost 1 -->

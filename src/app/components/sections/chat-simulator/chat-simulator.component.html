@@ -27,16 +27,16 @@
     </div>
   </div>
 
-  <div class="flex gap-2">
+  <div class="flex items-center gap-2 w-full">
     <input
       type="text"
-      class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-gray-100"
+      class="flex-1 min-w-0 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-gray-100"
       [placeholder]="translationService.translate('chat_input_placeholder')"
       [(ngModel)]="inputText"
       (keyup.enter)="sendMessage()"
     />
     <button
-      class="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+      class="shrink-0 px-3 sm:px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors whitespace-nowrap"
       (click)="sendMessage()"
     >
       {{ translationService.translate('chat_send') }}
