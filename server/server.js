@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const os = require('os');
+const { body, validationResult } = require('express-validator');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -21,6 +22,92 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json({ limit: '1mb' }));
+
+function sendError(res, status, error, details = []) {
+  return res.status(status).json({
+    error,
+    ...(details.length > 0 && { details })
+  });
+}
+
+app.use((err, _req, res, next) => {
+  if (err instanceof SyntaxError && 'body' in err) {
+    return sendError(res, 400, 'Invalid JSON body', [
+      { message: 'Request body must be valid JSON.' }
+    ]);
+  }
+  return next(err);
+});
+
+function requireGeminiApiKey(_req, res, next) {
+  if (!apiKey) {
+    return sendError(res, 503, 'Missing GEMINI_API_KEY');
+  }
+  return next();
+}
+
+const allowedRoles = ['user', 'assistant'];
+const allowedSimulatorModes = ['iris', 'partner'];
+
+const validateChatRequest = [
+  body('messages')
+    .exists()
+    .withMessage('messages is required.')
+    .bail()
+    .isArray({ min: 1 })
+    .withMessage('messages must be a non-empty array.')
+    .customSanitizer((messages) =>
+      Array.isArray(messages)
+        ? messages.map((message) => ({
+            ...message,
+            text: typeof message?.text === 'string' ? message.text : message?.content
+          }))
+        : messages
+    ),
+  body('messages.*.role')
+    .exists()
+    .withMessage('Each message needs a role.')
+    .bail()
+    .isString()
+    .withMessage('Each message role must be a string.')
+    .bail()
+    .isIn(allowedRoles)
+    .withMessage(`Each message role must be one of: ${allowedRoles.join(', ')}.`),
+  body('messages.*.text')
+    .exists()
+    .withMessage('Each message needs text or content.')
+    .bail()
+    .isString()
+    .withMessage('Each message text/content must be a string.')
+    .bail()
+    .isLength({ min: 1, max: 10000 })
+    .withMessage('Each message text/content must be between 1 and 10000 characters.'),
+  body('language')
+    .optional()
+    .isString()
+    .withMessage('language must be a string.')
+    .bail()
+    .isLength({ max: 10 })
+    .withMessage('language must be at most 10 characters.'),
+  body('simulatorMode')
+    .optional()
+    .custom((value) => {
+      if (typeof value === 'boolean') return true;
+      return typeof value === 'string' && allowedSimulatorModes.includes(value);
+    })
+    .withMessage(`simulatorMode must be a boolean or one of: ${allowedSimulatorModes.join(', ')}.`)
+];
+
+function handleValidationErrors(req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return sendError(res, 400, 'Invalid request body', errors.array().map((error) => ({
+      field: error.path,
+      message: error.msg
+    })));
+  }
+  return next();
+}
 
 // Obtener IP local automáticamente
 function getLocalIP() {
@@ -41,16 +128,13 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true });
 });
 
-app.get('/api/models', async (_req, res) => {
+app.get('/api/models', requireGeminiApiKey, async (_req, res) => {
   try {
-    if (!apiKey) {
-      return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
-    }
     const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
     const response = await fetch(url);
     if (!response.ok) {
       const text = await response.text();
-      return res.status(response.status).json({ error: text });
+      return sendError(res, response.status, text);
     }
     const data = await response.json();
     const models = (data.models || []).map((m) => ({
@@ -61,20 +145,20 @@ app.get('/api/models', async (_req, res) => {
     res.json({ models });
   } catch (error) {
     console.error('List models error:', error);
-    res.status(500).json({ error: 'List models failed' });
+    sendError(res, 500, 'List models failed');
   }
 });
 
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', requireGeminiApiKey, validateChatRequest, handleValidationErrors, async (req, res) => {
   try {
-    if (!apiKey) {
-      return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
-    }
-
     const { messages = [], language = 'es', simulatorMode = 'iris' } = req.body || {};
+    const normalizedSimulatorMode =
+      typeof simulatorMode === 'boolean'
+        ? (simulatorMode ? 'partner' : 'iris')
+        : simulatorMode;
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: modelName });
-    const isPartnerMode = simulatorMode === 'partner';
+    const isPartnerMode = normalizedSimulatorMode === 'partner';
 
     const safetyKeywords = [
       // Violence & Physical Aggression
@@ -415,7 +499,7 @@ Haz una pregunta suave cuando encaje.${safetyInstruction}`;
     });
   } catch (error) {
     console.error('Chat error:', error);
-    res.status(500).json({ error: 'Chat failed' });
+    sendError(res, 500, 'Chat failed');
   }
 });
 
@@ -424,7 +508,7 @@ const apkPath = path.join(__dirname, 'Iris.apk');
 if (fs.existsSync(apkPath)) {
   app.get('/app.apk', (_req, res) => {
     res.download(apkPath, 'Iris.apk', (err) => {
-      if (err && !res.headersSent) res.status(500).send('Error al descargar');
+      if (err && !res.headersSent) sendError(res, 500, 'Error al descargar');
     });
   });
 }

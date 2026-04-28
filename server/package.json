@@ -11,6 +11,7 @@
     "@google/generative-ai": "latest",
     "cors": "latest",
     "dotenv": "latest",
-    "express": "latest"
+    "express": "latest",
+    "express-validator": "^7.3.2"
   }
 }
