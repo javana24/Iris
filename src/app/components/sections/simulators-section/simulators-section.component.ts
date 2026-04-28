@@ -42,7 +42,9 @@ export class SimulatorsSectionComponent implements OnInit, OnDestroy {
 
   private updateTime(): void {
     const d = new Date();
-    this.currentTime = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const lang = this.translationService.getCurrentLanguageValue();
+    const locale = lang === 'en' ? 'en-US' : 'es-ES';
+    this.currentTime = d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
   }
 
   onSafetyAlert(): void {

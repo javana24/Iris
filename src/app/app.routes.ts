@@ -1,14 +1,4 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: '/inicio',
-    pathMatch: 'full'
-  },
-  {
-    path: 'inicio',
-    redirectTo: '/',
-    pathMatch: 'full'
-  }
-];
+// La landing funciona por navegación de secciones (scroll), no por páginas.
+export const routes: Routes = [];

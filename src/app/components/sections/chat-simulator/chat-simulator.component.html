@@ -28,14 +28,18 @@
   </div>
 
   <div class="flex items-center gap-2 w-full">
+    <label for="chat-input" class="sr-only">{{ translationService.translate('chat_input_placeholder') }}</label>
     <input
+      id="chat-input"
       type="text"
       class="flex-1 min-w-0 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-gray-100"
       [placeholder]="translationService.translate('chat_input_placeholder')"
+      [attr.aria-label]="translationService.translate('chat_input_placeholder')"
       [(ngModel)]="inputText"
       (keyup.enter)="sendMessage()"
     />
     <button
+      type="button"
       class="shrink-0 px-3 sm:px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors whitespace-nowrap"
       (click)="sendMessage()"
     >
@@ -51,6 +55,7 @@
   </div>
 
   <button
+    type="button"
     class="text-sm text-neutral-500 hover:text-neutral-700 dark:text-gray-400 dark:hover:text-gray-200"
     (click)="clearChat()"
   >

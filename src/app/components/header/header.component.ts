@@ -19,6 +19,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   activeSection = 'inicio';
   
   private subscriptions = new Subscription();
+  private isScrollTicking = false;
 
   constructor(
     public translationService: TranslationService,
@@ -55,7 +56,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
-    this.navigationService.updateActiveSectionOnScroll();
+    if (this.isScrollTicking) return;
+    this.isScrollTicking = true;
+    requestAnimationFrame(() => {
+      this.navigationService.updateActiveSectionOnScroll();
+      this.isScrollTicking = false;
+    });
   }
 
   toggleTheme(): void {

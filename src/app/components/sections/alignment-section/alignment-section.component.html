@@ -6,6 +6,51 @@
     <p class="text-lg text-center text-neutral-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
       {{ translationService.translate('alignment_desc') }}
     </p>
-    <!-- Contenido completo del HTML original aquí -->
+    <div class="grid md:grid-cols-3 gap-6 mb-10">
+      <article class="rounded-2xl border border-purple-100 dark:border-neutral-700 bg-white/70 dark:bg-neutral-900/60 p-6">
+        <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-2">
+          {{ translationService.translate('ods_title') }}
+        </h3>
+        <p class="text-sm text-neutral-600 dark:text-gray-300">
+          {{ translationService.translate('ods_desc') }}
+        </p>
+      </article>
+      <article class="rounded-2xl border border-purple-100 dark:border-neutral-700 bg-white/70 dark:bg-neutral-900/60 p-6">
+        <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-2">
+          {{ translationService.translate('law_title') }}
+        </h3>
+        <p class="text-sm text-neutral-600 dark:text-gray-300">
+          {{ translationService.translate('law_desc') }}
+        </p>
+      </article>
+      <article class="rounded-2xl border border-purple-100 dark:border-neutral-700 bg-white/70 dark:bg-neutral-900/60 p-6">
+        <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-2">
+          {{ translationService.translate('plan_title') }}
+        </h3>
+        <p class="text-sm text-neutral-600 dark:text-gray-300">
+          {{ translationService.translate('plan_desc') }}
+        </p>
+      </article>
+    </div>
+
+    <div class="rounded-2xl border border-amber-100 dark:border-neutral-700 bg-amber-50/80 dark:bg-neutral-900/60 p-6">
+      <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-4">
+        {{ translationService.translate('compliance_title') }}
+      </h3>
+      <div class="space-y-4">
+        <div>
+          <h4 class="font-semibold text-neutral-700 dark:text-gray-100">{{ translationService.translate('gdpr_title') }}</h4>
+          <p class="text-sm text-neutral-600 dark:text-gray-300">{{ translationService.translate('gdpr_desc') }}</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-neutral-700 dark:text-gray-100">{{ translationService.translate('privacy_title') }}</h4>
+          <p class="text-sm text-neutral-600 dark:text-gray-300">{{ translationService.translate('privacy_desc') }}</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-neutral-700 dark:text-gray-100">{{ translationService.translate('security_title') }}</h4>
+          <p class="text-sm text-neutral-600 dark:text-gray-300">{{ translationService.translate('security_desc') }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>

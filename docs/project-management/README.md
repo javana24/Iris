@@ -15,6 +15,7 @@ Este directorio contiene la implementación operativa del plan de arranque Scrum
 - `operations/ai-guardrails-and-safety-protocol.md`: guardrails IA por modo y protocolo de escalado de riesgo.
 - `operations/onprem-minimum-blueprint.md`: blueprint técnico on-prem mínimo para operar el piloto.
 - `operations/go-live-checklist-june-pilot.md`: checklist técnico-operativo para salida del 1 de junio.
+- `operations/release-readiness-web-mobile-scrum-14.md`: evidencia de validacion release web/movil, riesgos y plan de mitigacion para `SCRUM-14`.
 - `operations/planning-reconciliation-jira-confluence.md`: contraste de planning entre Jira y Confluence con diferencias normalizadas.
 
 ## Resultado esperado

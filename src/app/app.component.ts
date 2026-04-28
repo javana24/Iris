@@ -8,6 +8,7 @@ import { ProblemSectionComponent } from './components/sections/problem-section/p
 import { SolutionSectionComponent } from './components/sections/solution-section/solution-section.component';
 import { AlignmentSectionComponent } from './components/sections/alignment-section/alignment-section.component';
 import { ModelSectionComponent } from './components/sections/model-section/model-section.component';
+import { ImpactSectionComponent } from './components/sections/impact-section/impact-section.component';
 
 import { ContactSectionComponent } from './components/sections/contact-section/contact-section.component';
 import { ManipulationSectionComponent } from './components/sections/manipulation-section/manipulation-section.component';
@@ -28,6 +29,7 @@ import { QuickExitButtonComponent } from './components/quick-exit-button/quick-e
     SolutionSectionComponent,
     AlignmentSectionComponent,
     ModelSectionComponent,
+    ImpactSectionComponent,
 
     ContactSectionComponent,
     ManipulationSectionComponent,

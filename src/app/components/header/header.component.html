@@ -39,6 +39,12 @@
           <button (click)="navigateTo('modelo')" [class.active]="isActive('modelo')" class="nav-link">
             {{ translationService.translate('nav_model') }}
           </button>
+          <button (click)="navigateTo('impacto')" [class.active]="isActive('impacto')" class="nav-link">
+            {{ translationService.translate('nav_impact') }}
+          </button>
+          <button (click)="navigateTo('contacto')" [class.active]="isActive('contacto')" class="nav-link">
+            {{ translationService.translate('nav_contact') }}
+          </button>
 
         </div>
 
@@ -69,10 +75,12 @@
       <!-- Mobile Menu Button -->
       <div class="md:hidden flex items-center gap-2">
         <button (click)="toggleLanguage()"
-          class="text-[11px] font-bold border border-gray-300 dark:border-gray-600 px-2 py-1 rounded-md min-w-[44px]">
+          class="text-[11px] font-bold border border-gray-300 dark:border-gray-600 px-2 py-1 rounded-md min-w-[44px]"
+          aria-label="Cambiar idioma">
           {{ currentLang.toUpperCase() }}
         </button>
-        <button (click)="toggleTheme()" class="text-neutral-600 dark:text-yellow-400 p-1.5 rounded-md">
+        <button (click)="toggleTheme()" class="text-neutral-600 dark:text-yellow-400 p-1.5 rounded-md"
+          [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'">
           <svg *ngIf="!isDarkMode" class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
@@ -83,7 +91,10 @@
           </svg>
         </button>
         <button (click)="toggleMobileMenu()"
-          class="inline-flex items-center justify-center p-2 rounded-md text-neutral-600 hover:text-purple-700 hover:bg-purple-100 dark:text-gray-300 dark:hover:bg-purple-900 focus:outline-none min-w-[44px] min-h-[44px]">
+          class="inline-flex items-center justify-center p-2 rounded-md text-neutral-600 hover:text-purple-700 hover:bg-purple-100 dark:text-gray-300 dark:hover:bg-purple-900 focus:outline-none min-w-[44px] min-h-[44px]"
+          aria-label="Abrir menú de navegación"
+          [attr.aria-expanded]="isMobileMenuOpen"
+          aria-controls="mobile-nav-menu">
           <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
             <path *ngIf="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M4 6h16M4 12h16m-7 6h7"></path>
@@ -96,7 +107,7 @@
   </nav>
 
   <!-- Mobile Menu -->
-  <div *ngIf="isMobileMenuOpen" class="md:hidden bg-white dark:bg-neutral-900 border-b dark:border-neutral-800 shadow-sm">
+  <div *ngIf="isMobileMenuOpen" id="mobile-nav-menu" class="md:hidden bg-white dark:bg-neutral-900 border-b dark:border-neutral-800 shadow-sm">
     <div class="px-3 pt-2 pb-3 space-y-1 sm:px-3">
       <button (click)="navigateTo('inicio')" [class.active]="isActive('inicio')"
         class="nav-link block w-full text-left py-2.5">
@@ -121,6 +132,14 @@
       <button (click)="navigateTo('modelo')" [class.active]="isActive('modelo')"
         class="nav-link block w-full text-left py-2.5">
         {{ translationService.translate('nav_model') }}
+      </button>
+      <button (click)="navigateTo('impacto')" [class.active]="isActive('impacto')"
+        class="nav-link block w-full text-left py-2.5">
+        {{ translationService.translate('nav_impact') }}
+      </button>
+      <button (click)="navigateTo('contacto')" [class.active]="isActive('contacto')"
+        class="nav-link block w-full text-left py-2.5">
+        {{ translationService.translate('nav_contact') }}
       </button>
 
     </div>

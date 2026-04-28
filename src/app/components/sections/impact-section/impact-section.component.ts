@@ -1,8 +1,9 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '../../../services/translation.service';
 import { ThemeService } from '../../../services/theme.service';
 import { Chart, registerables } from 'chart.js';
+import { Subscription } from 'rxjs';
 
 Chart.register(...registerables);
 
@@ -13,11 +14,12 @@ Chart.register(...registerables);
   templateUrl: './impact-section.component.html',
   styleUrl: './impact-section.component.scss'
 })
-export class ImpactSectionComponent implements OnInit, AfterViewInit {
+export class ImpactSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   isDarkMode = false;
   
   @ViewChild('impactoChart') impactoChartRef!: ElementRef<HTMLCanvasElement>;
   private impactoChart?: Chart;
+  private themeSub?: Subscription;
 
   constructor(
     public translationService: TranslationService,
@@ -25,10 +27,15 @@ export class ImpactSectionComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.themeService.getCurrentTheme().subscribe(theme => {
+    this.themeSub = this.themeService.getCurrentTheme().subscribe(theme => {
       this.isDarkMode = theme === 'dark';
       this.updateChartColors();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.themeSub?.unsubscribe();
+    this.impactoChart?.destroy();
   }
 
   ngAfterViewInit(): void {
@@ -41,10 +48,10 @@ export class ImpactSectionComponent implements OnInit, AfterViewInit {
       this.impactoChart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Sin IRIS', 'Piloto A', 'Piloto B', 'Piloto C'],
+          labels: this.translationService.translate('chart_imp_labels').split(','),
           datasets: [
-            { label: 'Test Inicial (%)', data: [22, 25, 20, 28], backgroundColor: '#9ca3af' },
-            { label: 'Test Final (%)', data: [24, 78, 72, 81], backgroundColor: '#9333ea' }
+            { label: this.translationService.translate('chart_imp_datasets').split(',')[0], data: [22, 25, 20, 28], backgroundColor: '#9ca3af' },
+            { label: this.translationService.translate('chart_imp_datasets').split(',')[1], data: [24, 78, 72, 81], backgroundColor: '#9333ea' }
           ]
         },
         options: {

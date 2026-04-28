@@ -48,6 +48,12 @@ export class ChatSimulatorComponent {
     return this.mode === 'partner' ? 'ai_loading_partner' : 'ai_loading';
   }
 
+  private buildTimestamp(): string {
+    const lang = this.translationService.getCurrentLanguageValue();
+    const locale = lang === 'en' ? 'en-US' : 'es-ES';
+    return new Date().toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+  }
+
   sendMessage(): void {
     const text = this.inputText.trim();
     if (!text) return;
@@ -55,7 +61,7 @@ export class ChatSimulatorComponent {
     const userMsg: SimulatorChatMessage = {
       role: 'user',
       text,
-      timestamp: new Date().toLocaleTimeString().slice(0, 5)
+      timestamp: this.buildTimestamp()
     };
     this.messages = [...this.messages, userMsg];
     this.inputText = '';
@@ -73,7 +79,7 @@ export class ChatSimulatorComponent {
         const response: SimulatorChatMessage = {
           role: 'assistant',
           text: responseText,
-          timestamp: new Date().toLocaleTimeString().slice(0, 5)
+          timestamp: this.buildTimestamp()
         };
         this.messages = [...this.messages, response];
         if (res.safetyAlert) {
@@ -81,7 +87,7 @@ export class ChatSimulatorComponent {
           this.messages = [...this.messages, {
             role: 'assistant',
             text: safetyMsg,
-            timestamp: new Date().toLocaleTimeString().slice(0, 5),
+            timestamp: this.buildTimestamp(),
             isSafetyAlert: true
           }];
           this.safetyAlertTriggered.emit();
@@ -90,7 +96,8 @@ export class ChatSimulatorComponent {
       },
       error: (err) => {
         console.error('ChatSimulator error:', err);
-        this.errorMessage = this.translationService.translate('ai_response_error') + ` (${this.aiService.getCurrentUrl()})`;
+        this.errorMessage = this.translationService.translate('ai_response_error');
+        this.isLoading = false;
       },
       complete: () => {
         this.isLoading = false;
