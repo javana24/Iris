@@ -53,11 +53,11 @@
         <!-- Controls -->
         <div class="flex items-center gap-3">
           <button (click)="toggleLanguage()"
-            class="px-3 py-1 text-xs font-bold rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors uppercase tracking-wide">
+            class="px-3 py-1 text-xs font-bold rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors uppercase tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900">
             {{ currentLang.toUpperCase() }}
           </button>
           <button (click)="toggleTheme()"
-            class="p-2 rounded-full transition-all duration-300 ease-in-out bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md dark:bg-neutral-800 dark:text-yellow-400 dark:hover:bg-neutral-700"
+            class="p-2 rounded-full transition-all duration-300 ease-in-out bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md dark:bg-neutral-800 dark:text-yellow-400 dark:hover:bg-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900"
             [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'">
             <svg *ngIf="!isDarkMode" class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor"
               viewBox="0 0 24 24">
@@ -75,11 +75,11 @@
       <!-- Mobile Menu Button -->
       <div class="md:hidden flex items-center gap-2">
         <button (click)="toggleLanguage()"
-          class="text-[11px] font-bold border border-gray-300 dark:border-gray-600 px-2 py-1 rounded-md min-w-[44px]"
+          class="text-[11px] font-bold border border-gray-300 dark:border-gray-600 px-2 py-1 rounded-md min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900"
           aria-label="Cambiar idioma">
           {{ currentLang.toUpperCase() }}
         </button>
-        <button (click)="toggleTheme()" class="text-neutral-600 dark:text-yellow-400 p-1.5 rounded-md"
+        <button (click)="toggleTheme()" class="text-neutral-600 dark:text-yellow-400 p-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900"
           [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'">
           <svg *ngIf="!isDarkMode" class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -91,8 +91,8 @@
           </svg>
         </button>
         <button (click)="toggleMobileMenu()"
-          class="inline-flex items-center justify-center p-2 rounded-md text-neutral-600 hover:text-purple-700 hover:bg-purple-100 dark:text-gray-300 dark:hover:bg-purple-900 focus:outline-none min-w-[44px] min-h-[44px]"
-          aria-label="Abrir menú de navegación"
+          class="inline-flex items-center justify-center p-2 rounded-md text-neutral-600 hover:text-purple-700 hover:bg-purple-100 dark:text-gray-300 dark:hover:bg-purple-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900 min-w-[44px] min-h-[44px]"
+          [attr.aria-label]="isMobileMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'"
           [attr.aria-expanded]="isMobileMenuOpen"
           aria-controls="mobile-nav-menu">
           <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
