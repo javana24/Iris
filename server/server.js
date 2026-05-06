@@ -3,18 +3,16 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 const os = require('os');
 const { body, validationResult } = require('express-validator');
+const { LLMAdapter } = require('./lib/llm-adapter');
+const { RagStore } = require('./lib/rag-store');
 
 const app = express();
 const port = process.env.PORT || 3001;
-const apiKey = process.env.GEMINI_API_KEY;
-const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-pro';
-
-if (!apiKey) {
-  console.error('Missing GEMINI_API_KEY in environment.');
-}
+const llmAdapter = new LLMAdapter();
+const ragStore = new RagStore();
+ragStore.loadDataset();
 
 // Permitir CORS desde cualquier origen (web y móvil)
 app.use(cors({
@@ -39,9 +37,9 @@ app.use((err, _req, res, next) => {
   return next(err);
 });
 
-function requireGeminiApiKey(_req, res, next) {
-  if (!apiKey) {
-    return sendError(res, 503, 'Missing GEMINI_API_KEY');
+function requireAnyLlmProvider(_req, res, next) {
+  if (!llmAdapter.hasAnyConfiguredProvider()) {
+    return sendError(res, 503, 'Missing LLM API key (GEMINI_API_KEY, DEEPSEEK_API_KEY, OPENAI_API_KEY)');
   }
   return next();
 }
@@ -128,36 +126,31 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true });
 });
 
-app.get('/api/models', requireGeminiApiKey, async (_req, res) => {
+app.get('/api/models', requireAnyLlmProvider, async (_req, res) => {
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      const text = await response.text();
-      return sendError(res, response.status, text);
-    }
-    const data = await response.json();
-    const models = (data.models || []).map((m) => ({
-      name: m.name,
-      displayName: m.displayName,
-      supportedGenerationMethods: m.supportedGenerationMethods
-    }));
-    res.json({ models });
+    res.json({
+      provider: process.env.LLM_PROVIDER || 'gemini',
+      fallbackProvider: process.env.LLM_FALLBACK_PROVIDER || 'openai',
+      configuredProviders: llmAdapter.getActiveProviders().filter((provider) => llmAdapter.hasProviderApiKey(provider)),
+      rag: {
+        enabled: ragStore.enabled,
+        datasetPath: ragStore.datasetPath,
+        documentsLoaded: ragStore.items.length
+      }
+    });
   } catch (error) {
     console.error('List models error:', error);
     sendError(res, 500, 'List models failed');
   }
 });
 
-app.post('/api/chat', requireGeminiApiKey, validateChatRequest, handleValidationErrors, async (req, res) => {
+app.post('/api/chat', requireAnyLlmProvider, validateChatRequest, handleValidationErrors, async (req, res) => {
   try {
     const { messages = [], language = 'es', simulatorMode = 'iris' } = req.body || {};
     const normalizedSimulatorMode =
       typeof simulatorMode === 'boolean'
         ? (simulatorMode ? 'partner' : 'iris')
         : simulatorMode;
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: modelName });
     const isPartnerMode = normalizedSimulatorMode === 'partner';
 
     const safetyKeywords = [
@@ -356,23 +349,24 @@ Haz una pregunta suave cuando encaje.${safetyInstruction}`;
         ? `${systemPrompt}\nNo saludes ni vuelvas a iniciar la conversación.`
         : systemPrompt;
 
-    const contents = [
-      { role: 'user', parts: [{ text: systemWithGreeting }] },
-      ...recent.map((m) => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.text }]
-      }))
-    ];
+    const latestUserMessage = [...recent].reverse().find((m) => m.role === 'user')?.text || '';
+    const ragContext = isPartnerMode
+      ? { contextText: '', hits: [] }
+      : ragStore.getContextForQuery(latestUserMessage);
+    const contextInstruction = ragContext.contextText
+      ? (language === 'en'
+          ? `\nUse this internal context as priority source when relevant:\n${ragContext.contextText}`
+          : `\nUsa este contexto interno como fuente prioritaria cuando aplique:\n${ragContext.contextText}`)
+      : '';
 
-    const result = await model.generateContent({
-      contents,
-      generationConfig: {
-        temperature: isPartnerMode ? 0.75 : 0.5,
-        topP: 0.9,
-        maxOutputTokens: isPartnerMode ? 280 : 512
-      }
+    const llmResult = await llmAdapter.generate({
+      systemPrompt: `${systemWithGreeting}${contextInstruction}`,
+      messages: recent.map((m) => ({ role: m.role, content: m.text })),
+      temperature: isPartnerMode ? 0.75 : 0.5,
+      topP: 0.9,
+      maxOutputTokens: isPartnerMode ? 280 : Number(process.env.LLM_MAX_OUTPUT_TOKENS || 512)
     });
-    let response = result.response?.text?.().trim() || '';
+    let response = llmResult.text || '';
 
     // En modo pareja: quitar si la IA repitió el inicio del mensaje del usuario (ej. "Hola. ¿Por qué tardaste en contest...")
     if (isPartnerMode && response) {
@@ -459,15 +453,14 @@ Haz una pregunta suave cuando encaje.${safetyInstruction}`;
         language === 'en'
           ? `Finish the previous reply in one complete sentence. Reply with ONLY the continuation, no repetition.`
           : `Termina la respuesta anterior en una sola frase. Responde SOLO con la continuación, sin repetir lo anterior.`;
-      const fixResult = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: `${fixPrompt}\n\nRespuesta anterior: ${toComplete}` }] }],
-        generationConfig: {
-          temperature: 0.3,
-          topP: 0.9,
-          maxOutputTokens: 150
-        }
+      const fixResult = await llmAdapter.generate({
+        systemPrompt: fixPrompt,
+        messages: [{ role: 'user', content: `Respuesta anterior: ${toComplete}` }],
+        temperature: 0.3,
+        topP: 0.9,
+        maxOutputTokens: 150
       });
-      const fix = (fixResult.response?.text?.().trim() || '').replace(/^[.,;]\s*/, '');
+      const fix = (fixResult.text || '').replace(/^[.,;]\s*/, '');
       if (fix) {
         response = `${toComplete} ${fix}`.trim();
       } else {
@@ -488,8 +481,18 @@ Haz una pregunta suave cuando encaje.${safetyInstruction}`;
       );
     }
 
+    const telemetry = {
+      provider: llmResult.provider,
+      model: llmResult.model,
+      usage: llmResult.usage || {},
+      ragHits: ragContext.hits.map((hit) => ({ id: hit.id, title: hit.title, score: Number(hit.score.toFixed(3)) }))
+    };
+
+    console.log('[chat-telemetry]', JSON.stringify(telemetry));
+
     res.json({
       response,
+      telemetry,
       ...(finalSafetyTrigger && {
         safetyAlert: true,
         safetyMessage: language === 'en'

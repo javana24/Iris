@@ -1,0 +1,20 @@
+[
+  {
+    "id": "faq-016",
+    "title": "Telefono 016",
+    "source": "Ministerio de Igualdad",
+    "content": "El 016 ofrece informacion, asesoramiento juridico y atencion psicosocial ante situaciones de violencia contra las mujeres. No deja rastro en la factura, aunque conviene borrar el registro de llamadas en algunos dispositivos."
+  },
+  {
+    "id": "red-flag-control",
+    "title": "Senales de control y aislamiento",
+    "source": "Guia IRIS",
+    "content": "Una senal de alarma frecuente es cuando la pareja revisa el movil, exige ubicacion constante, limita amistades o impide salir. Estas conductas son violencia psicologica y deben tomarse en serio."
+  },
+  {
+    "id": "respuesta-segura",
+    "title": "Recomendacion de respuesta segura",
+    "source": "Protocolo interno IRIS",
+    "content": "Ante mensajes de riesgo, responder con empatia y validacion. Evitar culpabilizar. Recomendar buscar apoyo en recursos profesionales y servicios de emergencia si existe peligro inmediato."
+  }
+]
