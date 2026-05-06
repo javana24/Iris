@@ -50,7 +50,8 @@ Aplicación web y móvil profesional desarrollada con Angular 17 y Capacitor par
 ### Backend
 - **Node.js** - Runtime de JavaScript
 - **Express** - Framework web
-- **Google Gemini AI** - Modelo de IA para el chatbot
+- **LLM Adapter (Gemini/DeepSeek/OpenAI)** - Proveedor principal + fallback para el chat
+- **RAG mínimo sobre dataset local** - Contexto interno para respuestas más precisas
 - **CORS** - Configurado para web y móvil
 
 ## 📁 Estructura del Proyecto
@@ -144,10 +145,10 @@ Iris/
    GEMINI_MODEL=gemini-1.5-pro
    ```
 
-2. **Obtener API Key de Gemini**
-   - Ve a [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Crea una nueva API key
-   - Cópiala en el archivo `.env`
+2. **Configurar proveedores de IA**
+   - Copia `server/.env.example` a `server/.env`
+   - Configura proveedor principal (`LLM_PROVIDER`) y fallback (`LLM_FALLBACK_PROVIDER`)
+   - Añade al menos una API key (`GEMINI_API_KEY`, `DEEPSEEK_API_KEY` o `OPENAI_API_KEY`)
 
 ### Configuración para Android
 
@@ -201,8 +202,9 @@ La aplicación utiliza una arquitectura modular con:
 ### Backend (Node.js/Express)
 
 - **API REST**: Endpoint `/api/chat` para el chatbot
-- **CORS**: Configurado para permitir conexiones desde web y móvil
-- **Gemini AI**: Integración con Google Gemini para respuestas inteligentes
+- **Fallback de proveedor IA**: Cambio automático al proveedor secundario si el principal falla
+- **RAG mínimo**: Recuperación de contexto desde `server/data/rag-dataset.json`
+- **Telemetría**: `provider`, `model`, `usage` y `ragHits` por respuesta
 
 ### Mobile (Capacitor)
 
