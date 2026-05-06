@@ -17,6 +17,7 @@ Este directorio contiene la implementación operativa del plan de arranque Scrum
 - `operations/go-live-checklist-june-pilot.md`: checklist técnico-operativo para salida del 1 de junio.
 - `operations/release-readiness-web-mobile-scrum-14.md`: evidencia de validacion release web/movil, riesgos y plan de mitigacion para `SCRUM-14`.
 - `operations/planning-reconciliation-jira-confluence.md`: contraste de planning entre Jira y Confluence con diferencias normalizadas.
+- `api-contract/`: contrato API canonico entre web Angular y Android nativo, ADR de la decision, especificacion y guia de migracion para `SCRUM-65`.
 
 ## Resultado esperado
 
