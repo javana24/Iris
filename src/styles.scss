@@ -27,18 +27,41 @@
   main p {
     @apply leading-relaxed;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer components {
   .nav-link {
     @apply px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200;
     @apply text-neutral-600 hover:bg-purple-100 hover:text-purple-800;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
     @apply dark:text-gray-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300;
+    @apply dark:focus-visible:ring-offset-neutral-900;
     
     &.active {
       @apply bg-purple-600 text-white hover:bg-purple-700 hover:text-white;
       @apply dark:bg-purple-600 dark:text-white;
     }
+  }
+
+  .skip-link {
+    @apply fixed left-4 top-2 z-[10000] rounded-lg bg-purple-700 px-4 py-2 text-sm font-semibold text-white shadow-lg;
+    @apply -translate-y-16 opacity-0 transition duration-200 ease-out;
+    @apply focus:translate-y-0 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-purple-300;
   }
 
   .segment-tab {
