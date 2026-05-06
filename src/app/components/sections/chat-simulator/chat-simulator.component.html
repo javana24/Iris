@@ -1,5 +1,8 @@
-<div class="space-y-4">
-  <div class="bg-amber-50 dark:bg-neutral-900 rounded-xl p-4 h-80 overflow-y-auto border border-amber-100 dark:border-neutral-700 scrollbar-soft">
+<div class="flex h-full min-h-0 flex-col gap-3 sm:gap-4">
+  <div
+    #messagesContainer
+    class="flex-1 min-h-0 bg-amber-50 dark:bg-neutral-900 rounded-xl p-3 sm:p-4 overflow-y-auto border border-amber-100 dark:border-neutral-700 scrollbar-soft"
+  >
     <div *ngIf="messages.length === 0" class="text-sm text-neutral-500 dark:text-gray-400">
       {{ translationService.translate(emptyHintKey) }}
     </div>
@@ -27,12 +30,13 @@
     </div>
   </div>
 
-  <div class="flex items-center gap-2 w-full">
+  <div class="w-full rounded-xl bg-black/5 dark:bg-white/5 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+    <div class="flex items-center gap-2 w-full">
     <label for="chat-input" class="sr-only">{{ translationService.translate('chat_input_placeholder') }}</label>
     <input
       id="chat-input"
       type="text"
-      class="flex-1 min-w-0 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-gray-100"
+      class="flex-1 min-w-0 px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-base sm:text-sm text-neutral-800 dark:text-gray-100 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60"
       [placeholder]="translationService.translate('chat_input_placeholder')"
       [attr.aria-label]="translationService.translate('chat_input_placeholder')"
       [(ngModel)]="inputText"
@@ -40,11 +44,12 @@
     />
     <button
       type="button"
-      class="shrink-0 px-3 sm:px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors whitespace-nowrap"
+      class="shrink-0 px-3 sm:px-4 py-2.5 rounded-lg bg-purple-600 text-white font-semibold transition-colors duration-200 hover:bg-purple-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/70 whitespace-nowrap"
       (click)="sendMessage()"
     >
       {{ translationService.translate('chat_send') }}
     </button>
+  </div>
   </div>
 
   <div *ngIf="isLoading" class="text-sm text-neutral-500 dark:text-gray-400">

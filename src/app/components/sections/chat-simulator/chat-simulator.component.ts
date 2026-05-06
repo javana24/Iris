@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslationService } from '../../../services/translation.service';
@@ -23,11 +23,13 @@ export interface SimulatorChatMessage {
 export class ChatSimulatorComponent {
   @Input() mode: 'iris' | 'partner' = 'iris';
   @Output() safetyAlertTriggered = new EventEmitter<void>();
+  @ViewChild('messagesContainer') private messagesContainer?: ElementRef<HTMLDivElement>;
 
   inputText = '';
   messages: SimulatorChatMessage[] = [];
   isLoading = false;
   errorMessage = '';
+  private shouldAutoScroll = false;
 
   constructor(
     public translationService: TranslationService,
@@ -64,6 +66,8 @@ export class ChatSimulatorComponent {
       timestamp: this.buildTimestamp()
     };
     this.messages = [...this.messages, userMsg];
+    this.shouldAutoScroll = true;
+    this.scrollToBottom();
     this.inputText = '';
     this.errorMessage = '';
     this.isLoading = true;
@@ -82,6 +86,7 @@ export class ChatSimulatorComponent {
           timestamp: this.buildTimestamp()
         };
         this.messages = [...this.messages, response];
+        this.shouldAutoScroll = true;
         if (res.safetyAlert) {
           const safetyMsg = res.safetyMessage || this.translationService.translate('safety_alert_message');
           this.messages = [...this.messages, {
@@ -90,9 +95,11 @@ export class ChatSimulatorComponent {
             timestamp: this.buildTimestamp(),
             isSafetyAlert: true
           }];
+          this.shouldAutoScroll = true;
           this.safetyAlertTriggered.emit();
         }
         this.errorMessage = '';
+        this.scrollToBottom();
       },
       error: (err) => {
         console.error('ChatSimulator error:', err);
@@ -109,5 +116,18 @@ export class ChatSimulatorComponent {
     this.messages = [];
     this.inputText = '';
     this.errorMessage = '';
+  }
+
+  private scrollToBottom(): void {
+    if (!this.shouldAutoScroll || !this.messagesContainer?.nativeElement) {
+      return;
+    }
+
+    queueMicrotask(() => {
+      const container = this.messagesContainer?.nativeElement;
+      if (!container) return;
+      container.scrollTop = container.scrollHeight;
+      this.shouldAutoScroll = false;
+    });
   }
 }
