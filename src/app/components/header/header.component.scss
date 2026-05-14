@@ -1,1 +1,4 @@
-// Header component styles
+// Host must be block so fixed header spans layout and does not collapse.
+:host {
+  display: block;
+}

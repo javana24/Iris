@@ -1,5 +1,7 @@
-<header
-  class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md shadow-sm dark:bg-neutral-900/90 dark:border-b dark:border-neutral-800 transition-colors duration-300">
+<div
+  class="fixed top-0 left-0 right-0 z-[100] w-full max-h-[min(100dvh,100vh)] overflow-y-auto overscroll-contain bg-white/90 backdrop-blur-md shadow-sm dark:bg-neutral-900/95 dark:border-b dark:border-neutral-800 transition-colors duration-300"
+>
+  <header class="w-full">
   <nav class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-14 sm:h-16">
       <!-- Logo -->
@@ -106,7 +108,9 @@
     </div>
   </nav>
 
-  <!-- Mobile Menu -->
+  </header>
+
+  <!-- Mobile Menu (dentro del bloque fijo para que no se pierda al hacer scroll) -->
   <div *ngIf="isMobileMenuOpen" id="mobile-nav-menu" class="md:hidden bg-white dark:bg-neutral-900 border-b dark:border-neutral-800 shadow-sm">
     <div class="px-3 pt-2 pb-3 space-y-1 sm:px-3">
       <button (click)="navigateTo('inicio')" [class.active]="isActive('inicio')"
@@ -144,4 +148,4 @@
 
     </div>
   </div>
-</header>
+</div>
