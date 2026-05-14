@@ -87,11 +87,13 @@ export class TranslationService {
       summary_count: "Apariciones:",
       detection_none: "No se han detectado señales claras en el último mensaje.",
       detection_disclaimer: "Este análisis es educativo y no sustituye ayuda profesional.",
-      detection_help: "Si necesitas ayuda, llama al **900 200 999** (IAM, Andalucía) o al 016.",
+      detection_help:
+        "Si necesitas ayuda en España: 016 (violencia de género, 24h). Emergencias: 112. Andalucía (IAM): 900 200 999 (gratuito y anónimo).",
       ai_response_safe: "Gracias por explicarlo. No veo señales claras de riesgo, pero confía siempre en tu instinto.",
       ai_response_low: "Veo señales leves. Recuerda que el respeto es lo primero. Si tienes dudas, el 900 200 999 te puede orientar.",
       ai_response_medium: "Detecto patrones de control. Esto no es saludable. Te animo a llamar al 900 200 999 (anónimo y gratuito) para hablar con expertos.",
-      ai_response_high: "⚠️ Detecto ALTO RIESGO. Por favor, busca ayuda ya. Llama al 900 200 999 (IAM) o al 112 si estás en peligro.",
+      ai_response_high:
+        "⚠️ Detecto señales de alto riesgo. Si esto te ocurre en la vida real, busca ayuda ya: 016 (24h), 112 si hay peligro inmediato, o 900 200 999 (IAM, Andalucía).",
       ai_response_detected: "He detectado señales de:",
       alert_keyword: "Alerta: término sensible.",
       ai_response_error: "No he podido responder ahora. Intenta de nuevo.",
@@ -123,16 +125,24 @@ export class TranslationService {
       chat_msg_8: "Si no mandas foto AHORA, terminamos.",
       chat_alert: "Intento de CHANTAJE y MANIPULACIÓN.",
       safety_alert_title: "Alerta de Seguridad",
-      safety_alert_message: "Se han detectado indicios de violencia. En Andalucía, el 900 200 999 (IAM) es gratuito, anónimo y no deja rastro.",
+      safety_alert_message:
+        "Se han detectado indicios de riesgo en el mensaje. Esto es un entrenamiento con IA; si vivieras algo parecido de verdad, en España puedes llamar al 016 (24h), al 112 en emergencia, o al 900 200 999 (IAM, Andalucía).",
       simulators_title: "Entrenamiento",
-      simulators_desc: "Practica en un entorno seguro antes de enfrentarte a la realidad.",
+      simulators_desc:
+        "Practica en un entorno seguro: las respuestas son de una IA de entrenamiento, no una persona real ni un servicio de crisis.",
       sim_iris_title: "Habla con IRIS",
-      sim_iris_desc: "Tu asistente de confianza. Cuéntale qué te pasa y ella analizará si hay riesgo. Conectada a recursos del IAM.",
+      sim_iris_desc:
+        "Tu asistente de confianza. Cuéntale qué te pasa y ella orientará si detecta señales de riesgo. Recursos en España: 016, 112, y en Andalucía el IAM (900 200 999).",
       sim_partner_title: "Simula un Chat",
-      sim_partner_desc: "Entrena cómo responder a una pareja controladora. La IA actuará como tal para que practiques tus límites.",
+      sim_partner_desc:
+        "La IA interpreta a una pareja ficticia para que practiques límites y respuestas. No es una conversación real: si necesitas ayuda, usa 016 / 112 / 900 200 999 (IAM, Andalucía).",
       sim_partner_role: "Pareja Virtual",
       sim_empty_iris: "Hola, soy IRIS. ¿Hay algo que te preocupe en tu relación?",
-      sim_empty_partner: "Hola... ¿por qué tardas tanto en contestar?",
+      sim_empty_partner: "Hola... ¿por qué tardas tanto en contestar? (recuerda: soy un personaje de entrenamiento, no una persona real)",
+      sim_partner_training_strip:
+        "Modo entrenamiento: personaje ficticio generado por IA. Ayuda real en España: 016 · 112 · IAM Andalucía 900 200 999.",
+      chat_help_resources:
+        "Ayuda (España): 016 · Emergencias 112 · IAM (Andalucía) 900 200 999",
       ai_loading_partner: "Escribiendo...",
       solution_go_simulators: "Empezar Entrenamiento",
       solution_go_simulators_desc: "Accede a los simuladores y aprende a detectar la violencia invisible.",
@@ -297,11 +307,13 @@ export class TranslationService {
       summary_count: "Occurrences:",
       detection_none: "No clear signals detected in the last message.",
       detection_disclaimer: "This analysis is educational and does not replace professional help.",
-      detection_help: "If you need immediate help in Spain: 016 (no call record on bill).",
+      detection_help:
+        "If you need help in Spain: 016 (gender violence helpline, 24h). Emergencies: 112. Andalusia (IAM): 900 200 999 (free, anonymous helpline).",
       ai_response_safe: "Thanks for sharing. I don’t detect clear toxic signals in this message. We can keep talking if you want.",
       ai_response_low: "I see mild signals that could be concerning. Respect and boundaries are important.",
       ai_response_medium: "I detect patterns that may indicate an unhealthy relationship. Want me to explain why?",
-      ai_response_high: "I detect high‑risk signals (threats, control, humiliation). If this is real in your life, seek support: 016 in Spain.",
+      ai_response_high:
+        "I detect high‑risk signals. If this reflects a real situation, seek help now: 016 (Spain, 24h), 112 in emergencies, or 900 200 999 (IAM, Andalusia).",
       ai_response_detected: "I detected:",
       alert_keyword: "Alert: sensitive term detected.",
       ai_response_error: "I couldn’t respond right now. Please try again in a few seconds.",
@@ -333,16 +345,25 @@ export class TranslationService {
       chat_msg_8: "If you don't send a pic NOW, we're done.",
       chat_alert: "Attempt at BLACKMAIL and MANIPULATION.",
       safety_alert_title: "Safety alert",
-      safety_alert_message: "Possible signs of risk have been detected (control, not allowed to go out, toxic relationship). If you need help: 016 (Spain) or emergency services.",
+      safety_alert_message:
+        "Possible signs of risk were detected in the message. This is an AI training exercise; if something like this were real for you, in Spain you can call 016 (24h), 112 in an emergency, or 900 200 999 (IAM, Andalusia).",
       simulators_title: "Simulators",
-      simulators_desc: "Choose a simulator: talk to IRIS for support and guidance, or simulate a chat with your partner to practice and see alerts if risky behavior appears.",
+      simulators_desc:
+        "Practice in a safe space: replies come from a training AI, not a real person or a crisis service.",
       sim_iris_title: "Talk to IRIS",
-      sim_iris_desc: "Tell IRIS what's going on. IRIS listens, supports you, and alerts you if it detects signs of risk (control, violence, manipulation).",
+      sim_iris_desc:
+        "Tell IRIS what's going on. IRIS listens, supports you, and highlights possible risk patterns. Help in Spain: 016, 112, and in Andalusia IAM (900 200 999).",
       sim_partner_title: "Simulate a chat with your partner",
-      sim_partner_desc: "Type as if you were chatting with your partner on WhatsApp. The AI replies as them. If the conversation shows signs of risk, you'll see an alert with help resources.",
+      sim_partner_desc:
+        "The AI plays a fictional partner so you can practice boundaries and replies. It is not a real chat: if you need help, use 016 / 112 / 900 200 999 (IAM, Andalusia).",
       sim_partner_role: "Partner",
       sim_empty_iris: "Type here and IRIS will reply.",
-      sim_empty_partner: "Type as if talking to your partner. They will reply as they would.",
+      sim_empty_partner:
+        "Hey… why do you take so long to answer? (I'm a training character, not a real person.)",
+      sim_partner_training_strip:
+        "Training mode: fictional AI character. Real help in Spain: 016 · 112 · IAM Andalusia 900 200 999.",
+      chat_help_resources:
+        "Help (Spain): 016 · Emergencies 112 · IAM (Andalusia) 900 200 999",
       ai_loading_partner: "Your partner is typing...",
       solution_go_simulators: "Go to simulators",
       solution_go_simulators_desc: "Practice by talking to IRIS or simulating a chat with your partner. Both show alerts if signs of risk are detected.",

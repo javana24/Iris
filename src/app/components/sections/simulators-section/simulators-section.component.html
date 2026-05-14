@@ -68,6 +68,14 @@
                 </div>
               </div>
 
+              <div
+                *ngIf="selectedSimulator === 'partner'"
+                class="flex-shrink-0 px-3 py-2 bg-amber-950/90 border-b border-amber-600/50 text-[11px] sm:text-xs leading-snug text-amber-100 text-center"
+                role="note"
+              >
+                {{ translationService.translate('sim_partner_training_strip') }}
+              </div>
+
               <!-- Messages + Input: chat simulator -->
               <div class="flex-1 overflow-hidden min-h-0 flex flex-col bg-gray-950">
                 <div class="flex-1 min-h-0 p-3 sm:p-4 overflow-hidden flex flex-col">
