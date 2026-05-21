@@ -1,137 +1,136 @@
-<section id="simulacion" class="py-24 bg-transparent dark:bg-neutral-900 relative overflow-hidden">
-    <!-- Background Decorations -->
-    <div
-        class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-purple-100 rounded-full blur-3xl opacity-50 dark:bg-purple-900/20 pointer-events-none">
+<section id="simulacion" class="iris-section">
+  <div class="iris-shell">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="iris-kicker">Dojo de niveles</p>
+      <h2 class="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
+        Dojo de Defensa Mental
+      </h2>
+      <p class="iris-subtitle">
+        Sube de nivel tu capacidad para detectar y detener la violencia invisible.
+      </p>
     </div>
-    <div
-        class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-amber-100 rounded-full blur-3xl opacity-50 dark:bg-amber-900/20 pointer-events-none">
-    </div>
 
-    <div class="container mx-auto px-4 relative z-10">
-        <!-- Section Header -->
-        <div class="text-center max-w-3xl mx-auto mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-neutral-800 dark:text-white">
-                Dojo de <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-amber-500">Defensa
-                    Mental</span>
-            </h2>
-            <p class="text-lg text-neutral-600 dark:text-neutral-300">
-                Aprende a detectar la manipulación desde lo obvio hasta lo invisible.
-                <br><strong>Completa cada cinturón para desbloquear el siguiente.</strong>
-            </p>
+    <div class="mt-14 grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+      <div class="relative">
+        <div class="absolute left-6 top-8 hidden h-[calc(100%-4rem)] w-px bg-gradient-to-b from-[#D4A7FF] via-[#7B2FBE] to-transparent md:block"></div>
+        <div class="space-y-5">
+          <button
+            *ngFor="let belt of belts; let i = index"
+            type="button"
+            (click)="setActiveTab(belt.id)"
+            [disabled]="belt.locked"
+            class="group relative flex w-full items-center gap-5 rounded-2xl border p-5 text-left transition-transform duration-200 hover:-translate-y-1 disabled:hover:translate-y-0"
+            [ngClass]="{
+              'border-[#AA6FE0]/50 bg-[#1E1E24] text-white shadow-[0_18px_60px_rgba(123,47,190,0.16)]': activeBeltId === belt.id,
+              'border-white/[0.08] bg-[#17151C] text-[#C9C9D4]': activeBeltId !== belt.id && !belt.locked,
+              'cursor-not-allowed border-white/[0.05] bg-[#17151C]/60 text-[#6F6F7B]': belt.locked
+            }"
+          >
+            <span
+              class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border font-black"
+              [ngClass]="{
+                'border-[#D4A7FF] bg-[#D4A7FF] text-[#1A0D24]': belt.completed,
+                'border-[#AA6FE0] bg-[#7B2FBE]/20 text-[#D4A7FF]': activeBeltId === belt.id && !belt.completed,
+                'border-white/10 bg-[#232329] text-[#6F6F7B]': belt.locked
+              }"
+            >
+              <span *ngIf="belt.completed">✓</span>
+              <span *ngIf="!belt.completed && !belt.locked">{{ i + 1 }}</span>
+              <span *ngIf="belt.locked">⌘</span>
+            </span>
+            <span class="min-w-0">
+              <span class="block text-lg font-black">{{ belt.name }}</span>
+              <span class="mt-1 block text-sm leading-6 opacity-75">
+                {{ i === 0 ? 'Reconocer patrones básicos de control.' :
+                  i === 1 ? 'Responder a culpa invertida y humillación.' :
+                  i === 2 ? 'Detectar gaslighting avanzado y manipulación sutil.' :
+                  'Actuar con asertividad total y establecer límites infranqueables.' }}
+              </span>
+            </span>
+          </button>
         </div>
+      </div>
 
-        <!-- Tabs Navigation (Belts) -->
-        <div class="flex flex-wrap justify-center gap-4 mb-12">
-            <button *ngFor="let belt of belts" (click)="setActiveTab(belt.id)" [disabled]="belt.locked"
-                class="relative px-6 py-3 rounded-full font-bold transition-all duration-300 flex items-center gap-2"
-                [ngClass]="{
-          'opacity-50 cursor-not-allowed bg-neutral-200 text-neutral-500 dark:bg-neutral-800': belt.locked,
-          'transform scale-105 shadow-lg': activeBeltId === belt.id,
-          'hover:shadow-md': !belt.locked,
-          'bg-white text-neutral-900 border-2 border-neutral-200': belt.id === 'white' && !belt.locked,
-          'bg-amber-400 text-amber-950 border-2 border-amber-500': belt.id === 'yellow' && !belt.locked,
-          'bg-purple-600 text-white border-2 border-purple-700': belt.id === 'purple' && !belt.locked,
-          'bg-neutral-900 text-white border-2 border-neutral-700 shadow-black/50': belt.id === 'black' && !belt.locked
-        }">
-                <span *ngIf="belt.locked">🔒</span>
-                <span *ngIf="belt.completed">✅</span>
-                {{ belt.name }}
-            </button>
-        </div>
+      <div class="iris-card p-6 sm:p-8">
+        <div *ngIf="activeBelt" class="flex h-full flex-col">
+          <div class="mb-8 flex flex-col gap-4 border-b border-white/[0.08] pb-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p class="iris-kicker">{{ activeBelt.name }}</p>
+              <h3 class="mt-2 text-2xl font-black text-white">Entrenamiento activo</h3>
+            </div>
+            <span class="rounded-full bg-[#232329] px-4 py-2 text-xs font-black text-[#C9C9D4]">
+              Pregunta {{ activeBelt.currentQuestionIndex + 1 }} / {{ activeBelt.questions.length }}
+            </span>
+          </div>
 
-        <!-- Quiz Area -->
-        <div
-            class="max-w-4xl mx-auto bg-white dark:bg-neutral-900 rounded-3xl p-8 md:p-12 shadow-2xl border border-neutral-100 dark:border-neutral-800 min-h-[500px] transition-all duration-500 relative">
+          <div *ngIf="activeBelt.completed" class="grid flex-1 place-items-center py-12 text-center">
+            <div>
+              <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#D4A7FF] text-4xl text-[#1A0D24]">✓</div>
+              <h3 class="text-2xl font-black text-white">¡{{ activeBelt.name }} completado!</h3>
+              <p class="mx-auto mt-4 max-w-md text-sm leading-7 text-[#C9C9D4]">
+                Has demostrado entender este nivel de manipulación. Sigue entrenando para desbloquear nuevas capas de defensa emocional.
+              </p>
+              <button
+                *ngIf="activeBeltId !== 'black'"
+                type="button"
+                (click)="goToNextBelt()"
+                class="mt-8 rounded-xl bg-[#7B2FBE] px-7 py-3 text-sm font-black text-white transition-transform duration-200 hover:-translate-y-1 hover:bg-[#9B59D6]"
+              >
+                Siguiente nivel
+              </button>
+              <button
+                *ngIf="activeBeltId === 'black'"
+                type="button"
+                (click)="downloadCertificate()"
+                class="mt-8 rounded-xl bg-[#FFB830] px-7 py-3 text-sm font-black text-[#1A0D24] transition-transform duration-200 hover:-translate-y-1"
+              >
+                Descargar certificado IRIS
+              </button>
+            </div>
+          </div>
 
-            <div *ngIf="activeBelt" class="animate-fadeIn w-full">
-
-                <!-- Header: Question Progress -->
-                <div
-                    class="flex justify-between items-center mb-8 border-b border-neutral-100 dark:border-neutral-800 pb-4">
-                    <span class="text-sm font-bold uppercase tracking-widest text-neutral-500">
-                        {{ activeBelt.name }}
-                    </span>
-                    <span
-                        class="px-3 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 text-xs font-bold text-neutral-600 dark:text-neutral-400">
-                        Pregunta {{ activeBelt.currentQuestionIndex + 1 }} / {{ activeBelt.questions.length }}
-                    </span>
-                </div>
-
-                <!-- Completion Message -->
-                <div *ngIf="activeBelt.completed" class="text-center py-10 animate-fadeIn">
-                    <div class="text-6xl mb-4">🏆</div>
-                    <h3 class="text-2xl font-bold text-neutral-800 dark:text-white mb-4">
-                        ¡{{ activeBelt.name }} Completado!
-                    </h3>
-                    <p class="text-neutral-600 dark:text-neutral-300 mb-8">
-                        Has demostrado entender este nivel de manipulación.
-                    </p>
-                    <button *ngIf="activeBeltId !== 'black'" (click)="goToNextBelt()"
-                        class="px-8 py-3 bg-neutral-900 text-white rounded-xl font-bold hover:bg-neutral-800 transition-colors shadow-lg dark:bg-white dark:text-neutral-900">
-                        Siguiente Nivel ➡️
-                    </button>
-                    <div *ngIf="activeBeltId === 'black'"
-                        class="p-4 bg-yellow-100 text-yellow-900 rounded-xl border border-yellow-300 mb-6">
-                        🎖️ <strong>¡Maestría en Defensa!</strong> Eres un experto/a detectando manipulación. Confía en
-                        tu instinto.
-                    </div>
-                    <button *ngIf="activeBeltId === 'black'" (click)="downloadCertificate()"
-                        class="px-8 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 transition-colors shadow-lg">
-                        🎓 Descargar Certificado IRIS
-                    </button>
-                </div>
-
-                <!-- Question Content -->
-                <div *ngIf="!activeBelt.completed" class="flex flex-col gap-8">
-
-                    <!-- Scenario -->
-                    <div class="p-8 bg-neutral-50 dark:bg-neutral-800 rounded-2xl border-l-8 text-xl font-medium text-neutral-800 dark:text-neutral-200 shadow-sm"
-                        [ngClass]="{
-                   'border-neutral-300': activeBeltId === 'white',
-                   'border-amber-400': activeBeltId === 'yellow',
-                   'border-purple-600': activeBeltId === 'purple',
-                   'border-neutral-900 dark:border-white': activeBeltId === 'black'
-                 }">
-                        "{{ activeBelt.questions[activeBelt.currentQuestionIndex].text }}"
-                    </div>
-
-                    <p class="font-bold text-neutral-600 dark:text-neutral-400 text-center">Selecciona la mejor
-                        respuesta:</p>
-
-                    <!-- Options Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <button *ngFor="let option of activeBelt.questions[activeBelt.currentQuestionIndex].options"
-                            (click)="selectOption(option)" [disabled]="showFeedback"
-                            class="p-5 rounded-xl border-2 text-left transition-all hover:bg-neutral-50 dark:hover:bg-neutral-800"
-                            [ngClass]="{
-                  'border-green-500 bg-green-50 text-green-900 dark:bg-green-900/20 dark:text-green-200': showFeedback && option === selectedOption && option.correct,
-                  'border-red-500 bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-200': showFeedback && option === selectedOption && !option.correct,
-                  'border-neutral-200 dark:border-neutral-700': !showFeedback || option !== selectedOption,
-                  'opacity-50': showFeedback && option !== selectedOption
-                }">
-                            {{ option.text }}
-                        </button>
-                    </div>
-
-                    <!-- Feedback Area -->
-                    <div *ngIf="showFeedback" class="mt-6 animate-fadeIn">
-                        <div [ngClass]="isCorrect ? 'bg-green-100 border-green-300 text-green-900' : 'bg-red-100 border-red-300 text-red-900'"
-                            class="p-6 rounded-xl border mb-6">
-                            <p class="font-bold text-lg mb-2">{{ isCorrect ? '¡Correcto!' : 'Incorrecto' }}</p>
-                            <p>{{ selectedOption?.feedback }}</p>
-                        </div>
-
-                        <button (click)="nextQuestion()"
-                            class="w-full py-4 rounded-xl font-bold text-white transition-colors text-lg shadow-xl"
-                            [ngClass]="isCorrect ? 'bg-green-600 hover:bg-green-700' : 'bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900'">
-                            {{ isCorrect ? 'Continuar' : 'Intentar de Nuevo' }}
-                        </button>
-                    </div>
-
-                </div>
+          <div *ngIf="!activeBelt.completed" class="flex flex-col gap-7">
+            <div class="rounded-2xl border-l-4 border-[#AA6FE0] bg-[#232329] p-6 text-lg font-bold leading-8 text-white">
+              “{{ activeBelt.questions[activeBelt.currentQuestionIndex].text }}”
             </div>
 
+            <p class="text-sm font-black uppercase tracking-[0.16em] text-[#9A9AA8]">
+              Selecciona la mejor respuesta
+            </p>
+
+            <div class="grid gap-4 md:grid-cols-2">
+              <button
+                *ngFor="let option of activeBelt.questions[activeBelt.currentQuestionIndex].options"
+                type="button"
+                (click)="selectOption(option)"
+                [disabled]="showFeedback"
+                class="rounded-xl border p-5 text-left text-sm leading-6 transition-colors duration-200"
+                [ngClass]="{
+                  'border-[#4CAF50] bg-[#4CAF50]/15 text-[#B9F6C5]': showFeedback && option === selectedOption && option.correct,
+                  'border-[#E53935] bg-[#6B1515]/30 text-[#F6D1D1]': showFeedback && option === selectedOption && !option.correct,
+                  'border-white/[0.08] bg-[#17151C] text-[#EAEAEA] hover:border-[#AA6FE0]/50': !showFeedback || option !== selectedOption,
+                  'opacity-55': showFeedback && option !== selectedOption
+                }"
+              >
+                {{ option.text }}
+              </button>
+            </div>
+
+            <div *ngIf="showFeedback" class="rounded-2xl border p-5"
+              [ngClass]="isCorrect ? 'border-[#4CAF50]/40 bg-[#4CAF50]/10 text-[#B9F6C5]' : 'border-[#E53935]/40 bg-[#6B1515]/25 text-[#F6D1D1]'">
+              <p class="text-lg font-black">{{ isCorrect ? '¡Correcto!' : 'Incorrecto' }}</p>
+              <p class="mt-2 text-sm leading-7">{{ selectedOption?.feedback }}</p>
+              <button
+                type="button"
+                (click)="nextQuestion()"
+                class="mt-5 w-full rounded-xl bg-white px-6 py-3 text-sm font-black text-[#0D0D0F] transition-transform duration-200 hover:-translate-y-1"
+              >
+                {{ isCorrect ? 'Continuar' : 'Intentar de nuevo' }}
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </section>

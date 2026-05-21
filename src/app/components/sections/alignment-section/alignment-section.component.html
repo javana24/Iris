@@ -1,55 +1,101 @@
-<section id="alineacion" class="py-16 bg-transparent dark:bg-none dark:bg-neutral-950 transition-colors duration-300">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500 mb-4">
-      {{ translationService.translate('alignment_title') }}
-    </h2>
-    <p class="text-lg text-center text-neutral-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
-      {{ translationService.translate('alignment_desc') }}
-    </p>
-    <div class="grid md:grid-cols-3 gap-6 mb-10">
-      <article class="rounded-2xl border border-purple-100 dark:border-neutral-700 bg-white/70 dark:bg-neutral-900/60 p-6">
-        <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-2">
-          {{ translationService.translate('ods_title') }}
-        </h3>
-        <p class="text-sm text-neutral-600 dark:text-gray-300">
-          {{ translationService.translate('ods_desc') }}
+<section id="alineacion" class="iris-section bg-[#120C16]">
+  <div class="iris-shell">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-4xl font-black tracking-tight text-white sm:text-5xl">
+        No estás sola.
+      </h2>
+      <p class="iris-subtitle">
+        Si te identificas con las situaciones simuladas o sientes peligro, hay recursos reales disponibles 24/7.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-6 lg:grid-cols-3">
+      <article class="rounded-2xl border border-[#E53935]/60 bg-[#1E1E24] p-6 shadow-[inset_4px_0_0_#E53935]">
+        <div class="mb-5 flex items-center gap-4">
+          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-[#6B1515]/50 text-[#F1A6A6]">☎</span>
+          <div>
+            <h3 class="text-2xl font-black text-white">016</h3>
+            <p class="text-xs font-black text-[#E53935]">Atención a víctimas</p>
+          </div>
+        </div>
+        <p class="text-sm leading-6 text-[#C9C9D4]">
+          Servicio telefónico y online gratuito, confidencial y operativo en España.
+        </p>
+        <p class="mt-5 rounded-lg bg-[#0F0B12] p-3 text-xs leading-5 text-[#C9C9D4]">
+          No deja rastro en la factura, pero puede borrarse del registro de llamadas del móvil.
         </p>
       </article>
-      <article class="rounded-2xl border border-purple-100 dark:border-neutral-700 bg-white/70 dark:bg-neutral-900/60 p-6">
-        <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-2">
-          {{ translationService.translate('law_title') }}
-        </h3>
-        <p class="text-sm text-neutral-600 dark:text-gray-300">
-          {{ translationService.translate('law_desc') }}
+
+      <article class="rounded-2xl border border-[#E53935]/60 bg-[#1E1E24] p-6 shadow-[inset_4px_0_0_#E53935]">
+        <div class="mb-5 flex items-center gap-4">
+          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-[#6B1515]/50 text-[#F1A6A6]">✱</span>
+          <div>
+            <h3 class="text-2xl font-black text-white">112</h3>
+            <p class="text-xs font-black text-[#E53935]">Emergencias generales</p>
+          </div>
+        </div>
+        <p class="text-sm leading-6 text-[#C9C9D4]">
+          Llama inmediatamente si te encuentras en peligro inminente o necesitas asistencia médica o policial urgente.
         </p>
       </article>
-      <article class="rounded-2xl border border-purple-100 dark:border-neutral-700 bg-white/70 dark:bg-neutral-900/60 p-6">
-        <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-2">
-          {{ translationService.translate('plan_title') }}
-        </h3>
-        <p class="text-sm text-neutral-600 dark:text-gray-300">
-          {{ translationService.translate('plan_desc') }}
+
+      <article class="rounded-2xl border border-[#AA6FE0]/60 bg-[#1E1E24] p-6 shadow-[inset_4px_0_0_#AA6FE0]">
+        <div class="mb-5 flex items-center gap-4">
+          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-[#7B2FBE]/20 text-[#D4A7FF]">☏</span>
+          <div>
+            <h3 class="text-2xl font-black text-white">900 200 999</h3>
+            <p class="text-xs font-black text-[#D4A7FF]">IAM Andalucía</p>
+          </div>
+        </div>
+        <p class="text-sm leading-6 text-[#C9C9D4]">
+          Teléfono de Información a la Mujer. Gratuito, anónimo y operativo 24 horas.
         </p>
       </article>
     </div>
 
-    <div class="rounded-2xl border border-amber-100 dark:border-neutral-700 bg-amber-50/80 dark:bg-neutral-900/60 p-6">
-      <h3 class="text-xl font-semibold text-neutral-800 dark:text-white mb-4">
-        {{ translationService.translate('compliance_title') }}
-      </h3>
-      <div class="space-y-4">
-        <div>
-          <h4 class="font-semibold text-neutral-700 dark:text-gray-100">{{ translationService.translate('gdpr_title') }}</h4>
-          <p class="text-sm text-neutral-600 dark:text-gray-300">{{ translationService.translate('gdpr_desc') }}</p>
-        </div>
-        <div>
-          <h4 class="font-semibold text-neutral-700 dark:text-gray-100">{{ translationService.translate('privacy_title') }}</h4>
-          <p class="text-sm text-neutral-600 dark:text-gray-300">{{ translationService.translate('privacy_desc') }}</p>
-        </div>
-        <div>
-          <h4 class="font-semibold text-neutral-700 dark:text-gray-100">{{ translationService.translate('security_title') }}</h4>
-          <p class="text-sm text-neutral-600 dark:text-gray-300">{{ translationService.translate('security_desc') }}</p>
-        </div>
+    <div class="mt-6 grid gap-6 md:grid-cols-3">
+      <article class="iris-card p-6">
+        <h3 class="text-lg font-black text-white">Apoyo psicológico</h3>
+        <p class="mt-4 text-sm leading-6 text-[#C9C9D4]">Red de asistencia psicológica especializada para procesar el abuso emocional.</p>
+      </article>
+      <article class="iris-card p-6">
+        <h3 class="text-lg font-black text-white">Asesoría legal</h3>
+        <p class="mt-4 text-sm leading-6 text-[#C9C9D4]">Orientación jurídica gratuita sobre derechos, órdenes de alejamiento y denuncias.</p>
+      </article>
+      <article class="iris-card p-6">
+        <h3 class="text-lg font-black text-white">Guía de prevención</h3>
+        <p class="mt-4 text-sm leading-6 text-[#C9C9D4]">Material descargable con estrategias para establecer límites y protegerte.</p>
+      </article>
+    </div>
+
+    <div class="mt-24">
+      <div class="mx-auto max-w-3xl text-center">
+        <h2 class="text-3xl font-black tracking-tight text-white sm:text-4xl">
+          Diseñado para tu seguridad
+        </h2>
+      </div>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <article class="iris-card p-6 text-center">
+          <div class="mx-auto mb-5 text-3xl text-[#D4A7FF]">▱</div>
+          <h3 class="font-black text-white">Privacidad por diseño</h3>
+          <p class="mt-3 text-sm leading-6 text-[#C9C9D4]">Las simulaciones no se guardan. Tu historial se borra al cerrar.</p>
+        </article>
+        <article class="iris-card p-6 text-center">
+          <div class="mx-auto mb-5 text-3xl text-[#D4A7FF]">⌁</div>
+          <h3 class="font-black text-white">Datos ficticios</h3>
+          <p class="mt-3 text-sm leading-6 text-[#C9C9D4]">No introduzcas datos reales. El sistema funciona con perfiles anónimos.</p>
+        </article>
+        <article class="iris-card p-6 text-center">
+          <div class="mx-auto mb-5 text-3xl text-[#D4A7FF]">↪</div>
+          <h3 class="font-black text-white">Salida rápida</h3>
+          <p class="mt-3 text-sm leading-6 text-[#C9C9D4]">Botón siempre visible para cerrar la web instantáneamente.</p>
+        </article>
+        <article class="iris-card p-6 text-center">
+          <div class="mx-auto mb-5 text-3xl text-[#D4A7FF]">⌂</div>
+          <h3 class="font-black text-white">Alertas accesibles</h3>
+          <p class="mt-3 text-sm leading-6 text-[#C9C9D4]">Contactos de emergencia integrados en toda la experiencia.</p>
+        </article>
       </div>
     </div>
   </div>

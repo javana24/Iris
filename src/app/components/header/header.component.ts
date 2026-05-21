@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ThemeService } from '../../services/theme.service';
 import { NavigationService } from '../../services/navigation.service';
@@ -24,7 +25,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     public translationService: TranslationService,
     public themeService: ThemeService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -78,11 +80,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateTo(section: string): void {
-    this.navigationService.scrollToSection(section);
     this.isMobileMenuOpen = false;
+
+    if (this.router.url.split('?')[0] !== '/') {
+      this.router.navigateByUrl('/').then(() => {
+        requestAnimationFrame(() => this.navigationService.scrollToSection(section));
+      });
+      return;
+    }
+
+    this.navigationService.scrollToSection(section);
+  }
+
+  goToProfile(): void {
+    this.isMobileMenuOpen = false;
+    this.router.navigateByUrl('/perfil');
   }
 
   isActive(section: string): boolean {
     return this.activeSection === section;
+  }
+
+  isProfileRoute(): boolean {
+    return this.router.url.startsWith('/perfil');
   }
 }

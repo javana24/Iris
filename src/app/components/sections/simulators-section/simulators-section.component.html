@@ -1,114 +1,63 @@
-<section class="py-12 sm:py-16 bg-transparent dark:bg-neutral-950 transition-colors duration-300">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500">
-      {{ translationService.translate('simulators_title') }}
-    </h2>
-    <p class="mt-3 sm:mt-4 text-base sm:text-lg text-center text-neutral-600 dark:text-gray-400 max-w-3xl mx-auto">
-      {{ translationService.translate('simulators_desc') }}
-    </p>
+<section id="simuladores" class="iris-section bg-[#120C16]">
+  <div class="iris-shell">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="iris-kicker">Simulador conversacional</p>
+      <h2 class="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
+        Simulador IRIS
+      </h2>
+      <p class="iris-subtitle">
+        Entrena en un entorno seguro antes de enfrentarte a la realidad.
+      </p>
+    </div>
 
-    <div class="mt-8 sm:mt-12 flex flex-col lg:flex-row gap-6 sm:gap-8 items-start">
-      <!-- Left: Tabs and short info -->
-      <div class="w-full lg:w-80 flex-shrink-0 space-y-3 sm:space-y-4">
-        <div class="flex rounded-xl overflow-hidden border-2"
-          [ngClass]="isDarkMode ? 'border-gray-700' : 'border-gray-200'">
-          <button type="button" (click)="selectSimulator('iris')"
-            class="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-colors"
-            [ngClass]="selectedSimulator === 'iris'
-              ? 'bg-purple-600 text-white'
-              : (isDarkMode ? 'bg-gray-800 text-gray-400 hover:bg-gray-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')">
-            {{ translationService.translate('chat_role_ai') }}
-          </button>
-          <button type="button" (click)="selectSimulator('partner')"
-            class="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-colors"
-            [ngClass]="selectedSimulator === 'partner'
-              ? 'bg-purple-600 text-white'
-              : (isDarkMode ? 'bg-gray-800 text-gray-400 hover:bg-gray-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')">
-            {{ translationService.translate('sim_partner_role') }}
-          </button>
-        </div>
-        <p class="text-sm" [ngClass]="isDarkMode ? 'text-gray-400' : 'text-gray-600'">
-          <ng-container *ngIf="selectedSimulator === 'iris'">
-            {{ translationService.translate('sim_iris_desc') }}
-          </ng-container>
-          <ng-container *ngIf="selectedSimulator === 'partner'">
-            {{ translationService.translate('sim_partner_desc') }}
-          </ng-container>
-        </p>
+    <div class="mx-auto mt-12 max-w-2xl overflow-hidden rounded-2xl border border-[#AA6FE0]/40 bg-[#17151C] shadow-[0_30px_90px_rgba(0,0,0,0.45)]">
+      <div class="bg-[#5C452E] px-5 py-3 text-center text-xs font-black text-[#FFB830]">
+        ⚠ Modo entrenamiento: personaje ficticio generado por IA.
       </div>
 
-      <!-- Right: iPhone Simulator -->
-      <div class="w-full lg:sticky lg:top-24 flex-1 max-w-full flex justify-center lg:justify-end">
-        <div class="mx-auto w-full" style="max-width: 420px;">
-          <!-- iPhone Frame -->
-          <div class="rounded-[2.2rem] sm:rounded-[3rem] p-2.5 sm:p-3 shadow-2xl bg-gray-900">
-            <div class="rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden flex flex-col bg-black h-[min(75dvh,580px)] sm:h-[700px]">
-              <!-- Status Bar -->
-              <div class="px-4 sm:px-6 py-3 flex items-center justify-between flex-shrink-0 bg-gray-950">
-                <div class="text-xs font-semibold text-white">{{ currentTime }}</div>
-                <div class="w-20 h-6 bg-black rounded-full border border-gray-700"></div>
-                <div class="flex gap-1">
-                  <div class="w-4 h-4 bg-green-500 rounded-full"></div>
-                </div>
-              </div>
+      <div class="flex items-center justify-between border-b border-[#E53935]/25 bg-[#2A1720] px-5 py-3 text-xs font-black">
+        <span class="text-[#F1A6A6]">✱ ¿Necesitas ayuda real urgente?</span>
+        <span class="text-[#E53935]">016 · 112 · IAM 900 200 999</span>
+      </div>
 
-              <!-- Chat Header -->
-              <div class="px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-3 flex-shrink-0 bg-purple-600">
-                <div
-                  class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-400 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl">
-                  {{ selectedSimulator === 'iris' ? 'AI' : '💬' }}
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-white font-bold truncate text-sm sm:text-base">
-                    {{ selectedSimulator === 'iris' ? (translationService.translate('chat_role_ai') + ' Simulator') :
-                    translationService.translate('sim_partner_role') }}
-                  </div>
-                  <div class="text-purple-200 text-[11px] sm:text-xs">{{ translationService.translate('chat_online') }} · Nivel {{
-                    currentLevel }}</div>
-                </div>
-              </div>
+      <div class="grid grid-cols-2 border-b border-white/[0.08]">
+        <button
+          type="button"
+          (click)="selectSimulator('partner')"
+          class="py-4 text-sm font-black transition-colors"
+          [ngClass]="selectedSimulator === 'partner'
+            ? 'bg-[#2B2030] text-[#D4A7FF] shadow-[inset_0_-2px_0_#D4A7FF]'
+            : 'bg-[#17151C] text-[#9A9AA8] hover:bg-white/[0.04]'"
+        >
+          {{ translationService.translate('sim_partner_role') }}
+        </button>
+        <button
+          type="button"
+          (click)="selectSimulator('iris')"
+          class="py-4 text-sm font-black transition-colors"
+          [ngClass]="selectedSimulator === 'iris'
+            ? 'bg-[#2B2030] text-[#D4A7FF] shadow-[inset_0_-2px_0_#D4A7FF]'
+            : 'bg-[#17151C] text-[#9A9AA8] hover:bg-white/[0.04]'"
+        >
+          Análisis IRIS
+        </button>
+      </div>
 
-              <div
-                *ngIf="selectedSimulator === 'partner'"
-                class="flex-shrink-0 px-3 py-2 bg-amber-950/90 border-b border-amber-600/50 text-[11px] sm:text-xs leading-snug text-amber-100 text-center"
-                role="note"
-              >
-                {{ translationService.translate('sim_partner_training_strip') }}
-              </div>
-
-              <!-- Messages + Input: chat simulator -->
-              <div class="flex-1 overflow-hidden min-h-0 flex flex-col bg-gray-950">
-                <div class="flex-1 min-h-0 p-3 sm:p-4 overflow-hidden flex flex-col">
-                  <div [hidden]="selectedSimulator !== 'iris'" class="h-full min-h-0">
-                    <app-chat-simulator mode="iris" (safetyAlertTriggered)="onSafetyAlert()">
-                    </app-chat-simulator>
-                  </div>
-                  <div [hidden]="selectedSimulator !== 'partner'" class="h-full min-h-0">
-                    <app-chat-simulator mode="partner" (safetyAlertTriggered)="onSafetyAlert()">
-                    </app-chat-simulator>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Detected Flags Summary -->
-          <div *ngIf="hasDetectedRisk" class="mt-4 sm:mt-6 border border-red-500 rounded-2xl p-4"
-            [ngClass]="isDarkMode ? 'bg-red-900/20' : 'bg-red-50'">
-            <h4 class="font-bold text-red-600 mb-2 flex items-center gap-2">
-              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                </path>
-              </svg>
-              {{ translationService.translate('detection_title') }}
-            </h4>
-            <p class="text-sm" [ngClass]="isDarkMode ? 'text-gray-300' : 'text-gray-700'">
-              {{ translationService.translate('safety_alert_message') }}
-            </p>
-          </div>
+      <div class="h-[620px] bg-[#0F0B12] p-4 sm:p-6">
+        <div [hidden]="selectedSimulator !== 'iris'" class="h-full min-h-0">
+          <app-chat-simulator mode="iris" (safetyAlertTriggered)="onSafetyAlert()"></app-chat-simulator>
+        </div>
+        <div [hidden]="selectedSimulator !== 'partner'" class="h-full min-h-0">
+          <app-chat-simulator mode="partner" (safetyAlertTriggered)="onSafetyAlert()"></app-chat-simulator>
         </div>
       </div>
+    </div>
+
+    <div *ngIf="hasDetectedRisk" class="mx-auto mt-8 max-w-2xl rounded-2xl border border-[#E53935]/50 bg-[#6B1515]/30 p-5 text-[#F6D1D1]" role="alert">
+      <h3 class="text-lg font-black text-[#F1A6A6]">Señal de riesgo detectada</h3>
+      <p class="mt-2 text-sm leading-6">
+        {{ translationService.translate('safety_alert_message') }}
+      </p>
     </div>
   </div>
 </section>

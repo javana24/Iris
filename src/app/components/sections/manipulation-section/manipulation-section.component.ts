@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BeltId } from '../../../models/training-profile.model';
+import { TrainingProfileService } from '../../../services/training-profile.service';
 
 interface Question {
     text: string;
@@ -182,7 +184,9 @@ export class ManipulationSectionComponent {
     showFeedback: boolean = false;
     isCorrect: boolean = false;
 
-    constructor() { }
+    constructor(private trainingProfileService: TrainingProfileService) {
+        this.hydrateProgress();
+    }
 
     get activeBelt() {
         return this.belts.find(b => b.id === this.activeBeltId);
@@ -214,6 +218,7 @@ export class ManipulationSectionComponent {
             } else {
                 // Belt Completed!
                 belt.completed = true;
+                this.trainingProfileService.recordDojoCompletion(belt.id);
                 this.unlockNextBelt(belt.id);
             }
         } else {
@@ -238,6 +243,25 @@ export class ManipulationSectionComponent {
     resetSelection() {
         this.selectedOption = null;
         this.showFeedback = false;
+    }
+
+    private hydrateProgress(): void {
+        const progress = this.trainingProfileService.getSnapshot().progress;
+        const completedBelts = new Set<BeltId>(progress.completedBelts);
+        const order = this.belts.map((belt) => belt.id);
+        const nextUnlockedIndex = Math.min(completedBelts.size, order.length - 1);
+
+        this.belts = this.belts.map((belt, index) => ({
+            ...belt,
+            completed: completedBelts.has(belt.id),
+            locked: index > nextUnlockedIndex && !completedBelts.has(belt.id)
+        }));
+
+        this.activeBeltId = progress.currentBeltId;
+        const activeBelt = this.belts.find((belt) => belt.id === this.activeBeltId);
+        if (!activeBelt || activeBelt.locked) {
+            this.activeBeltId = this.belts.find((belt) => !belt.locked)?.id ?? 'white';
+        }
     }
 
     downloadCertificate() {

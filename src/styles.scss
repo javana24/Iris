@@ -5,11 +5,13 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    background: #0d0d0f;
   }
   
   body {
     font-family: 'Inter', sans-serif;
-    @apply antialiased;
+    background: #0d0d0f;
+    @apply antialiased text-[#EAEAEA];
   }
 
   section {
@@ -46,16 +48,36 @@
 
 @layer components {
   .nav-link {
-    @apply px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200;
-    @apply text-neutral-600 hover:bg-purple-100 hover:text-purple-800;
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
-    @apply dark:text-gray-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300;
-    @apply dark:focus-visible:ring-offset-neutral-900;
+    @apply rounded-full px-3 py-2 text-xs font-bold text-[#9A9AA8] transition-colors duration-200;
+    @apply hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D0D0F];
     
     &.active {
-      @apply bg-purple-600 text-white hover:bg-purple-700 hover:text-white;
-      @apply dark:bg-purple-600 dark:text-white;
+      @apply bg-white/5 text-white shadow-[inset_0_-2px_0_#AA6FE0] hover:bg-white/10;
     }
+  }
+
+  .iris-section {
+    @apply relative border-t border-white/[0.06] bg-[#0D0D0F] px-4 py-20 sm:px-6 lg:px-8;
+  }
+
+  .iris-shell {
+    @apply mx-auto max-w-6xl;
+  }
+
+  .iris-card {
+    @apply rounded-2xl border border-white/[0.08] bg-[#1E1E24] shadow-[0_18px_60px_rgba(0,0,0,0.28)] transition-transform duration-200 ease-out hover:-translate-y-1;
+  }
+
+  .iris-kicker {
+    @apply text-xs font-black uppercase tracking-[0.2em] text-[#AA6FE0];
+  }
+
+  .iris-heading {
+    @apply text-balance text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl;
+  }
+
+  .iris-subtitle {
+    @apply mx-auto mt-4 max-w-3xl text-pretty text-sm leading-7 text-[#C9C9D4] sm:text-base;
   }
 
   .skip-link {

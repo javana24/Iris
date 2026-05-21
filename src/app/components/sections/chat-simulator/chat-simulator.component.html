@@ -1,29 +1,35 @@
-<div class="flex h-full min-h-0 flex-col gap-3 sm:gap-4">
+<div class="flex h-full min-h-0 flex-col">
   <div
     #messagesContainer
-    class="flex-1 min-h-0 bg-amber-50 dark:bg-neutral-900 rounded-xl p-3 sm:p-4 overflow-y-auto border border-amber-100 dark:border-neutral-700 scrollbar-soft"
+    class="scrollbar-soft flex-1 space-y-4 overflow-y-auto rounded-xl bg-transparent pr-1"
   >
-    <div *ngIf="messages.length === 0" class="text-sm text-neutral-500 dark:text-gray-400">
-      {{ translationService.translate(emptyHintKey) }}
+    <div *ngIf="messages.length === 0" class="py-10 text-center">
+      <p class="mx-auto max-w-sm text-sm leading-6 text-[#9A9AA8]">
+        {{ translationService.translate(emptyHintKey) }}
+      </p>
     </div>
-    <div *ngFor="let msg of messages" class="mb-3">
+
+    <div *ngFor="let msg of messages" class="flex" [ngClass]="msg.role === 'user' && !msg.isSafetyAlert ? 'justify-end' : 'justify-start'">
       <div
         *ngIf="msg.isSafetyAlert"
         role="alert"
-        class="max-w-full px-4 py-3 rounded-lg text-sm border-2 border-amber-500 ring-2 ring-amber-400/40 bg-amber-50 dark:bg-amber-950/50 dark:border-amber-400"
+        class="w-full rounded-xl border border-[#E53935]/55 bg-[#6B1515]/35 p-4 text-sm leading-6 text-[#F6D1D1] ring-1 ring-[#E53935]/20"
       >
-        <div class="font-semibold text-amber-800 dark:text-amber-200 mb-1 flex items-center gap-2">
-          <span aria-hidden="true">⚠️</span>
+        <div class="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#F1A6A6]">
+          <span aria-hidden="true">✱</span>
           {{ translationService.translate('safety_alert_title') }} · {{ msg.timestamp }}
         </div>
-        <p class="text-amber-900 dark:text-amber-100">{{ msg.text }}</p>
+        <p>{{ msg.text }}</p>
       </div>
+
       <div
         *ngIf="!msg.isSafetyAlert"
-        class="inline-block max-w-[80%] px-3 py-2 rounded-lg text-sm"
-        [class]="msg.role === 'assistant' ? 'bg-gray-200 text-neutral-800 dark:bg-neutral-700 dark:text-gray-100 rounded-bl-none' : 'bg-purple-600 text-white rounded-br-none'"
+        class="max-w-[82%] rounded-xl px-4 py-3 text-sm leading-6 shadow-lg"
+        [ngClass]="msg.role === 'assistant'
+          ? 'bg-[#2A242E] text-[#EAEAEA]'
+          : 'border border-[#AA6FE0]/35 bg-[#3A2155] text-white'"
       >
-        <div class="text-[10px] opacity-70 mb-1">
+        <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.12em] opacity-60">
           {{ msg.role === 'assistant' ? otherRoleLabel : translationService.translate('chat_role_self') }} · {{ msg.timestamp }}
         </div>
         {{ msg.text }}
@@ -31,45 +37,45 @@
     </div>
   </div>
 
-  <div class="w-full rounded-xl bg-black/5 dark:bg-white/5 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-    <div class="flex items-center gap-2 w-full">
-    <label for="chat-input" class="sr-only">{{ translationService.translate('chat_input_placeholder') }}</label>
-    <input
-      id="chat-input"
-      type="text"
-      class="flex-1 min-w-0 px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-base sm:text-sm text-neutral-800 dark:text-gray-100 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60"
-      [placeholder]="translationService.translate('chat_input_placeholder')"
-      [attr.aria-label]="translationService.translate('chat_input_placeholder')"
-      [(ngModel)]="inputText"
-      (keyup.enter)="sendMessage()"
-    />
-    <button
-      type="button"
-      class="shrink-0 px-3 sm:px-4 py-2.5 rounded-lg bg-purple-600 text-white font-semibold transition-colors duration-200 hover:bg-purple-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/70 whitespace-nowrap"
-      (click)="sendMessage()"
-    >
-      {{ translationService.translate('chat_send') }}
-    </button>
-  </div>
+  <div class="mt-4 rounded-2xl border border-white/[0.08] bg-[#17131A] p-3">
+    <div class="flex items-center gap-2">
+      <label for="chat-input" class="sr-only">{{ translationService.translate('chat_input_placeholder') }}</label>
+      <input
+        id="chat-input"
+        type="text"
+        class="min-w-0 flex-1 rounded-xl border border-white/[0.08] bg-[#0F0B12] px-4 py-3 text-base text-[#EAEAEA] placeholder:text-[#6F6F7B] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]/70 sm:text-sm"
+        [placeholder]="translationService.translate('chat_input_placeholder')"
+        [attr.aria-label]="translationService.translate('chat_input_placeholder')"
+        [(ngModel)]="inputText"
+        (keyup.enter)="sendMessage()"
+      />
+      <button
+        type="button"
+        class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#D4A7FF] text-[#1A0D24] transition-transform duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]/70"
+        (click)="sendMessage()"
+        [attr.aria-label]="translationService.translate('chat_send')"
+      >
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m0 0l-6-6m6 6l-6 6" />
+        </svg>
+      </button>
+    </div>
+
+    <p class="mt-3 text-center text-[11px] leading-5 text-[#F1A6A6]/90" aria-live="polite">
+      {{ translationService.translate('chat_help_resources') }}
+    </p>
   </div>
 
-  <p
-    class="text-[11px] sm:text-xs text-center text-amber-200/90 dark:text-amber-300/90 leading-snug px-1"
-    aria-live="polite"
-  >
-    {{ translationService.translate('chat_help_resources') }}
-  </p>
-
-  <div *ngIf="isLoading" class="text-sm text-neutral-500 dark:text-gray-400">
+  <div *ngIf="isLoading" class="mt-3 text-sm text-[#9A9AA8]">
     {{ translationService.translate(loadingKey) }}
   </div>
-  <div *ngIf="errorMessage" class="text-sm text-red-600">
+  <div *ngIf="errorMessage" class="mt-3 text-sm text-[#F1A6A6]">
     {{ errorMessage }}
   </div>
 
   <button
     type="button"
-    class="text-sm text-neutral-500 hover:text-neutral-700 dark:text-gray-400 dark:hover:text-gray-200"
+    class="mt-3 self-start text-xs font-bold text-[#9A9AA8] transition-colors duration-200 hover:text-white"
     (click)="clearChat()"
   >
     {{ translationService.translate('chat_clear') }}
