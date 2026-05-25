@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslationService } from '../../services/translation.service';
+import { Router } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { NavigationService } from '../../services/navigation.service';
 import { Subscription } from 'rxjs';
@@ -14,7 +14,6 @@ import { Subscription } from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   isDarkMode = false;
-  currentLang = 'es';
   isMobileMenuOpen = false;
   activeSection = 'inicio';
   
@@ -22,21 +21,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private isScrollTicking = false;
 
   constructor(
-    public translationService: TranslationService,
     public themeService: ThemeService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.subscriptions.add(
       this.themeService.getCurrentTheme().subscribe(theme => {
         this.isDarkMode = theme === 'dark';
-      })
-    );
-
-    this.subscriptions.add(
-      this.translationService.getCurrentLanguage().subscribe(lang => {
-        this.currentLang = lang;
       })
     );
 
@@ -68,21 +61,33 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.themeService.toggleTheme();
   }
 
-  toggleLanguage(): void {
-    const newLang = this.currentLang === 'es' ? 'en' : 'es';
-    this.translationService.setLanguage(newLang);
-  }
-
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 
   navigateTo(section: string): void {
-    this.navigationService.scrollToSection(section);
     this.isMobileMenuOpen = false;
+
+    if (this.router.url.split('?')[0] !== '/') {
+      this.router.navigateByUrl('/').then(() => {
+        requestAnimationFrame(() => this.navigationService.scrollToSection(section));
+      });
+      return;
+    }
+
+    this.navigationService.scrollToSection(section);
+  }
+
+  goToProfile(): void {
+    this.isMobileMenuOpen = false;
+    this.router.navigateByUrl('/perfil');
   }
 
   isActive(section: string): boolean {
     return this.activeSection === section;
+  }
+
+  isProfileRoute(): boolean {
+    return this.router.url.startsWith('/perfil');
   }
 }

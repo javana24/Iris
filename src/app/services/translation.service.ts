@@ -23,7 +23,7 @@ export class TranslationService {
       hero_title: "Proyecto IRIS",
       hero_subtitle: "Entrenamiento con IA para detectar la violencia invisible.",
       hero_uvp_label: "Propuesta de Valor",
-      hero_uvp_main: "\"Tu entrenador personal de defensa emocional\".",
+      hero_uvp_main: "\"Tu entrenamiento seguro para fortalecer límites psicológicos y emocionales\".",
       hero_uvp_desc_1: "En lugar de solo escuchar charlas teóricas, ",
       hero_uvp_desc_strong: "vives una simulación",
       hero_uvp_desc_2: " y aprendes a defenderte en un entorno seguro.",
@@ -458,23 +458,19 @@ export class TranslationService {
   }
 
   getCurrentLanguageValue(): Language {
-    return this.currentLanguage$.value;
+    return 'es';
   }
 
-  setLanguage(lang: Language): void {
-    this.currentLanguage$.next(lang);
-    localStorage.setItem('language', lang);
+  setLanguage(_lang: Language): void {
+    this.currentLanguage$.next('es');
+    localStorage.setItem('language', 'es');
   }
 
   translate(key: string): string {
-    const lang = this.currentLanguage$.value;
-    return this.translations[lang]?.[key] || key;
+    return this.translations.es[key] || key;
   }
 
   constructor() {
-    const savedLang = localStorage.getItem('language') as Language;
-    if (savedLang && (savedLang === 'es' || savedLang === 'en')) {
-      this.currentLanguage$.next(savedLang);
-    }
+    localStorage.setItem('language', 'es');
   }
 }

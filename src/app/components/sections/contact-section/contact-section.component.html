@@ -1,20 +1,25 @@
-<section id="contacto"
-  class="py-16 bg-gradient-to-br from-purple-50 via-amber-50 to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-colors duration-300">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-700 dark:text-purple-500 mb-4">
-      {{ translationService.translate('contact_title') }}
+<section id="contacto" class="relative overflow-hidden border-t border-white/[0.06] bg-[#0D0D0F] px-4 py-24 sm:px-6 lg:px-8">
+  <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(123,47,190,0.2),transparent_38%)]"></div>
+  <div class="iris-shell relative text-center">
+    <h2 class="mx-auto max-w-3xl text-balance text-5xl font-light leading-tight tracking-[-0.04em] text-white sm:text-6xl">
+      Convierte la prevención en práctica.
     </h2>
-    <p class="text-lg text-center text-neutral-600 dark:text-gray-400 mb-12">
-      {{ translationService.translate('contact_desc') }}
+    <p class="iris-subtitle">
+      IRIS ayuda a transformar la sensibilización en entrenamiento real: conversación, análisis, límites psicológicos y emocionales, y recursos de ayuda.
     </p>
-
-    <div class="max-w-3xl mx-auto text-center animate-fade-in-up">
-      <div
-        class="p-8 bg-white/50 dark:bg-neutral-800/50 rounded-2xl border border-purple-100 dark:border-neutral-700 backdrop-blur-sm">
-        <p class="text-xl md:text-2xl font-medium text-purple-800 dark:text-purple-300">
-          {{ translationService.translate('contact_desc') }}
-        </p>
-      </div>
+    <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+      <a
+        href="#simuladores"
+        class="inline-flex items-center justify-center rounded-full bg-[#7B2FBE] px-8 py-4 text-sm font-black text-white shadow-[0_18px_44px_rgba(123,47,190,0.35)] transition-transform duration-200 hover:-translate-y-1 hover:bg-[#9B59D6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]"
+      >
+        Probar simulador
+      </a>
+      <a
+        href="mailto:contacto@proyectoiris.local"
+        class="inline-flex items-center justify-center rounded-full border border-white/20 px-8 py-4 text-sm font-black text-white transition-colors duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]"
+      >
+        Contactar para piloto educativo
+      </a>
     </div>
   </div>
 </section>

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BeltId } from '../../../models/training-profile.model';
+import { TrainingProfileService } from '../../../services/training-profile.service';
 
 interface Question {
     text: string;
@@ -30,7 +32,7 @@ export class ManipulationSectionComponent {
     belts: Belt[] = [
         {
             id: 'white',
-            name: 'Cinturón Blanco',
+            name: 'Reconociendo la Manipulación',
             color: 'bg-white text-neutral-900 border-neutral-200',
             locked: false,
             completed: false,
@@ -67,7 +69,7 @@ export class ManipulationSectionComponent {
         },
         {
             id: 'yellow',
-            name: 'Cinturón Amarillo',
+            name: 'Límites Saludables',
             color: 'bg-amber-400 text-amber-950 border-amber-500',
             locked: true,
             completed: false,
@@ -104,7 +106,7 @@ export class ManipulationSectionComponent {
         },
         {
             id: 'purple',
-            name: 'Cinturón Morado',
+            name: 'Comunicación Asertiva',
             color: 'bg-purple-600 text-white border-purple-700',
             locked: true,
             completed: false,
@@ -141,7 +143,7 @@ export class ManipulationSectionComponent {
         },
         {
             id: 'black',
-            name: 'Cinturón Negro',
+            name: 'Espacio Seguro',
             color: 'bg-neutral-900 text-white border-neutral-700 shadow-xl shadow-black/50',
             locked: true,
             completed: false,
@@ -182,7 +184,9 @@ export class ManipulationSectionComponent {
     showFeedback: boolean = false;
     isCorrect: boolean = false;
 
-    constructor() { }
+    constructor(private trainingProfileService: TrainingProfileService) {
+        this.hydrateProgress();
+    }
 
     get activeBelt() {
         return this.belts.find(b => b.id === this.activeBeltId);
@@ -214,6 +218,7 @@ export class ManipulationSectionComponent {
             } else {
                 // Belt Completed!
                 belt.completed = true;
+                this.trainingProfileService.recordDojoCompletion(belt.id);
                 this.unlockNextBelt(belt.id);
             }
         } else {
@@ -240,6 +245,25 @@ export class ManipulationSectionComponent {
         this.showFeedback = false;
     }
 
+    private hydrateProgress(): void {
+        const progress = this.trainingProfileService.getSnapshot().progress;
+        const completedBelts = new Set<BeltId>(progress.completedBelts);
+        const order = this.belts.map((belt) => belt.id);
+        const nextUnlockedIndex = Math.min(completedBelts.size, order.length - 1);
+
+        this.belts = this.belts.map((belt, index) => ({
+            ...belt,
+            completed: completedBelts.has(belt.id),
+            locked: index > nextUnlockedIndex && !completedBelts.has(belt.id)
+        }));
+
+        this.activeBeltId = progress.currentBeltId;
+        const activeBelt = this.belts.find((belt) => belt.id === this.activeBeltId);
+        if (!activeBelt || activeBelt.locked) {
+            this.activeBeltId = this.belts.find((belt) => !belt.locked)?.id ?? 'white';
+        }
+    }
+
     downloadCertificate() {
         const printWindow = window.open('', '', 'width=800,height=600');
         if (printWindow) {
@@ -259,10 +283,10 @@ export class ManipulationSectionComponent {
                 <body>
                     <div class="logo">👁️ IRIS</div>
                     <h1>Certificado de Excelencia</h1>
-                    <h2>En Detección y Defensa Mental</h2>
+                    <h2>En Detección y Dojo de Defensa</h2>
                     <p>Este documento certifica que</p>
                     <div class="name">Agente del Cambio</div>
-                    <p>Ha completado con éxito el entrenamiento de Cinturón Negro en el Dojo IRIS.</p>
+                    <p>Ha completado con éxito la ruta de niveles del Dojo IRIS.</p>
                     <p class="date">Fecha: ${new Date().toLocaleDateString()}</p>
                     <script>
                         window.onload = function() { window.print(); }
