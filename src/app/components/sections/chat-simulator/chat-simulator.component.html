@@ -26,8 +26,8 @@
         *ngIf="!msg.isSafetyAlert"
         class="max-w-[82%] rounded-xl px-4 py-3 text-sm leading-6 shadow-lg"
         [ngClass]="msg.role === 'assistant'
-          ? 'bg-[#2A242E] text-[#EAEAEA]'
-          : 'border border-[#AA6FE0]/35 bg-[#3A2155] text-white'"
+          ? 'border border-slate-200 bg-white text-slate-800 dark:border-transparent dark:bg-[#2A242E] dark:text-[#EAEAEA]'
+          : 'semantic-contrast border border-[#AA6FE0]/35 bg-[#5F1F93] text-white shadow-[0_14px_34px_rgba(95,31,147,0.28)] dark:bg-[#3A2155]'"
       >
         <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.12em] opacity-60">
           {{ msg.role === 'assistant' ? otherRoleLabel : translationService.translate('chat_role_self') }} · {{ msg.timestamp }}
@@ -37,13 +37,13 @@
     </div>
   </div>
 
-  <div class="mt-4 rounded-2xl border border-white/[0.08] bg-[#17131A] p-3">
+  <div class="mt-4 rounded-2xl border border-slate-200 bg-white/85 p-3 shadow-sm dark:border-white/[0.08] dark:bg-[#17131A]">
     <div class="flex items-center gap-2">
       <label for="chat-input" class="sr-only">{{ translationService.translate('chat_input_placeholder') }}</label>
       <input
         id="chat-input"
         type="text"
-        class="min-w-0 flex-1 rounded-xl border border-white/[0.08] bg-[#0F0B12] px-4 py-3 text-base text-[#EAEAEA] placeholder:text-[#6F6F7B] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]/70 sm:text-sm"
+        class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]/70 dark:border-white/[0.08] dark:bg-[#0F0B12] dark:text-[#EAEAEA] dark:placeholder:text-[#6F6F7B] sm:text-sm"
         [placeholder]="translationService.translate('chat_input_placeholder')"
         [attr.aria-label]="translationService.translate('chat_input_placeholder')"
         [(ngModel)]="inputText"
@@ -75,7 +75,7 @@
 
   <button
     type="button"
-    class="mt-3 self-start text-xs font-bold text-[#9A9AA8] transition-colors duration-200 hover:text-white"
+    class="mt-3 self-start text-xs font-bold text-slate-600 transition-colors duration-200 hover:text-purple-700 dark:text-[#9A9AA8] dark:hover:text-white"
     (click)="clearChat()"
   >
     {{ translationService.translate('chat_clear') }}

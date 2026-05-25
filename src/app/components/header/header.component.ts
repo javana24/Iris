@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { TranslationService } from '../../services/translation.service';
 import { ThemeService } from '../../services/theme.service';
 import { NavigationService } from '../../services/navigation.service';
 import { Subscription } from 'rxjs';
@@ -15,7 +14,6 @@ import { Subscription } from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   isDarkMode = false;
-  currentLang = 'es';
   isMobileMenuOpen = false;
   activeSection = 'inicio';
   
@@ -23,7 +21,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private isScrollTicking = false;
 
   constructor(
-    public translationService: TranslationService,
     public themeService: ThemeService,
     private navigationService: NavigationService,
     private router: Router
@@ -33,12 +30,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.themeService.getCurrentTheme().subscribe(theme => {
         this.isDarkMode = theme === 'dark';
-      })
-    );
-
-    this.subscriptions.add(
-      this.translationService.getCurrentLanguage().subscribe(lang => {
-        this.currentLang = lang;
       })
     );
 
@@ -68,11 +59,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
-  }
-
-  toggleLanguage(): void {
-    const newLang = this.currentLang === 'es' ? 'en' : 'es';
-    this.translationService.setLanguage(newLang);
   }
 
   toggleMobileMenu(): void {

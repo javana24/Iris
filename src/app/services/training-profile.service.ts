@@ -1,13 +1,15 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { BeltId, TrainingProfileState } from '../models/training-profile.model';
+import { FirebaseAuthService } from './firebase-auth.service';
+import { FirebaseTrainingProfileRepository } from './firebase-training-profile.repository';
 
 const STORAGE_KEY = 'iris.training-profile.v1';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TrainingProfileService {
+export class TrainingProfileService implements OnDestroy {
   private readonly defaultState: TrainingProfileState = {
     profile: {
       alias: 'Invitada IRIS',
@@ -19,7 +21,7 @@ export class TrainingProfileService {
     progress: {
       totalXp: 0,
       level: 1,
-      rank: 'Aprendiz de defensa emocional',
+      rank: 'Rank S-01',
       streakDays: 0,
       calmMinutes: 12,
       dailyProgressPercent: 0,
@@ -31,6 +33,26 @@ export class TrainingProfileService {
 
   private stateSubject = new BehaviorSubject<TrainingProfileState>(this.loadState());
   readonly state$ = this.stateSubject.asObservable();
+  private readonly subscriptions = new Subscription();
+  private hasHydratedFromRemote = false;
+
+  constructor(
+    private firebaseAuthService: FirebaseAuthService,
+    private firebaseProfileRepository: FirebaseTrainingProfileRepository
+  ) {
+    this.subscriptions.add(
+      this.firebaseAuthService.currentUser$.subscribe((user) => {
+        if (user && !this.hasHydratedFromRemote) {
+          this.hasHydratedFromRemote = true;
+          this.hydrateFromFirebase();
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
   getSnapshot(): TrainingProfileState {
     return this.stateSubject.value;
@@ -109,6 +131,22 @@ export class TrainingProfileService {
   private persist(state: TrainingProfileState): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     this.stateSubject.next(state);
+    this.firebaseProfileRepository.saveProfile(state).catch((error) => {
+      console.error('No se pudo sincronizar el perfil con Firebase:', error);
+    });
+  }
+
+  private hydrateFromFirebase(): void {
+    this.firebaseProfileRepository.loadProfile()
+      .then((remoteState) => {
+        if (!remoteState) return;
+        const normalizedState = this.normalizeState(remoteState);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedState));
+        this.stateSubject.next(normalizedState);
+      })
+      .catch((error) => {
+        console.error('No se pudo cargar el perfil desde Firebase:', error);
+      });
   }
 
   private buildInitials(alias: string): string {
@@ -131,13 +169,28 @@ export class TrainingProfileService {
   }
 
   private calculateLevel(totalXp: number): number {
-    return Math.max(1, Math.floor(totalXp / 250) + 1);
+    if (totalXp <= 0) return 1;
+    let level = 1;
+    while (level < 500 && this.xpForLevel(level + 1) <= totalXp) {
+      level++;
+    }
+    return level;
   }
 
   private getRank(level: number): string {
-    if (level >= 5) return 'Guardiana de límites';
-    if (level >= 3) return 'Detectora de patrones';
-    return 'Aprendiz de defensa emocional';
+    if (level >= 350) return 'IRIS Vanguard';
+    if (level >= 240) return 'Level Omega';
+    if (level >= 160) return 'Neo-Kyoto';
+    if (level >= 100) return 'Cyber-Infiltrator';
+    if (level >= 50) return 'Operative II';
+    if (level >= 25) return 'Operative I';
+    if (level >= 10) return 'Cadete Táctica';
+    return 'Rank S-01';
+  }
+
+  private xpForLevel(level: number): number {
+    const safeLevel = Math.min(Math.max(level, 1), 500);
+    return Math.floor(120 * Math.pow(safeLevel, 1.35));
   }
 
   private getNextBeltId(beltId: BeltId): BeltId {

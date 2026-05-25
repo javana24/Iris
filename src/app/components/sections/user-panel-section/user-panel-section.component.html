@@ -7,12 +7,12 @@
             {{ state.profile.avatarInitials }}
           </div>
           <div class="min-w-0 flex-1">
-            <p class="iris-kicker">Panel personal</p>
+            <p class="iris-kicker">Protocolo activo</p>
             <h2 class="mt-2 text-3xl font-black tracking-tight text-white">
               {{ state.profile.alias }}
             </h2>
             <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">
-              Perfil anónimo local inspirado en la app móvil. La versión web no guarda datos sensibles ni sincroniza con Firebase todavía.
+              Perfil local inspirado en la app móvil. Cuando añadas la configuración Web App de Firebase, sincronizará con Firestore.
             </p>
           </div>
         </div>
@@ -41,15 +41,15 @@
             <p class="mt-2 text-3xl font-black text-[#D4A7FF]">{{ state.progress.level }}</p>
           </div>
           <div class="rounded-2xl border border-white/[0.08] bg-[#17151C] p-5">
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">XP</p>
+            <p class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">XP totales</p>
             <p class="mt-2 text-3xl font-black text-[#D4A7FF]">{{ state.progress.totalXp }}</p>
           </div>
           <div class="rounded-2xl border border-white/[0.08] bg-[#17151C] p-5">
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">Racha</p>
+            <p class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">Días en racha</p>
             <p class="mt-2 text-3xl font-black text-[#FFB830]">{{ state.progress.streakDays }} días</p>
           </div>
           <div class="rounded-2xl border border-white/[0.08] bg-[#17151C] p-5">
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">Calma</p>
+            <p class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">Minutos de calma</p>
             <p class="mt-2 text-3xl font-black text-[#4CAF50]">{{ state.progress.calmMinutes }} min</p>
           </div>
         </div>
@@ -58,13 +58,13 @@
       <article *ngIf="state$ | async as state" class="iris-card p-6 sm:p-8">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p class="iris-kicker">Dashboard de progreso</p>
+            <p class="iris-kicker">Progreso de entrenamiento</p>
             <h2 class="mt-2 text-3xl font-black tracking-tight text-white">
               {{ state.progress.rank }}
             </h2>
           </div>
           <span class="rounded-full bg-[#232329] px-4 py-2 text-xs font-black text-[#C9C9D4]">
-            {{ state.progress.completedBelts.length }} / 4 cinturones
+            {{ state.progress.completedBelts.length }} / 4 módulos
           </span>
         </div>
 
@@ -84,13 +84,13 @@
         <div class="mt-8 grid gap-4 md:grid-cols-3">
           <button type="button" (click)="navigateToLandingSection('simuladores')" class="rounded-2xl border border-[#AA6FE0]/25 bg-[#17151C] p-5 text-left transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]">
             <p class="text-2xl">💬</p>
-            <h3 class="mt-4 font-black text-white">Chat IRIS</h3>
-            <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">Entrena una conversación y revisa alertas.</p>
+            <h3 class="mt-4 font-black text-white">Simulador de Pareja</h3>
+            <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">Practica conversaciones y reconoce señales de alerta.</p>
           </button>
           <button type="button" (click)="navigateToLandingSection('simulacion')" class="rounded-2xl border border-[#AA6FE0]/25 bg-[#17151C] p-5 text-left transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]">
             <p class="text-2xl">🥋</p>
             <h3 class="mt-4 font-black text-white">Dojo</h3>
-            <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">Completa cinturones y sube de nivel.</p>
+            <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">Completa módulos y sube de nivel.</p>
           </button>
           <button type="button" (click)="navigateToLandingSection('alineacion')" class="rounded-2xl border border-[#E53935]/25 bg-[#2A1720] p-5 text-left transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E53935]">
             <p class="text-2xl">✱</p>
@@ -102,8 +102,8 @@
         <div class="mt-8 rounded-2xl border border-white/[0.08] bg-[#0F0B12] p-5">
           <p class="text-sm font-black text-white">Estado de sincronización</p>
           <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">
-            Local en navegador. En móvil estos datos se sincronizan con Firebase/Firestore y Room;
-            en web queda preparado para conectar una capa de auth/perfil real más adelante.
+            Local en navegador con adaptador Firebase preparado. En móvil estos datos se sincronizan con Firebase/Firestore y Room;
+            en web se activará al rellenar la configuración Firebase y disponer de sesión autenticada.
           </p>
         </div>
       </article>

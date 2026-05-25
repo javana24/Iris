@@ -3,7 +3,7 @@ export type BeltId = 'white' | 'yellow' | 'purple' | 'black';
 export interface UserProfile {
   alias: string;
   avatarInitials: string;
-  preferredLanguage: 'es' | 'en';
+  preferredLanguage: 'es';
   notificationsEnabled: boolean;
   dailyReminder: string;
 }

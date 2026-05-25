@@ -54,6 +54,21 @@
       </button>
       <button
         type="button"
+        (click)="toggleTheme()"
+        class="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-[#C9C9D4] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#AA6FE0]/50 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]"
+        [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'"
+      >
+        <svg *ngIf="isDarkMode" class="h-5 w-5 transition-transform duration-200 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36-6.36l-1.42 1.42M7.06 16.94l-1.42 1.42m12.72 0l-1.42-1.42M7.06 7.06 5.64 5.64M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+        <svg *ngIf="!isDarkMode" class="h-5 w-5 transition-transform duration-200 group-hover:-rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 12.79A8.5 8.5 0 1111.21 3 6.5 6.5 0 0021 12.79z" />
+        </svg>
+      </button>
+      <button
+        type="button"
         (click)="goToProfile()"
         [ngClass]="isProfileRoute() ? 'border-[#AA6FE0]/70 bg-[#7B2FBE]/25 text-white shadow-[0_10px_30px_rgba(123,47,190,0.25)]' : 'border-white/10 bg-white/[0.03] text-[#C9C9D4]'"
         class="group inline-flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-200 hover:-translate-y-0.5 hover:border-[#AA6FE0]/50 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]"
@@ -85,11 +100,18 @@
       </button>
       <button
         type="button"
-        (click)="toggleLanguage()"
-        class="min-w-10 rounded-full border border-white/10 px-3 py-2 text-[11px] font-black uppercase text-[#C9C9D4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/70"
-        aria-label="Cambiar idioma"
+        (click)="toggleTheme()"
+        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/10 text-[#EAEAEA] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/70"
+        [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'"
       >
-        {{ currentLang.toUpperCase() }}
+        <svg *ngIf="isDarkMode" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36-6.36l-1.42 1.42M7.06 16.94l-1.42 1.42m12.72 0l-1.42-1.42M7.06 7.06 5.64 5.64M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+        <svg *ngIf="!isDarkMode" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 12.79A8.5 8.5 0 1111.21 3 6.5 6.5 0 0021 12.79z" />
+        </svg>
       </button>
       <button
         type="button"
