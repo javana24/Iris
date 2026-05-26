@@ -12,7 +12,7 @@
               {{ state.profile.alias }}
             </h2>
             <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">
-              Perfil local inspirado en la app móvil. Cuando añadas la configuración Web App de Firebase, sincronizará con Firestore.
+              Perfil inspirado en la app móvil. Si hay sesión autenticada, el progreso se sincroniza con Firestore; si no, se conserva localmente.
             </p>
           </div>
         </div>
@@ -102,8 +102,7 @@
         <div class="mt-8 rounded-2xl border border-white/[0.08] bg-[#0F0B12] p-5">
           <p class="text-sm font-black text-white">Estado de sincronización</p>
           <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">
-            Local en navegador con adaptador Firebase preparado. En móvil estos datos se sincronizan con Firebase/Firestore y Room;
-            en web se activará al rellenar la configuración Firebase y disponer de sesión autenticada.
+            Firebase ya está configurado en web. Con una sesión autenticada se sincroniza con Firestore; sin sesión, IRIS mantiene el progreso localmente.
           </p>
         </div>
       </article>

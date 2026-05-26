@@ -22,22 +22,22 @@
             [disabled]="belt.locked"
             class="group relative flex w-full items-center gap-5 rounded-2xl border p-5 text-left transition-transform duration-200 hover:-translate-y-1 disabled:hover:translate-y-0"
             [ngClass]="{
-              'border-[#AA6FE0]/50 bg-[#1E1E24] text-white shadow-[0_18px_60px_rgba(123,47,190,0.16)]': activeBeltId === belt.id,
-              'border-white/[0.08] bg-[#17151C] text-[#C9C9D4]': activeBeltId !== belt.id && !belt.locked,
-              'cursor-not-allowed border-white/[0.05] bg-[#17151C]/60 text-[#6F6F7B]': belt.locked
+              'border-[#AA6FE0]/50 bg-purple-50 text-slate-900 shadow-[0_18px_60px_rgba(123,47,190,0.12)] dark:bg-[#1E1E24] dark:text-white': activeBeltId === belt.id,
+              'border-slate-200 bg-white text-slate-700 dark:border-white/[0.08] dark:bg-[#17151C] dark:text-[#C9C9D4]': activeBeltId !== belt.id && !belt.locked,
+              'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-500 dark:border-white/[0.05] dark:bg-[#17151C]/60 dark:text-[#6F6F7B]': belt.locked
             }"
           >
             <span
               class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border font-black"
               [ngClass]="{
                 'border-[#D4A7FF] bg-[#D4A7FF] text-[#1A0D24]': belt.completed,
-                'border-[#AA6FE0] bg-[#7B2FBE]/20 text-[#D4A7FF]': activeBeltId === belt.id && !belt.completed,
-                'border-white/10 bg-[#232329] text-[#6F6F7B]': belt.locked
+                'border-[#AA6FE0] bg-purple-100 text-[#6F2BB0] dark:bg-[#7B2FBE]/20 dark:text-[#D4A7FF]': activeBeltId === belt.id && !belt.completed,
+                'border-slate-200 bg-white text-slate-500 dark:border-white/10 dark:bg-[#232329] dark:text-[#6F6F7B]': belt.locked
               }"
             >
               <span *ngIf="belt.completed">✓</span>
               <span *ngIf="!belt.completed && !belt.locked">{{ i + 1 }}</span>
-              <span *ngIf="belt.locked">⌘</span>
+              <span *ngIf="belt.locked">🔒</span>
             </span>
             <span class="min-w-0">
               <span class="block text-lg font-black">{{ belt.name }}</span>

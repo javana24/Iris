@@ -103,7 +103,7 @@ export class ChatSimulatorComponent {
       },
       error: (err) => {
         console.error('ChatSimulator error:', err);
-        this.errorMessage = this.translationService.translate('ai_response_error');
+        this.errorMessage = this.resolveErrorMessage(err);
         this.isLoading = false;
       },
       complete: () => {
@@ -116,6 +116,18 @@ export class ChatSimulatorComponent {
     this.messages = [];
     this.inputText = '';
     this.errorMessage = '';
+  }
+
+  private resolveErrorMessage(error: unknown): string {
+    const status = typeof error === 'object' && error !== null && 'status' in error
+      ? Number((error as { status?: unknown }).status)
+      : 0;
+
+    if (status === 503) {
+      return this.translationService.translate('ai_configuration_error');
+    }
+
+    return this.translationService.translate('ai_response_error');
   }
 
   private scrollToBottom(): void {

@@ -10,24 +10,24 @@
       </p>
     </div>
 
-    <div class="mx-auto mt-12 max-w-2xl overflow-hidden rounded-2xl border border-[#AA6FE0]/40 bg-[#17151C] shadow-[0_30px_90px_rgba(0,0,0,0.45)]">
-      <div class="bg-[#5C452E] px-5 py-3 text-center text-xs font-black text-[#FFB830]">
+    <div class="mx-auto mt-12 max-w-2xl overflow-hidden rounded-2xl border border-[#AA6FE0]/30 bg-white shadow-[0_30px_90px_rgba(83,45,122,0.16)] dark:border-[#AA6FE0]/40 dark:bg-[#17151C] dark:shadow-[0_30px_90px_rgba(0,0,0,0.45)]">
+      <div class="bg-amber-50 px-5 py-3 text-center text-sm font-black text-amber-900 dark:bg-[#5C452E] dark:text-[#FFB830]">
         ⚠ Modo entrenamiento: personaje ficticio generado por IA.
       </div>
 
-      <div class="flex items-center justify-between border-b border-[#E53935]/25 bg-[#2A1720] px-5 py-3 text-xs font-black">
-        <span class="text-[#F1A6A6]">✱ ¿Necesitas ayuda real urgente?</span>
+      <div class="flex items-center justify-between border-b border-[#E53935]/25 bg-red-50 px-5 py-3 text-xs font-black dark:bg-[#2A1720]">
+        <span class="text-red-900 dark:text-[#F1A6A6]">✱ ¿Necesitas ayuda real urgente?</span>
         <span class="text-[#E53935]">016 · 112 · IAM 900 200 999</span>
       </div>
 
-      <div class="grid grid-cols-2 border-b border-white/[0.08]">
+      <div class="grid grid-cols-2 border-b border-slate-200 dark:border-white/[0.08]">
         <button
           type="button"
           (click)="selectSimulator('partner')"
           class="py-4 text-sm font-black transition-colors"
           [ngClass]="selectedSimulator === 'partner'
-            ? 'bg-[#2B2030] text-[#D4A7FF] shadow-[inset_0_-2px_0_#D4A7FF]'
-            : 'bg-[#17151C] text-[#9A9AA8] hover:bg-white/[0.04]'"
+            ? 'bg-[#7B2FBE] text-white shadow-[inset_0_-2px_0_#D4A7FF] dark:bg-[#2B2030] dark:text-[#D4A7FF]'
+            : 'bg-white text-slate-600 hover:bg-purple-50 dark:bg-[#17151C] dark:text-[#9A9AA8] dark:hover:bg-white/[0.04]'"
         >
           {{ translationService.translate('sim_partner_role') }}
         </button>
@@ -36,14 +36,14 @@
           (click)="selectSimulator('iris')"
           class="py-4 text-sm font-black transition-colors"
           [ngClass]="selectedSimulator === 'iris'
-            ? 'bg-[#2B2030] text-[#D4A7FF] shadow-[inset_0_-2px_0_#D4A7FF]'
-            : 'bg-[#17151C] text-[#9A9AA8] hover:bg-white/[0.04]'"
+            ? 'bg-[#7B2FBE] text-white shadow-[inset_0_-2px_0_#D4A7FF] dark:bg-[#2B2030] dark:text-[#D4A7FF]'
+            : 'bg-white text-slate-600 hover:bg-purple-50 dark:bg-[#17151C] dark:text-[#9A9AA8] dark:hover:bg-white/[0.04]'"
         >
           Análisis IRIS
         </button>
       </div>
 
-      <div class="h-[620px] bg-[#0F0B12] p-4 sm:p-6">
+      <div class="h-[620px] bg-slate-50 p-4 dark:bg-[#0F0B12] sm:p-6">
         <div [hidden]="selectedSimulator !== 'iris'" class="h-full min-h-0">
           <app-chat-simulator mode="iris" (safetyAlertTriggered)="onSafetyAlert()"></app-chat-simulator>
         </div>

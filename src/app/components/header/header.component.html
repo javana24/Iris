@@ -100,21 +100,6 @@
       </button>
       <button
         type="button"
-        (click)="toggleTheme()"
-        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/10 text-[#EAEAEA] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/70"
-        [attr.aria-label]="isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'"
-      >
-        <svg *ngIf="isDarkMode" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36-6.36l-1.42 1.42M7.06 16.94l-1.42 1.42m12.72 0l-1.42-1.42M7.06 7.06 5.64 5.64M12 8a4 4 0 100 8 4 4 0 000-8z" />
-        </svg>
-        <svg *ngIf="!isDarkMode" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 12.79A8.5 8.5 0 1111.21 3 6.5 6.5 0 0021 12.79z" />
-        </svg>
-      </button>
-      <button
-        type="button"
         (click)="toggleMobileMenu()"
         class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/10 text-[#EAEAEA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/70"
         [attr.aria-label]="isMobileMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'"
@@ -143,6 +128,9 @@
       <button (click)="navigateTo('simuladores')" [class.active]="isActive('simuladores')" class="nav-link text-left">Simulador</button>
       <button (click)="navigateTo('simulacion')" [class.active]="isActive('simulacion')" class="nav-link text-left">Dojo</button>
       <button (click)="navigateTo('impacto')" [class.active]="isActive('impacto')" class="nav-link text-left">Impacto</button>
+      <button (click)="toggleTheme()" class="nav-link text-left">
+        {{ isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro' }}
+      </button>
       <button (click)="navigateTo('alineacion')" class="mt-2 rounded-xl bg-[#F1A6A6] px-4 py-3 text-left text-xs font-black text-[#2A0C0C]">
         Ayuda rápida
       </button>
