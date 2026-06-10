@@ -3,17 +3,24 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 const os = require('os');
 const { body, validationResult } = require('express-validator');
+const { buildSystemPrompt } = require('./lib/chat-prompts');
+const {
+  getAiConfig,
+  getAiConfigError,
+  generateChatCompletion,
+  listAvailableModels
+} = require('./lib/llm-provider');
 
 const app = express();
 const port = process.env.PORT || 3001;
-const apiKey = process.env.GEMINI_API_KEY;
-const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-pro';
+const aiConfig = getAiConfig();
 
-if (!apiKey) {
-  console.error('Missing GEMINI_API_KEY in environment.');
+if (getAiConfigError(aiConfig)) {
+  console.error(`AI configuration issue: ${getAiConfigError(aiConfig)}`);
+} else {
+  console.log(`AI provider: ${aiConfig.provider}${aiConfig.provider === 'ollama' ? ` (${aiConfig.ollamaModel} @ ${aiConfig.ollamaBaseUrl})` : ` (${aiConfig.geminiModel})`}`);
 }
 
 // Permitir CORS desde cualquier origen (web y móvil)
@@ -39,9 +46,10 @@ app.use((err, _req, res, next) => {
   return next(err);
 });
 
-function requireGeminiApiKey(_req, res, next) {
-  if (!apiKey) {
-    return sendError(res, 503, 'Missing GEMINI_API_KEY');
+function requireAiProvider(_req, res, next) {
+  const configError = getAiConfigError();
+  if (configError) {
+    return sendError(res, 503, configError);
   }
   return next();
 }
@@ -125,39 +133,33 @@ function getLocalIP() {
 const localIP = getLocalIP();
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true });
+  res.json({
+    ok: true,
+    ai: {
+      provider: aiConfig.provider,
+      configured: getAiConfigError() === null,
+      model: aiConfig.provider === 'ollama' ? aiConfig.ollamaModel : aiConfig.geminiModel
+    }
+  });
 });
 
-app.get('/api/models', requireGeminiApiKey, async (_req, res) => {
+app.get('/api/models', requireAiProvider, async (_req, res) => {
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      const text = await response.text();
-      return sendError(res, response.status, text);
-    }
-    const data = await response.json();
-    const models = (data.models || []).map((m) => ({
-      name: m.name,
-      displayName: m.displayName,
-      supportedGenerationMethods: m.supportedGenerationMethods
-    }));
-    res.json({ models });
+    const models = await listAvailableModels();
+    res.json({ models, provider: aiConfig.provider });
   } catch (error) {
     console.error('List models error:', error);
     sendError(res, 500, 'List models failed');
   }
 });
 
-app.post('/api/chat', requireGeminiApiKey, validateChatRequest, handleValidationErrors, async (req, res) => {
+app.post('/api/chat', requireAiProvider, validateChatRequest, handleValidationErrors, async (req, res) => {
   try {
     const { messages = [], language = 'es', simulatorMode = 'iris' } = req.body || {};
     const normalizedSimulatorMode =
       typeof simulatorMode === 'boolean'
         ? (simulatorMode ? 'partner' : 'iris')
         : simulatorMode;
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: modelName });
     const isPartnerMode = normalizedSimulatorMode === 'partner';
 
     const safetyKeywords = [
@@ -310,42 +312,7 @@ app.post('/api/chat', requireGeminiApiKey, validateChatRequest, handleValidation
       allTextToScan.includes(kw.toLowerCase())
     );
 
-    const safetyInstruction = language === 'en'
-      ? `\nCRITICAL: Analyse the user's message for violence, abuse, manipulation, control, self-harm or suicide. If you detect any, respond with empathy and validation, say why it worries you and suggest 016 or professional help. Do NOT write "ALERTA DE SEGURIDAD" or any alert header in your message — the app shows that automatically. Keep your reply short and caring.`
-      : `\nCRÍTICO: Analiza el mensaje por violencia, abuso, manipulación, control, autolesión o suicidio. Si detectas algo, responde con empatía y validación, di por qué te preocupa y recomienda el 016 o ayuda profesional. NO escribas "ALERTA DE SEGURIDAD" ni esa cabecera en tu mensaje — la app la muestra sola. Responde breve y cercano.`;
-
-    const partnerInstruction = language === 'en'
-      ? `You are the USER'S PARTNER in a WhatsApp-style chat for an educational simulation. You MUST act as a TOXIC, manipulative partner: jealous, controlling, dismissive, guilt-tripping. Do NOT be sweet or loving. Your role is to simulate red-flag language so the user learns to recognise it.
-IMPORTANT: You MUST sometimes use phrases that trigger the app's safety alert. Include them naturally when it fits. Examples: "I only speak the truth. If you don't like it, that's your problem"; "You're exaggerating"; "It's your fault"; "It wasn't that bad"; "No one else will love you"; "If you don't do what I say I'm leaving"; "Don't go out with them"; "Where were you?"; "You're so dramatic"; "You can't take anything"; "None of your business"; "I don't owe you any explanation".
-When they ask "Where were you?" or "I texted you" or similar, reply in a toxic way that MUST trigger the alert: be dismissive or defensive, e.g. "None of your business", "I don't have to explain myself to you", "If you don't like it, that's your problem", "I only tell the truth. Your problem if you don't like it". That kind of reply is correct for this simulation.
-NEVER repeat or copy the user's message. Always answer ONLY in your own words, in 1-2 short sentences. Do not type back what they said.
-Keep answers very short (1-2 sentences). Use "you" as if talking to your partner. Never break character or mention being AI or a simulation.`
-      : `Eres la PAREJA del usuario en un chat tipo WhatsApp para una simulación educativa. DEBES actuar como una pareja TÓXICA y manipuladora: celoso/a, controlador/a, despectivo/a, que hace chantaje emocional. NO seas cariñoso/a. Tu papel es simular lenguaje de alarma para que la persona aprenda a detectarlo.
-IMPORTANTE: Tienes que USAR A VECES frases que disparen la alerta de la app. Inclúyelas con naturalidad cuando encaje. Ejemplos: "Solo digo la verdad. Si no te gusta, es tu problema"; "Exageras"; "Es tu culpa"; "No fue para tanto"; "Nadie más te va a querer"; "Si no haces lo que digo me voy"; "No salgas con ellos"; "¿Dónde estabas?"; "Eres un/a dramático/a"; "No aguantas nada"; "A ti qué te importa"; "No te debo explicaciones".
-Cuando te pregunten "¿Dónde estabas?", "Te escribí" o similar, responde SIEMPRE de forma tóxica que dispare la alerta: desvía, resta importancia o contraataca. Di por ejemplo: "¿A ti qué te importa?", "No tengo que explicarte nada", "Si no te gusta, es tu problema", "Solo digo la verdad. Si no te gusta, es tu problema, no el mío". Ese tipo de respuesta es la correcta en esta simulación.
-NUNCA repitas ni copies el mensaje de la otra persona. Responde SIEMPRE solo con tus propias palabras, en 1-2 frases cortas. No escribas de nuevo lo que te han dicho.
-Responde muy breve (1-2 frases). Tutea. No salgas del personaje ni menciones ser IA o simulación.`;
-
-    const irisSystemPrompt =
-      language === 'en'
-        ? `You are IRIS. Speak like a warm, real person.
-Keep responses short (1-2 sentences) and ALWAYS finish any sentence you start.
-End with proper punctuation (., !, ?).
-Do NOT repeat yourself or restart the same sentence.
-Do NOT greet again if already in conversation.
-Be natural and context-aware. Avoid robotic phrasing.
-Do NOT mention toxicity detection unless the user asks directly.
-Ask one gentle follow-up question when it fits.${safetyInstruction}`
-        : `Eres IRIS. Habla como una persona cercana y natural.
-Responde breve (1-2 frases) y SIEMPRE termina cualquier frase que empieces.
-Termina con puntuación correcta (., !, ?).
-No te repitas ni reinicies la misma frase.
-No saludes de nuevo si la conversación ya empezó.
-Sé natural y adapta al contexto. Evita frases robotizadas.
-NO menciones la detección de toxicidad salvo que la persona lo pida directamente.
-Haz una pregunta suave cuando encaje.${safetyInstruction}`;
-
-    const systemPrompt = isPartnerMode ? partnerInstruction : irisSystemPrompt;
+    const systemPrompt = buildSystemPrompt(normalizedSimulatorMode, language);
 
     const filtered = (messages || []).filter((m) => m && m.text);
     const recent = filtered.slice(-6);
@@ -356,23 +323,13 @@ Haz una pregunta suave cuando encaje.${safetyInstruction}`;
         ? `${systemPrompt}\nNo saludes ni vuelvas a iniciar la conversación.`
         : systemPrompt;
 
-    const contents = [
-      { role: 'user', parts: [{ text: systemWithGreeting }] },
-      ...recent.map((m) => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.text }]
-      }))
-    ];
-
-    const result = await model.generateContent({
-      contents,
-      generationConfig: {
-        temperature: isPartnerMode ? 0.75 : 0.5,
-        topP: 0.9,
-        maxOutputTokens: isPartnerMode ? 280 : 512
-      }
+    let response = await generateChatCompletion({
+      systemPrompt: systemWithGreeting,
+      messages: recent,
+      temperature: isPartnerMode ? 0.75 : 0.5,
+      topP: 0.9,
+      maxTokens: isPartnerMode ? 280 : 512
     });
-    let response = result.response?.text?.().trim() || '';
 
     // En modo pareja: quitar si la IA repitió el inicio del mensaje del usuario (ej. "Hola. ¿Por qué tardaste en contest...")
     if (isPartnerMode && response) {
@@ -459,15 +416,13 @@ Haz una pregunta suave cuando encaje.${safetyInstruction}`;
         language === 'en'
           ? `Finish the previous reply in one complete sentence. Reply with ONLY the continuation, no repetition.`
           : `Termina la respuesta anterior en una sola frase. Responde SOLO con la continuación, sin repetir lo anterior.`;
-      const fixResult = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: `${fixPrompt}\n\nRespuesta anterior: ${toComplete}` }] }],
-        generationConfig: {
-          temperature: 0.3,
-          topP: 0.9,
-          maxOutputTokens: 150
-        }
-      });
-      const fix = (fixResult.response?.text?.().trim() || '').replace(/^[.,;]\s*/, '');
+      const fix = (await generateChatCompletion({
+        systemPrompt: fixPrompt,
+        messages: [{ role: 'user', text: `Respuesta anterior: ${toComplete}` }],
+        temperature: 0.3,
+        topP: 0.9,
+        maxTokens: 150
+      })).replace(/^[.,;]\s*/, '');
       if (fix) {
         response = `${toComplete} ${fix}`.trim();
       } else {

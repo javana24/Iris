@@ -39,7 +39,7 @@ export class ChatSimulatorComponent {
   get otherRoleLabel(): string {
     return this.mode === 'partner'
       ? this.translationService.translate('sim_partner_role')
-      : this.translationService.translate('chat_role_ai');
+      : this.translationService.translate('sim_counselor_role');
   }
 
   get emptyHintKey(): string {
