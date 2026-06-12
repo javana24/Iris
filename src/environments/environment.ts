@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost:3001',
+  apiBaseUrl: 'https://iris-node.vercel.app',
   firebase: {
     apiKey: 'AIzaSyBk8fyxNAkAgmqSlSLOwwBVwveHhLKFCRc',
     authDomain: 'irisaiapp-e2263.firebaseapp.com',
