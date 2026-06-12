@@ -16,6 +16,20 @@ export const routes: Routes = [
       )
   },
   {
+    path: 'auth',
+    loadComponent: () =>
+      import('./pages/auth-page/auth-page.component').then(
+        (m) => m.AuthPageComponent
+      )
+  },
+  {
+    path: 'legal',
+    loadComponent: () =>
+      import('./pages/legal-page/legal-page.component').then(
+        (m) => m.LegalPageComponent
+      )
+  },
+  {
     path: '**',
     redirectTo: ''
   }

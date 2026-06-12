@@ -42,10 +42,7 @@
             <span class="min-w-0">
               <span class="block text-lg font-black">{{ belt.name }}</span>
               <span class="mt-1 block text-sm leading-6 opacity-75">
-                {{ i === 0 ? 'Identifica manipulación, chantaje y maltrato verbal.' :
-                  i === 1 ? 'Practica privacidad, límites y control de ubicación.' :
-                  i === 2 ? 'Entrena comunicación asertiva frente al gaslighting.' :
-                  'Refuerza recursos de seguridad y autonomía personal.' }}
+                {{ belt.description }}
               </span>
             </span>
           </button>
@@ -71,6 +68,9 @@
               <p class="mx-auto mt-4 max-w-md text-sm leading-7 text-[#C9C9D4]">
                 Has demostrado entender este nivel de manipulación. Sigue entrenando para fortalecer tu resiliencia emocional y física.
               </p>
+              <p class="mx-auto mt-4 inline-flex rounded-full border border-[#4CAF50]/30 bg-[#12301F] px-4 py-2 text-sm font-black text-[#B9F6C5]">
+                Progreso guardado
+              </p>
               <button
                 *ngIf="activeBeltId !== 'black'"
                 type="button"
@@ -90,7 +90,26 @@
             </div>
           </div>
 
-          <div *ngIf="!activeBelt.completed" class="flex flex-col gap-7">
+          <div *ngIf="!activeBelt.completed && hasFailedCompletion" class="grid flex-1 place-items-center py-12 text-center">
+            <div>
+              <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#FFB830] text-3xl font-black text-[#1A0D24]">
+                {{ lastScore }}%
+              </div>
+              <h3 class="text-2xl font-black text-white">Repasa este módulo</h3>
+              <p class="mx-auto mt-4 max-w-md text-sm leading-7 text-[#C9C9D4]">
+                Necesitas al menos un 70% para completarlo. Vuelve a intentarlo con calma.
+              </p>
+              <button
+                type="button"
+                (click)="retryLesson()"
+                class="mt-8 rounded-xl bg-[#7B2FBE] px-7 py-3 text-sm font-black text-white transition-transform duration-200 hover:-translate-y-1 hover:bg-[#9B59D6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]"
+              >
+                Repetir módulo
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="!activeBelt.completed && !hasFailedCompletion" class="flex flex-col gap-7">
             <div class="rounded-2xl border-l-4 border-[#AA6FE0] bg-purple-50 p-6 text-lg font-bold leading-8 text-slate-900 dark:bg-[#232329] dark:text-white">
               “{{ activeBelt.questions[activeBelt.currentQuestionIndex].text }}”
             </div>
@@ -126,7 +145,7 @@
                 (click)="nextQuestion()"
                 class="mt-5 w-full rounded-xl bg-white px-6 py-3 text-sm font-black text-[#0D0D0F] transition-transform duration-200 hover:-translate-y-1"
               >
-                {{ isCorrect ? 'Continuar' : 'Intentar de nuevo' }}
+                {{ getFeedbackActionLabel() }}
               </button>
             </div>
           </div>

@@ -7,14 +7,103 @@
             {{ state.profile.avatarInitials }}
           </div>
           <div class="min-w-0 flex-1">
-            <p class="iris-kicker">Protocolo activo</p>
+            <p class="iris-kicker">Tu perfil</p>
             <h2 class="mt-2 text-3xl font-black tracking-tight text-white">
-              {{ state.profile.alias }}
+              Hola, {{ state.profile.alias }}
             </h2>
             <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">
-              Perfil inspirado en la app móvil. Si hay sesión autenticada, el progreso se sincroniza con Firestore; si no, se conserva localmente.
+              Este es tu espacio personal en IRIS: nombre visible, nivel y progreso de entrenamiento.
             </p>
           </div>
+        </div>
+
+        <div class="mt-6 rounded-2xl border border-white/[0.08] bg-[#0F0B12] p-5">
+          <ng-container *ngIf="currentUser$ | async as currentUser; else guestSession">
+            <div class="flex flex-col gap-5">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p class="text-xs font-black uppercase tracking-[0.16em] text-[#4CAF50]">Cuenta activa</p>
+                  <p class="mt-2 text-sm text-[#C9C9D4]">
+                    {{ currentUser.email || 'Sesión iniciada' }}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  (click)="logout()"
+                  [disabled]="isSigningOut"
+                  class="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm font-black text-[#C9C9D4] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#AA6FE0]/50 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+                >
+                  {{ isSigningOut ? 'Cerrando...' : 'Cerrar sesión' }}
+                </button>
+              </div>
+
+              <div class="grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  (click)="sendPasswordReset()"
+                  [disabled]="isSendingPasswordReset"
+                  class="rounded-xl border border-[#AA6FE0]/25 bg-[#17151C] px-4 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#AA6FE0]/50 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+                >
+                  {{ isSendingPasswordReset ? 'Enviando...' : 'Cambiar contraseña' }}
+                </button>
+                <button
+                  type="button"
+                  (click)="requestAccountDeletion()"
+                  class="rounded-xl border border-[#F1A6A6]/35 bg-[#2A1720] px-4 py-3 text-sm font-black text-[#F6D1D1] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#F1A6A6]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F1A6A6]"
+                >
+                  Eliminar cuenta
+                </button>
+              </div>
+
+              <div *ngIf="showDeleteConfirm" class="rounded-2xl border border-[#F1A6A6]/30 bg-[#2A1720] p-4">
+                <p class="text-sm font-black text-white">¿Eliminar tu cuenta?</p>
+                <p class="mt-2 text-sm leading-6 text-[#F6D1D1]">
+                  Se borrarán tu cuenta y el progreso guardado. Esta acción no se puede deshacer.
+                </p>
+                <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    (click)="cancelAccountDeletion()"
+                    class="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm font-black text-white transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    (click)="deleteAccount()"
+                    [disabled]="isDeletingAccount"
+                    class="rounded-xl bg-[#E53935] px-4 py-3 text-sm font-black text-white transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F1A6A6] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+                  >
+                    {{ isDeletingAccount ? 'Eliminando...' : 'Sí, eliminar cuenta' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #guestSession>
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-xs font-black uppercase tracking-[0.16em] text-[#FFB830]">Modo invitada</p>
+                <p class="mt-2 text-sm text-[#C9C9D4]">
+                  Crea una cuenta para conservar tu progreso y volver más tarde.
+                </p>
+              </div>
+              <button
+                type="button"
+                (click)="goToAuth()"
+                class="rounded-xl bg-[#7B2FBE] px-5 py-3 text-sm font-black text-white transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#9B59D6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]"
+              >
+                Crear cuenta
+              </button>
+            </div>
+          </ng-template>
+
+          <p *ngIf="authError" class="mt-4 rounded-xl border border-[#F1A6A6]/30 bg-[#2A1720] p-3 text-sm text-[#F6D1D1]">
+            {{ authError }}
+          </p>
+          <p *ngIf="accountActionMessage" class="mt-4 rounded-xl border border-[#4CAF50]/30 bg-[#12301F] p-3 text-sm text-[#B9F6C5]">
+            {{ accountActionMessage }}
+          </p>
         </div>
 
         <div class="mt-8 grid gap-3 sm:grid-cols-[1fr_auto]">
@@ -34,6 +123,9 @@
             Guardar
           </button>
         </div>
+        <p *ngIf="saveMessage" class="mt-3 rounded-xl border border-[#4CAF50]/30 bg-[#12301F] px-4 py-3 text-sm font-bold text-[#B9F6C5]">
+          {{ saveMessage }}
+        </p>
 
         <div class="mt-8 grid grid-cols-2 gap-4">
           <div class="rounded-2xl border border-white/[0.08] bg-[#17151C] p-5">
@@ -41,7 +133,7 @@
             <p class="mt-2 text-3xl font-black text-[#D4A7FF]">{{ state.progress.level }}</p>
           </div>
           <div class="rounded-2xl border border-white/[0.08] bg-[#17151C] p-5">
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">XP totales</p>
+            <p class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">Puntos totales</p>
             <p class="mt-2 text-3xl font-black text-[#D4A7FF]">{{ state.progress.totalXp }}</p>
           </div>
           <div class="rounded-2xl border border-white/[0.08] bg-[#17151C] p-5">
@@ -100,9 +192,9 @@
         </div>
 
         <div class="mt-8 rounded-2xl border border-white/[0.08] bg-[#0F0B12] p-5">
-          <p class="text-sm font-black text-white">Estado de sincronización</p>
+          <p class="text-sm font-black text-white">Consejo IRIS</p>
           <p class="mt-2 text-sm leading-6 text-[#9A9AA8]">
-            Firebase ya está configurado en web. Con una sesión autenticada se sincroniza con Firestore; sin sesión, IRIS mantiene el progreso localmente.
+            Completa módulos del Dojo y vuelve al simulador para practicar conversaciones seguras.
           </p>
         </div>
       </article>

@@ -37,6 +37,12 @@
     </nav>
 
     <div class="hidden items-center gap-3 md:flex">
+      <span
+        *ngIf="greetingAlias$ | async as greetingAlias"
+        class="max-w-40 truncate rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-xs font-black text-[#D9B8FF]"
+      >
+        Hola, {{ greetingAlias }}
+      </span>
       <button
         type="button"
         (click)="navigateTo('simuladores')"
@@ -66,6 +72,14 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M21 12.79A8.5 8.5 0 1111.21 3 6.5 6.5 0 0021 12.79z" />
         </svg>
+      </button>
+      <button
+        type="button"
+        (click)="goToAuth()"
+        [ngClass]="isAuthRoute() ? 'border-[#AA6FE0]/70 bg-[#7B2FBE]/25 text-white shadow-[0_10px_30px_rgba(123,47,190,0.25)]' : 'border-white/10 bg-white/[0.03] text-[#C9C9D4]'"
+        class="rounded-full border px-4 py-2 text-xs font-black transition-all duration-200 hover:-translate-y-0.5 hover:border-[#AA6FE0]/50 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]"
+      >
+        Cuenta
       </button>
       <button
         type="button"
@@ -124,6 +138,13 @@
     <div class="grid gap-2">
       <button (click)="navigateTo('inicio')" [class.active]="isActive('inicio')" class="nav-link text-left">Inicio</button>
       <button (click)="navigateTo('problema')" [class.active]="isActive('problema')" class="nav-link text-left">Problema</button>
+      <span
+        *ngIf="greetingAlias$ | async as greetingAlias"
+        class="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm font-black text-[#D9B8FF]"
+      >
+        Hola, {{ greetingAlias }}
+      </span>
+      <button (click)="goToAuth()" [ngClass]="isAuthRoute() ? 'active' : ''" class="nav-link text-left">Mi cuenta</button>
       <button (click)="goToProfile()" [ngClass]="isProfileRoute() ? 'active' : ''" class="nav-link text-left">Mi perfil</button>
       <button (click)="navigateTo('simuladores')" [class.active]="isActive('simuladores')" class="nav-link text-left">Simulador</button>
       <button (click)="navigateTo('simulacion')" [class.active]="isActive('simulacion')" class="nav-link text-left">Dojo</button>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { NavigationService } from '../../services/navigation.service';
+import { ProfileGreetingService } from '../../services/profile-greeting.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,6 +17,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isDarkMode = false;
   isMobileMenuOpen = false;
   activeSection = 'inicio';
+  readonly greetingAlias$;
   
   private subscriptions = new Subscription();
   private isScrollTicking = false;
@@ -23,8 +25,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     public themeService: ThemeService,
     private navigationService: NavigationService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private profileGreetingService: ProfileGreetingService
+  ) {
+    this.greetingAlias$ = this.profileGreetingService.alias$;
+  }
 
   ngOnInit(): void {
     this.subscriptions.add(
@@ -83,11 +88,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/perfil');
   }
 
+  goToAuth(): void {
+    this.isMobileMenuOpen = false;
+    this.router.navigateByUrl('/auth');
+  }
+
   isActive(section: string): boolean {
     return this.activeSection === section;
   }
 
   isProfileRoute(): boolean {
     return this.router.url.startsWith('/perfil');
+  }
+
+  isAuthRoute(): boolean {
+    return this.router.url.startsWith('/auth');
   }
 }

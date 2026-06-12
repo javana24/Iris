@@ -1,0 +1,138 @@
+<main id="main-content" class="min-h-screen bg-[#0D0D0F] px-4 pb-20 pt-28 sm:px-6 lg:px-8">
+  <section class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+    <article class="fade-in-up">
+      <p class="iris-kicker">Cuenta IRIS</p>
+      <h1 class="mt-4 max-w-2xl text-4xl font-black tracking-tight text-white sm:text-5xl">
+        Guarda tu progreso y vuelve cuando quieras.
+      </h1>
+      <p class="mt-5 max-w-2xl text-base leading-8 text-[#C9C9D4]">
+        Crea tu cuenta para conservar tu perfil, tu nivel y tus módulos completados. También puedes iniciar sesión si ya tienes una cuenta.
+      </p>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-3">
+        <div class="rounded-2xl border border-white/[0.08] bg-[#17151C] p-5">
+          <p class="text-xs font-black uppercase tracking-[0.16em] text-[#AA6FE0]">Tu cuenta</p>
+          <p class="mt-2 text-sm text-[#C9C9D4]">Entra con tu correo y contraseña.</p>
+        </div>
+        <div class="rounded-2xl border border-white/[0.08] bg-[#17151C] p-5">
+          <p class="text-xs font-black uppercase tracking-[0.16em] text-[#AA6FE0]">Tu avance</p>
+          <p class="mt-2 text-sm text-[#C9C9D4]">Mantén tu nivel y tus logros.</p>
+        </div>
+        <div class="rounded-2xl border border-white/[0.08] bg-[#17151C] p-5">
+          <p class="text-xs font-black uppercase tracking-[0.16em] text-[#AA6FE0]">Seguridad</p>
+          <p class="mt-2 text-sm text-[#C9C9D4]">Puedes salir rápido si lo necesitas.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="iris-card fade-in-up p-6 sm:p-8">
+      <div class="rounded-2xl border border-white/[0.08] bg-[#0F0B12] p-1">
+        <div class="grid grid-cols-2 gap-1">
+          <button
+            type="button"
+            (click)="setMode('login')"
+            [ngClass]="mode === 'login' ? 'bg-[#7B2FBE] text-white shadow-[0_14px_34px_rgba(123,47,190,0.35)]' : 'text-[#C9C9D4] hover:bg-white/[0.04] hover:text-white'"
+            class="rounded-xl px-4 py-3 text-sm font-black transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]"
+          >
+            Iniciar sesión
+          </button>
+          <button
+            type="button"
+            (click)="setMode('register')"
+            [ngClass]="mode === 'register' ? 'bg-[#7B2FBE] text-white shadow-[0_14px_34px_rgba(123,47,190,0.35)]' : 'text-[#C9C9D4] hover:bg-white/[0.04] hover:text-white'"
+            class="rounded-xl px-4 py-3 text-sm font-black transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]"
+          >
+            Crear cuenta
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="!isFirebaseAvailable" class="mt-5 rounded-2xl border border-[#F1A6A6]/30 bg-[#2A1720] p-4 text-sm text-[#F6D1D1]">
+        El acceso a cuentas no está disponible ahora mismo.
+      </div>
+
+      <form class="mt-6 grid gap-4" (ngSubmit)="submit()">
+        <div *ngIf="mode === 'register'" class="grid gap-2">
+          <label for="displayName" class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">Nombre visible</label>
+          <input
+            id="displayName"
+            name="displayName"
+            [(ngModel)]="displayName"
+            autocomplete="name"
+            maxlength="32"
+            class="rounded-xl border border-white/[0.08] bg-[#0F0B12] px-4 py-3 text-sm text-white placeholder:text-[#6F6F7B] transition-shadow duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]/70"
+            placeholder="Ej. Ana IRIS"
+          />
+        </div>
+
+        <div class="grid gap-2">
+          <label for="email" class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">Correo electrónico</label>
+          <input
+            id="email"
+            name="email"
+            [(ngModel)]="email"
+            type="email"
+            autocomplete="email"
+            class="rounded-xl border border-white/[0.08] bg-[#0F0B12] px-4 py-3 text-sm text-white placeholder:text-[#6F6F7B] transition-shadow duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]/70"
+            placeholder="tu@email.com"
+          />
+        </div>
+
+        <div class="grid gap-2">
+          <label for="password" class="text-xs font-black uppercase tracking-[0.16em] text-[#9A9AA8]">Contraseña</label>
+          <input
+            id="password"
+            name="password"
+            [(ngModel)]="password"
+            type="password"
+            [autocomplete]="mode === 'register' ? 'new-password' : 'current-password'"
+            class="rounded-xl border border-white/[0.08] bg-[#0F0B12] px-4 py-3 text-sm text-white placeholder:text-[#6F6F7B] transition-shadow duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0]/70"
+            placeholder="Mínimo 6 caracteres"
+          />
+        </div>
+
+        <p *ngIf="errorMessage" class="rounded-2xl border border-[#F1A6A6]/30 bg-[#2A1720] p-4 text-sm text-[#F6D1D1]">
+          {{ errorMessage }}
+        </p>
+
+        <p *ngIf="successMessage" class="rounded-2xl border border-[#4CAF50]/30 bg-[#102417] p-4 text-sm text-[#BFE8C5]">
+          {{ successMessage }}
+        </p>
+
+        <button
+          type="submit"
+          [disabled]="isLoading || !isFirebaseAvailable"
+          class="rounded-xl bg-[#7B2FBE] px-5 py-3 text-sm font-black text-white shadow-[0_16px_40px_rgba(123,47,190,0.35)] transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#9B59D6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+        >
+          {{ isLoading ? 'Conectando...' : (mode === 'register' ? 'Crear cuenta IRIS' : 'Entrar en IRIS') }}
+        </button>
+      </form>
+
+      <div class="my-6 flex items-center gap-4">
+        <span class="h-px flex-1 bg-white/[0.08]"></span>
+        <span class="text-xs font-black uppercase tracking-[0.16em] text-[#6F6F7B]">o</span>
+        <span class="h-px flex-1 bg-white/[0.08]"></span>
+      </div>
+
+      <button
+        type="button"
+        (click)="loginWithGoogle()"
+        [disabled]="isLoading || !isFirebaseAvailable"
+        class="inline-flex w-full items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#AA6FE0]/50 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+      >
+        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-white text-xs font-black text-[#7B2FBE]">G</span>
+        Continuar con Google
+      </button>
+
+      <button
+        *ngIf="mode === 'login'"
+        type="button"
+        (click)="resetPassword()"
+        [disabled]="isLoading || !isFirebaseAvailable"
+        class="mt-4 w-full rounded-xl px-4 py-2 text-sm font-bold text-[#C9C9D4] transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#AA6FE0] disabled:opacity-60"
+      >
+        He olvidado mi contraseña
+      </button>
+    </article>
+  </section>
+</main>

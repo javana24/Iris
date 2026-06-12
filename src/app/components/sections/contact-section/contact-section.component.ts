@@ -47,7 +47,7 @@ export class ContactSectionComponent {
                 <ul>
                     <li><strong>Chatbot Educativo:</strong> Asistente virtual para resolver dudas sobre violencia de género.</li>
                     <li><strong>Simulador de Pareja:</strong> Entrenamiento práctico para detectar banderas rojas.</li>
-                    <li><strong>Protocolos de Seguridad:</strong> Detección automática de riesgos y derivación a profesionales.</li>
+                    <li><strong>Ayuda ante señales de riesgo:</strong> Avisos y orientación para pedir apoyo profesional.</li>
                 </ul>
             </div>
 

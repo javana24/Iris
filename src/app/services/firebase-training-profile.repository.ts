@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -61,7 +62,7 @@ export class FirebaseTrainingProfileRepository {
       progress: {
         totalXp: this.readNumber(data['experiencia_total'], 0),
         level: this.readNumber(data['nivel'], 1),
-        rank: this.readString(data['rango'], 'Rank S-01'),
+        rank: this.readString(data['rango'], 'Primer paso'),
         streakDays: this.readNumber(data['racha_actual'], 0),
         calmMinutes: this.readNumber(data['minutos_calma_total'], 12),
         dailyProgressPercent: Math.min(100, completedBelts.length * 25),
@@ -106,6 +107,20 @@ export class FirebaseTrainingProfileRepository {
         actualizado_en: serverTimestamp()
       }, { merge: true });
     }));
+  }
+
+  async deleteProfile(): Promise<void> {
+    const firestore = this.firebaseAppService.getFirestoreInstance();
+    const user = this.firebaseAuthService.getCurrentUser();
+    if (!firestore || !user) {
+      return;
+    }
+
+    const userRef = doc(firestore, USERS_COLLECTION, user.uid);
+    const dojoSnap = await getDocs(collection(userRef, DOJO_MODULES_COLLECTION));
+
+    await Promise.all(dojoSnap.docs.map((moduleDoc) => deleteDoc(moduleDoc.ref)));
+    await deleteDoc(userRef);
   }
 
   private readString(value: unknown, fallback: string): string {

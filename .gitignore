@@ -55,3 +55,4 @@ Thumbs.db
 *.mobileprovision
 *.orig.*
 web.zip
+.vercel

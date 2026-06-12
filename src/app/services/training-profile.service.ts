@@ -3,6 +3,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { BeltId, TrainingProfileState } from '../models/training-profile.model';
 import { FirebaseAuthService } from './firebase-auth.service';
 import { FirebaseTrainingProfileRepository } from './firebase-training-profile.repository';
+import { PROFILE_UPDATED_EVENT } from './profile-greeting.service';
 
 const STORAGE_KEY = 'iris.training-profile.v1';
 
@@ -21,7 +22,7 @@ export class TrainingProfileService implements OnDestroy {
     progress: {
       totalXp: 0,
       level: 1,
-      rank: 'Rank S-01',
+      rank: 'Primer paso',
       streakDays: 0,
       calmMinutes: 12,
       dailyProgressPercent: 0,
@@ -42,6 +43,11 @@ export class TrainingProfileService implements OnDestroy {
   ) {
     this.subscriptions.add(
       this.firebaseAuthService.currentUser$.subscribe((user) => {
+        if (!user) {
+          this.hasHydratedFromRemote = false;
+          return;
+        }
+
         if (user && !this.hasHydratedFromRemote) {
           this.hasHydratedFromRemote = true;
           this.hydrateFromFirebase();
@@ -62,6 +68,20 @@ export class TrainingProfileService implements OnDestroy {
     const cleanAlias = alias.trim().slice(0, 32);
     if (!cleanAlias) return;
 
+    this.persist(this.buildStateWithAlias(cleanAlias));
+  }
+
+  setAliasFromAccount(alias: string): void {
+    const cleanAlias = alias.trim().slice(0, 32);
+    if (!cleanAlias) return;
+
+    const nextState = this.buildStateWithAlias(cleanAlias);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+    this.stateSubject.next(nextState);
+    this.notifyProfileUpdate();
+  }
+
+  private buildStateWithAlias(cleanAlias: string): TrainingProfileState {
     const nextState: TrainingProfileState = {
       ...this.stateSubject.value,
       profile: {
@@ -71,7 +91,7 @@ export class TrainingProfileService implements OnDestroy {
       }
     };
 
-    this.persist(nextState);
+    return nextState;
   }
 
   recordDojoCompletion(beltId: BeltId): void {
@@ -100,6 +120,20 @@ export class TrainingProfileService implements OnDestroy {
     };
 
     this.persist(nextState);
+  }
+
+  syncCurrentStateToFirebase(): Promise<void> {
+    return this.firebaseProfileRepository.saveProfile(this.stateSubject.value);
+  }
+
+  deleteSavedProfile(): Promise<void> {
+    return this.firebaseProfileRepository.deleteProfile();
+  }
+
+  resetLocalProfile(): void {
+    localStorage.removeItem(STORAGE_KEY);
+    this.stateSubject.next(this.defaultState);
+    this.notifyProfileUpdate();
   }
 
   private loadState(): TrainingProfileState {
@@ -131,6 +165,7 @@ export class TrainingProfileService implements OnDestroy {
   private persist(state: TrainingProfileState): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     this.stateSubject.next(state);
+    this.notifyProfileUpdate();
     this.firebaseProfileRepository.saveProfile(state).catch((error) => {
       console.error('No se pudo sincronizar el perfil con Firebase:', error);
     });
@@ -143,6 +178,7 @@ export class TrainingProfileService implements OnDestroy {
         const normalizedState = this.normalizeState(remoteState);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedState));
         this.stateSubject.next(normalizedState);
+        this.notifyProfileUpdate();
       })
       .catch((error) => {
         console.error('No se pudo cargar el perfil desde Firebase:', error);
@@ -178,14 +214,14 @@ export class TrainingProfileService implements OnDestroy {
   }
 
   private getRank(level: number): string {
-    if (level >= 350) return 'IRIS Vanguard';
-    if (level >= 240) return 'Level Omega';
-    if (level >= 160) return 'Neo-Kyoto';
-    if (level >= 100) return 'Cyber-Infiltrator';
-    if (level >= 50) return 'Operative II';
-    if (level >= 25) return 'Operative I';
-    if (level >= 10) return 'Cadete Táctica';
-    return 'Rank S-01';
+    if (level >= 350) return 'Referente IRIS';
+    if (level >= 240) return 'Guía avanzada';
+    if (level >= 160) return 'Protección experta';
+    if (level >= 100) return 'Confianza alta';
+    if (level >= 50) return 'Avance firme';
+    if (level >= 25) return 'Buen progreso';
+    if (level >= 10) return 'En aprendizaje';
+    return 'Primer paso';
   }
 
   private xpForLevel(level: number): number {
@@ -218,5 +254,9 @@ export class TrainingProfileService implements OnDestroy {
 
   private formatDateKey(date: Date): string {
     return date.toISOString().slice(0, 10);
+  }
+
+  private notifyProfileUpdate(): void {
+    window.dispatchEvent(new Event(PROFILE_UPDATED_EVENT));
   }
 }
