@@ -5,13 +5,15 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build:institute": "node scripts/build-institute-cache.js"
   },
   "dependencies": {
     "@google/generative-ai": "latest",
     "cors": "latest",
     "dotenv": "latest",
     "express": "latest",
-    "express-validator": "^7.3.2"
+    "express-validator": "^7.3.2",
+    "mammoth": "^1.12.0"
   }
 }

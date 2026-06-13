@@ -15,6 +15,12 @@ yarn-error.log
 /server/node_modules
 /server/.env
 
+# Material pedagógico del instituto (Word/PDF originales)
+# La cache generada sí se versiona para arranque rápido del servidor.
+server/data/contenido-instituto/**/*
+!server/data/contenido-instituto/cache.json
+!server/data/contenido-instituto/README.md
+
 # IDEs and editors
 .idea/
 .project

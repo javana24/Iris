@@ -48,11 +48,15 @@ NUNCA repitas ni copies el mensaje de la otra persona. Responde SIEMPRE solo con
 Responde muy breve (1-2 frases). Tutea. No salgas del personaje ni menciones ser IA o simulación.`;
 }
 
-function buildSystemPrompt(simulatorMode, language) {
+function buildSystemPrompt(simulatorMode, language, instituteInstruction = '') {
   const isPartnerMode = simulatorMode === 'partner';
-  return isPartnerMode
+  const basePrompt = isPartnerMode
     ? buildJealousPartnerPrompt(language)
     : buildCounselorPrompt(language);
+
+  return instituteInstruction
+    ? `${basePrompt}${instituteInstruction}`
+    : basePrompt;
 }
 
 module.exports = {

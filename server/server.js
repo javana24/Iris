@@ -10,8 +10,16 @@ const {
   getAiConfig,
   getAiConfigError,
   generateChatCompletion,
-  listAvailableModels
+  listAvailableModels,
+  checkOllamaReachable,
+  isOllamaConnectionError
 } = require('./lib/llm-provider');
+const {
+  initializeInstituteContent,
+  buildInstituteInstruction,
+  getExtraSafetyKeywords,
+  getInstituteStatus
+} = require('./lib/institute-content');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -131,16 +139,35 @@ function getLocalIP() {
 }
 
 const localIP = getLocalIP();
+let instituteSafetyKeywords = [];
 
-app.get('/api/health', (_req, res) => {
+try {
+  initializeInstituteContent();
+  instituteSafetyKeywords = getExtraSafetyKeywords();
+} catch (error) {
+  console.error('No se pudo cargar el contenido del instituto:', error.message);
+}
+
+app.get('/api/health', async (_req, res) => {
+  const ollamaStatus = aiConfig.provider === 'ollama'
+    ? await checkOllamaReachable(aiConfig)
+    : null;
+
   res.json({
     ok: true,
     ai: {
       provider: aiConfig.provider,
       configured: getAiConfigError() === null,
-      model: aiConfig.provider === 'ollama' ? aiConfig.ollamaModel : aiConfig.geminiModel
-    }
+      model: aiConfig.provider === 'ollama' ? aiConfig.ollamaModel : aiConfig.geminiModel,
+      fallbackToGemini: aiConfig.fallbackToGemini,
+      ollama: ollamaStatus
+    },
+    institute: getInstituteStatus()
   });
+});
+
+app.get('/api/institute/topics', (_req, res) => {
+  res.json(getInstituteStatus());
 });
 
 app.get('/api/models', requireAiProvider, async (_req, res) => {
@@ -303,18 +330,28 @@ app.post('/api/chat', requireAiProvider, validateChatRequest, handleValidationEr
       'love conditional', 'only loves me when', 'uses leaving as a threat'
     ];
 
+    const filtered = (messages || []).filter((m) => m && m.text);
+
     // En modo pareja revisamos también lo que "dice la pareja" (assistant) para detectar toxicidad
     const allTextToScan = (messages || [])
       .filter((m) => m && (m.role === 'user' || (isPartnerMode && m.role === 'assistant')) && m.text)
       .map((m) => (m.text || '').toLowerCase())
       .join(' ');
-    const hasSafetyTrigger = safetyKeywords.some((kw) =>
+    const hasSafetyTrigger = [...safetyKeywords, ...instituteSafetyKeywords].some((kw) =>
       allTextToScan.includes(kw.toLowerCase())
     );
 
-    const systemPrompt = buildSystemPrompt(normalizedSimulatorMode, language);
+    const instituteInstruction = buildInstituteInstruction(
+      normalizedSimulatorMode,
+      filtered,
+      language
+    );
+    const systemPrompt = buildSystemPrompt(
+      normalizedSimulatorMode,
+      language,
+      instituteInstruction
+    );
 
-    const filtered = (messages || []).filter((m) => m && m.text);
     const recent = filtered.slice(-6);
     const alreadyGreeted = recent.some((m) => m.role === 'assistant');
 
@@ -454,7 +491,17 @@ app.post('/api/chat', requireAiProvider, validateChatRequest, handleValidationEr
     });
   } catch (error) {
     console.error('Chat error:', error);
-    sendError(res, 500, 'Chat failed');
+
+    if (isOllamaConnectionError(error)) {
+      return sendError(
+        res,
+        503,
+        `No se puede conectar con Ollama en ${aiConfig.ollamaBaseUrl}. Comprueba VPN/Tailscale, túnel SSH o activa AI_FALLBACK_TO_GEMINI=true.`,
+        [{ message: error?.cause?.code || error.message }]
+      );
+    }
+
+    sendError(res, 500, 'Chat failed', [{ message: error?.message || 'unknown_error' }]);
   }
 });
 
