@@ -1,5 +1,6 @@
 import { environment } from '../../environments/environment';
 
+
 function normalizeBaseUrl(url: string): string {
   return url.trim().replace(/\/+$/, '');
 }
