@@ -54,7 +54,15 @@
     </div>
 
     <div *ngIf="hasDetectedRisk" class="mx-auto mt-8 max-w-2xl rounded-2xl border border-[#E53935]/50 bg-[#6B1515]/30 p-5 text-[#F6D1D1]" role="alert">
-      <h3 class="text-lg font-black text-[#F1A6A6]">Señal de riesgo detectada</h3>
+      <div class="flex items-start justify-between gap-3">
+        <h3 class="text-lg font-black text-[#F1A6A6]">Señal de riesgo detectada</h3>
+        <button
+          type="button"
+          class="rounded-full px-2 text-sm font-bold text-[#F1A6A6] hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F1A6A6]"
+          (click)="hasDetectedRisk = false"
+          aria-label="Cerrar aviso"
+        >✕</button>
+      </div>
       <p class="mt-2 text-sm leading-6">
         {{ translationService.translate('safety_alert_message') }}
       </p>
