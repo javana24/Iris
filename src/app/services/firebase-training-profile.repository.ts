@@ -14,6 +14,9 @@ import { FirebaseAuthService } from './firebase-auth.service';
 
 const USERS_COLLECTION = 'usuarios';
 const DOJO_MODULES_COLLECTION = 'modulos_dojo';
+// Subcolecciones que puede haber creado la app Android (versiones antiguas guardaban el chat):
+// se borran también al eliminar la cuenta para no dejar datos sensibles huérfanos.
+const USER_SUBCOLLECTIONS = [DOJO_MODULES_COLLECTION, 'mensajes_ia', 'entradas_estado_animo'];
 
 @Injectable({
   providedIn: 'root'
@@ -117,9 +120,10 @@ export class FirebaseTrainingProfileRepository {
     }
 
     const userRef = doc(firestore, USERS_COLLECTION, user.uid);
-    const dojoSnap = await getDocs(collection(userRef, DOJO_MODULES_COLLECTION));
-
-    await Promise.all(dojoSnap.docs.map((moduleDoc) => deleteDoc(moduleDoc.ref)));
+    for (const name of USER_SUBCOLLECTIONS) {
+      const snapshot = await getDocs(collection(userRef, name));
+      await Promise.all(snapshot.docs.map((item) => deleteDoc(item.ref)));
+    }
     await deleteDoc(userRef);
   }
 

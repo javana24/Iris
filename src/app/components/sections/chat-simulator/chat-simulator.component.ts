@@ -211,6 +211,9 @@ export class ChatSimulatorComponent implements OnInit, OnDestroy {
       typeof error === 'object' && error !== null && 'status' in error ? Number((error as { status?: unknown }).status) : 0;
     const isTimeout = typeof error === 'object' && error !== null && (error as { name?: string }).name === 'TimeoutError';
 
+    if (status === 429) {
+      return this.translationService.translate('ai_rate_limited');
+    }
     if (status === 503 || status === 0 || isTimeout) {
       return this.translationService.translate('ai_configuration_error');
     }

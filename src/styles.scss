@@ -51,7 +51,7 @@
   }
   
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter Variable', 'Inter', sans-serif;
     background: var(--iris-bg);
     color: var(--iris-text);
     overflow-x: hidden;
@@ -102,6 +102,15 @@ html:not(.dark) header [class*="text-[#C996FF]"],
 html:not(.dark) footer [class*="text-[#D4A7FF]"],
 html:not(.dark) footer [class*="text-[#C996FF]"] {
   color: #6d28a8 !important;
+}
+
+html:not(.dark) main [class*="text-[#7FB3F0]"] {
+  color: #1d5fa8 !important;
+}
+
+/* Páginas cuyo <main> fija text-white (legal, auth...): los títulos heredan el color. */
+html:not(.dark) main[class~="text-white"] {
+  color: var(--iris-text) !important;
 }
 
 /* ── Modo oscuro: los componentes usan colores fijos casi negros; aquí se pasan a la paleta oscura. ── */
