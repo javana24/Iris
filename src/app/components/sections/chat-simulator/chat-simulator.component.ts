@@ -19,6 +19,8 @@ export interface SimulatorChatMessage {
   text: string;
   timestamp: string;
   isSafetyAlert?: boolean;
+  /** Aviso suave (nivel "preocupación"): señales de control que conviene vigilar. */
+  isConcernNotice?: boolean;
   redFlags?: RedFlag[];
 }
 
@@ -89,7 +91,7 @@ export class ChatSimulatorComponent implements OnInit, OnDestroy {
   }
 
   get userMessageCount(): number {
-    return this.messages.filter((m) => m.role === 'user' && !m.isSafetyAlert).length;
+    return this.messages.filter((m) => m.role === 'user' && !m.isSafetyAlert && !m.isConcernNotice).length;
   }
 
   get canAnalyze(): boolean {
@@ -142,6 +144,17 @@ export class ChatSimulatorComponent implements OnInit, OnDestroy {
             }
           ];
           this.safetyAlertTriggered.emit();
+        } else if (!this.isPartner && res.riskLevel === 'concern' && !this.messages.some((m) => m.isConcernNotice)) {
+          // Señales de control: aviso suave con recursos, una vez por conversación para no saturar.
+          this.messages = [
+            ...this.messages,
+            {
+              role: 'assistant',
+              text: this.translationService.translate('concern_notice_message'),
+              timestamp: this.buildTimestamp(),
+              isConcernNotice: true
+            }
+          ];
         }
 
         this.isLoading = false;
@@ -198,7 +211,7 @@ export class ChatSimulatorComponent implements OnInit, OnDestroy {
   }
 
   private buildPayload(): ChatMessagePayload[] {
-    return this.messages.filter((m) => !m.isSafetyAlert).map((m) => ({ role: m.role, text: m.text }));
+    return this.messages.filter((m) => !m.isSafetyAlert && !m.isConcernNotice).map((m) => ({ role: m.role, text: m.text }));
   }
 
   private buildTimestamp(): string {
