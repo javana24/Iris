@@ -18,6 +18,16 @@ const DOJO_MODULES_COLLECTION = 'modulos_dojo';
 // se borran también al eliminar la cuenta para no dejar datos sensibles huérfanos.
 const USER_SUBCOLLECTIONS = [DOJO_MODULES_COLLECTION, 'mensajes_ia', 'entradas_estado_animo'];
 
+// Mismo identificador de módulo que la app Android (mod_01…mod_04), para que el progreso
+// del Dojo se comparta entre la web y el móvil. Se siguen leyendo los ids antiguos de la web.
+const BELT_TO_MODULE: Record<BeltId, string> = {
+  white: 'mod_01',
+  yellow: 'mod_02',
+  purple: 'mod_03',
+  black: 'mod_04'
+};
+const BELT_ORDER: BeltId[] = ['white', 'yellow', 'purple', 'black'];
+
 @Injectable({
   providedIn: 'root'
 })
@@ -49,10 +59,13 @@ export class FirebaseTrainingProfileRepository {
 
     const data = userSnap.data();
     const dojoSnap = await getDocs(collection(userRef, DOJO_MODULES_COLLECTION));
-    const completedBelts = dojoSnap.docs
-      .filter((moduleDoc) => moduleDoc.data()['estado'] === 'COMPLETED')
-      .map((moduleDoc) => this.toBeltId(moduleDoc.id))
-      .filter((belt): belt is BeltId => Boolean(belt));
+    const completedSet = new Set(
+      dojoSnap.docs
+        .filter((moduleDoc) => moduleDoc.data()['estado'] === 'COMPLETED')
+        .map((moduleDoc) => this.toBeltId(moduleDoc.id))
+        .filter((belt): belt is BeltId => Boolean(belt))
+    );
+    const completedBelts = BELT_ORDER.filter((belt) => completedSet.has(belt));
 
     return {
       profile: {
@@ -67,7 +80,7 @@ export class FirebaseTrainingProfileRepository {
         level: this.readNumber(data['nivel'], 1),
         rank: this.readString(data['rango'], 'Primer paso'),
         streakDays: this.readNumber(data['racha_actual'], 0),
-        calmMinutes: this.readNumber(data['minutos_calma_total'], 12),
+        calmMinutes: this.readNumber(data['minutos_calma_total'], 0),
         dailyProgressPercent: Math.min(100, completedBelts.length * 25),
         completedBelts,
         currentBeltId: this.getCurrentBeltId(completedBelts),
@@ -96,19 +109,21 @@ export class FirebaseTrainingProfileRepository {
       actualizado_en: serverTimestamp()
     }, { merge: true });
 
-    await Promise.all(state.progress.completedBelts.map((beltId, index) => {
-      const moduleRef = doc(userRef, DOJO_MODULES_COLLECTION, beltId);
-      return setDoc(moduleRef, {
-        id_modulo: beltId,
+    await Promise.all(state.progress.completedBelts.map(async (beltId) => {
+      const moduleId = BELT_TO_MODULE[beltId];
+      await setDoc(doc(userRef, DOJO_MODULES_COLLECTION, moduleId), {
+        id_modulo: moduleId,
         titulo: this.getBeltTitle(beltId),
         descripcion: this.getBeltDescription(beltId),
-        tipo_icono: 'EYE',
+        tipo_icono: this.getBeltIcon(beltId),
         estado: 'COMPLETED',
-        orden: index + 1,
+        orden: BELT_ORDER.indexOf(beltId) + 1,
         xp_recompensa: this.getBeltXp(beltId),
         completado_en_ms: Date.now(),
         actualizado_en: serverTimestamp()
       }, { merge: true });
+      // Limpia el documento con el id antiguo de la web, si existía.
+      await deleteDoc(doc(userRef, DOJO_MODULES_COLLECTION, beltId)).catch(() => undefined);
     }));
   }
 
@@ -136,9 +151,10 @@ export class FirebaseTrainingProfileRepository {
   }
 
   private toBeltId(value: string): BeltId | null {
-    return ['white', 'yellow', 'purple', 'black'].includes(value)
-      ? value as BeltId
-      : null;
+    if ((BELT_ORDER as string[]).includes(value)) {
+      return value as BeltId;
+    }
+    return BELT_ORDER.find((id) => BELT_TO_MODULE[id] === value) ?? null;
   }
 
   private buildInitials(alias: string): string {
@@ -174,6 +190,11 @@ export class FirebaseTrainingProfileRepository {
       black: 'Refuerza recursos de seguridad y autonomía personal.'
     };
     return descriptions[beltId];
+  }
+
+  private getBeltIcon(beltId: BeltId): string {
+    const icons: Record<BeltId, string> = { white: 'EYE', yellow: 'HAND', purple: 'MEGAPHONE', black: 'SHIELD' };
+    return icons[beltId];
   }
 
   private getBeltXp(beltId: BeltId): number {
