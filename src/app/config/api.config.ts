@@ -18,7 +18,7 @@ function getBrowserOverride(): string | null {
 }
 
 export const API_CONFIG = {
-  PRODUCTION_URL: 'https://iris-node.vercel.app',
+  PRODUCTION_URL: 'https://irisapp-api.vercel.app',
   LOCAL_URL: 'http://localhost:3001',
   STORAGE_OVERRIDE_KEY: 'IRIS_API_BASE_URL',
 
