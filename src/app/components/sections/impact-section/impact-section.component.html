@@ -1,55 +1,68 @@
 <section id="impacto" class="iris-section bg-[#120C16]">
   <div class="iris-shell">
     <div class="mx-auto max-w-3xl text-center">
-      <p class="iris-kicker">Resultados</p>
+      <p class="iris-kicker">Impacto</p>
       <h2 class="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
-        El impacto del entrenamiento
+        Un proyecto reconocido, hecho por estudiantes
       </h2>
       <p class="iris-subtitle">
-        Resultados medidos en programas piloto con más de 1.000 usuarios.
+        IRIS nace en la Formación Profesional de Málaga para llevar la prevención de la violencia de género a las aulas.
       </p>
     </div>
 
-    <div class="mt-14 grid gap-8 text-center md:grid-cols-3">
-      <div>
-        <div class="text-5xl font-black text-[#D4A7FF]">87%</div>
-        <p class="mt-3 text-sm leading-6 text-[#C9C9D4]">Mejora en la detección temprana de red flags.</p>
+    <!-- Reconocimiento -->
+    <div class="mx-auto mt-14 max-w-3xl rounded-2xl border border-[#FFB830]/50 bg-[#1E1E24] p-8 text-center shadow-[0_24px_60px_rgba(255,184,48,0.12)]">
+      <div class="text-5xl" aria-hidden="true">🏅</div>
+      <p class="mt-4 text-xs font-black uppercase tracking-[0.22em] text-[#FFB830]">Mención honorífica</p>
+      <h3 class="mt-2 text-2xl font-black text-white sm:text-3xl">Premios InnoSocial Málaga 2026</h3>
+      <p class="mt-2 text-sm font-bold text-[#D4A7FF]">Categoría Talento Joven</p>
+      <p class="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#C9C9D4]">
+        Reconocimiento a la innovación social de IRIS como herramienta educativa para prevenir la violencia de género en parejas jóvenes.
+      </p>
+    </div>
+
+    <div class="mt-8 grid gap-6 text-center md:grid-cols-3">
+      <div class="iris-card p-6">
+        <div class="text-3xl" aria-hidden="true">🎓</div>
+        <h3 class="mt-3 text-lg font-black text-white">Hecho en la FP</h3>
+        <p class="mt-2 text-sm leading-6 text-[#C9C9D4]">Desarrollado por alumnado del CPIFP Alan Turing y el IES Ben Gabirol.</p>
       </div>
-      <div>
-        <div class="text-5xl font-black text-[#D4A7FF]">3x</div>
-        <p class="mt-3 text-sm leading-6 text-[#C9C9D4]">Aumento en la confianza para establecer límites.</p>
+      <div class="iris-card p-6">
+        <div class="text-3xl" aria-hidden="true">📱</div>
+        <h3 class="mt-3 text-lg font-black text-white">Web y app gratuitas</h3>
+        <p class="mt-2 text-sm leading-6 text-[#C9C9D4]">Simulador con IA, Dojo de Defensa y acceso directo a los recursos de ayuda.</p>
       </div>
-      <div>
-        <div class="text-5xl font-black text-[#D4A7FF]">92%</div>
-        <p class="mt-3 text-sm leading-6 text-[#C9C9D4]">Recomendaría IRIS a una amiga en situación de riesgo.</p>
+      <div class="iris-card p-6">
+        <div class="text-3xl" aria-hidden="true">🛡️</div>
+        <h3 class="mt-3 text-lg font-black text-white">Pensado para la seguridad</h3>
+        <p class="mt-2 text-sm leading-6 text-[#C9C9D4]">Salida rápida, sin guardar las conversaciones del simulador y con el 016, el 112 y el IAM siempre a mano.</p>
       </div>
     </div>
 
+    <!-- Qué se medirá en el piloto (sin datos inventados) -->
     <div class="mx-auto mt-14 max-w-3xl rounded-2xl border border-white/[0.08] bg-[#1E1E24] p-8">
-      <h3 class="text-center text-xl font-black text-white">Tiempo medio de reacción ante manipulación</h3>
-      <div class="mt-8 space-y-6">
-        <div>
-          <div class="mb-2 flex justify-between text-xs font-black text-[#C9C9D4]">
-            <span>Antes de usar IRIS</span>
-            <span>Varias semanas / meses</span>
-          </div>
-          <div class="h-3 rounded-full bg-[#0F0B12]">
-            <div class="h-3 w-[94%] rounded-full bg-[#2A242E]"></div>
-          </div>
-        </div>
-        <div>
-          <div class="mb-2 flex justify-between text-xs font-black text-[#D4A7FF]">
-            <span>Después de usar IRIS</span>
-            <span>En el momento (mismos días)</span>
-          </div>
-          <div class="h-3 rounded-full bg-[#0F0B12]">
-            <div class="h-3 w-[26%] rounded-full bg-[#D4A7FF] shadow-[0_0_24px_rgba(212,167,255,0.4)]"></div>
-          </div>
-        </div>
-      </div>
-      <div class="sr-only">
-        <canvas #impactoChart></canvas>
-      </div>
+      <h3 class="text-center text-xl font-black text-white">Qué mediremos en el piloto educativo</h3>
+      <p class="mt-2 text-center text-sm leading-6 text-[#9A9AA8]">
+        Los resultados se publicarán cuando termine el piloto en los centros.
+      </p>
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2">
+        <li class="rounded-xl bg-[#0F0B12] p-4 text-sm leading-6 text-[#C9C9D4]">
+          <span class="font-black text-[#D4A7FF]">Detección de señales</span><br />
+          Si el alumnado reconoce mejor el control, los celos y la manipulación (test inicial y final).
+        </li>
+        <li class="rounded-xl bg-[#0F0B12] p-4 text-sm leading-6 text-[#C9C9D4]">
+          <span class="font-black text-[#D4A7FF]">Poner límites</span><br />
+          La puntuación del informe del simulador al empezar y tras varias prácticas.
+        </li>
+        <li class="rounded-xl bg-[#0F0B12] p-4 text-sm leading-6 text-[#C9C9D4]">
+          <span class="font-black text-[#D4A7FF]">Conocer los recursos</span><br />
+          Si saben cuándo llamar al 016, al 112 o al 024 y cómo ayudar a una amistad.
+        </li>
+        <li class="rounded-xl bg-[#0F0B12] p-4 text-sm leading-6 text-[#C9C9D4]">
+          <span class="font-black text-[#D4A7FF]">Valoración</span><br />
+          Opinión del alumnado y del profesorado sobre la utilidad de IRIS en clase.
+        </li>
+      </ul>
     </div>
   </div>
 </section>

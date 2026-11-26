@@ -34,7 +34,6 @@
     "@capacitor/haptics": "^6.0.0",
     "@capacitor/keyboard": "^6.0.0",
     "@capacitor/status-bar": "^6.0.0",
-    "chart.js": "^4.4.0",
     "firebase": "^12.13.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
