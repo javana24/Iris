@@ -1,17 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { BeltId } from '../../../models/training-profile.model';
 import { TrainingProfileService } from '../../../services/training-profile.service';
+import { DojoBeltId, DojoOption, DojoQuestion, PASS_SCORE, pickDojoQuestions } from '../../../data/dojo-questions';
 
-interface Question {
-    text: string;
-    options: { text: string; correct: boolean, feedback: string }[];
-}
-
-type QuestionOption = Question['options'][number];
+type Question = DojoQuestion;
+type QuestionOption = DojoOption;
 
 interface Belt {
-    id: 'white' | 'yellow' | 'purple' | 'black';
+    id: DojoBeltId;
     name: string;
     description: string;
     color: string;
@@ -21,36 +19,6 @@ interface Belt {
     currentQuestionIndex: number;
 }
 
-const MOBILE_DOJO_QUESTIONS: Question[] = [
-    {
-        text: 'Tu pareja revisa constantemente tus mensajes y cuestiona tu memoria sobre eventos pasados. ¿Qué comportamiento es este?',
-        options: [
-            { text: 'Protección excesiva', correct: false, feedback: 'Interés genuino por tu seguridad digital.' },
-            { text: 'Gaslighting y control', correct: true, feedback: 'Manipulación para invalidar tu percepción y autonomía.' },
-            { text: 'Inseguridad temporal', correct: false, feedback: 'Falta de confianza puntual basada en el pasado.' },
-            { text: 'Transparencia radical', correct: false, feedback: 'Acuerdo mutuo de honestidad sin límites.' }
-        ]
-    },
-    {
-        text: 'Si alguien insiste en decidir por ti con la excusa de cuidarte, ¿qué señal prioritaria debes identificar?',
-        options: [
-            { text: 'Romanticismo intenso', correct: false, feedback: 'Muestra de amor a largo plazo.' },
-            { text: 'Control encubierto', correct: true, feedback: 'Sustitución de tu criterio por imposición progresiva.' },
-            { text: 'Comunicación directa', correct: false, feedback: 'Diálogo sano para tomar decisiones.' },
-            { text: 'Apoyo logístico', correct: false, feedback: 'Ayuda puntual sin presión.' }
-        ]
-    },
-    {
-        text: 'Ante una discusión, ¿cuál respuesta es más asertiva para proteger tus límites?',
-        options: [
-            { text: 'Ceder para evitar conflicto', correct: false, feedback: 'Prioriza la calma inmediata sobre tu seguridad.' },
-            { text: 'Guardar silencio total', correct: false, feedback: 'No expresa necesidad ni límite.' },
-            { text: 'Nombrar el límite y la consecuencia', correct: true, feedback: 'Comunicación clara, firme y sin agresión.' },
-            { text: 'Responder con ataque', correct: false, feedback: 'Escala la situación y te expone más.' }
-        ]
-    }
-];
-
 @Component({
     selector: 'app-manipulation-section',
     standalone: true,
@@ -59,7 +27,7 @@ const MOBILE_DOJO_QUESTIONS: Question[] = [
     styleUrl: './manipulation-section.component.scss'
 })
 
-export class ManipulationSectionComponent {
+export class ManipulationSectionComponent implements OnDestroy {
     activeBeltId: string = 'white';
 
     belts: Belt[] = [
@@ -71,7 +39,7 @@ export class ManipulationSectionComponent {
             locked: false,
             completed: false,
             currentQuestionIndex: 0,
-            questions: MOBILE_DOJO_QUESTIONS
+            questions: pickDojoQuestions('white')
         },
         {
             id: 'yellow',
@@ -81,7 +49,7 @@ export class ManipulationSectionComponent {
             locked: true,
             completed: false,
             currentQuestionIndex: 0,
-            questions: MOBILE_DOJO_QUESTIONS
+            questions: pickDojoQuestions('yellow')
         },
         {
             id: 'purple',
@@ -91,7 +59,7 @@ export class ManipulationSectionComponent {
             locked: true,
             completed: false,
             currentQuestionIndex: 0,
-            questions: MOBILE_DOJO_QUESTIONS
+            questions: pickDojoQuestions('purple')
         },
         {
             id: 'black',
@@ -101,7 +69,7 @@ export class ManipulationSectionComponent {
             locked: true,
             completed: false,
             currentQuestionIndex: 0,
-            questions: MOBILE_DOJO_QUESTIONS
+            questions: pickDojoQuestions('black')
         }
     ];
 
@@ -112,8 +80,15 @@ export class ManipulationSectionComponent {
     lastScore: number = 0;
     private correctQuestionIndexes = new Set<number>();
 
+    private profileSub: Subscription;
+
     constructor(private trainingProfileService: TrainingProfileService) {
-        this.hydrateProgress();
+        // El perfil de Firebase puede cargar después: refrescamos los cinturones cada vez que cambia.
+        this.profileSub = this.trainingProfileService.state$.subscribe(() => this.hydrateProgress());
+    }
+
+    ngOnDestroy(): void {
+        this.profileSub.unsubscribe();
     }
 
     get activeBelt() {
@@ -124,7 +99,7 @@ export class ManipulationSectionComponent {
         const belt = this.belts.find(b => b.id === beltId);
         if (belt && !belt.locked) {
             this.activeBeltId = beltId;
-            this.resetLessonAttempt();
+            this.startNewAttempt(belt);
         }
     }
 
@@ -154,7 +129,7 @@ export class ManipulationSectionComponent {
 
         this.lastScore = this.calculateScore(belt);
 
-        if (this.lastScore < 70) {
+        if (this.lastScore < PASS_SCORE) {
             this.hasFailedCompletion = true;
             return;
         }
@@ -169,6 +144,12 @@ export class ManipulationSectionComponent {
         const belt = this.activeBelt;
         if (!belt) return;
 
+        this.startNewAttempt(belt);
+    }
+
+    /** Cada intento usa preguntas nuevas al azar del banco del cinturón. */
+    private startNewAttempt(belt: Belt): void {
+        belt.questions = pickDojoQuestions(belt.id);
         belt.currentQuestionIndex = 0;
         this.resetLessonAttempt();
     }
@@ -220,6 +201,12 @@ export class ManipulationSectionComponent {
         const order = this.belts.map((belt) => belt.id);
         const nextUnlockedIndex = Math.min(completedBelts.size, order.length - 1);
 
+        // No interrumpir un intento en curso si el perfil se refresca a mitad.
+        if (this.showFeedback || (this.activeBelt?.currentQuestionIndex ?? 0) > 0) {
+            this.belts = this.belts.map((belt) => ({ ...belt, completed: belt.completed || completedBelts.has(belt.id) }));
+            return;
+        }
+
         this.belts = this.belts.map((belt, index) => ({
             ...belt,
             completed: completedBelts.has(belt.id),
@@ -234,6 +221,7 @@ export class ManipulationSectionComponent {
     }
 
     downloadCertificate() {
+        const alias = this.escapeHtml(this.trainingProfileService.getSnapshot().profile.alias?.trim() || 'Agente del Cambio');
         const printWindow = window.open('', '', 'width=800,height=600');
         if (printWindow) {
             printWindow.document.write(`
@@ -254,9 +242,9 @@ export class ManipulationSectionComponent {
                     <h1>Certificado de Excelencia</h1>
                     <h2>En Detección y Dojo de Defensa</h2>
                     <p>Este documento certifica que</p>
-                    <div class="name">Agente del Cambio</div>
+                    <div class="name">${alias}</div>
                     <p>Ha completado con éxito la ruta de niveles del Dojo IRIS.</p>
-                    <p class="date">Fecha: ${new Date().toLocaleDateString()}</p>
+                    <p class="date">Fecha: ${new Date().toLocaleDateString('es-ES')}</p>
                     <script>
                         window.onload = function() { window.print(); }
                     </script>
@@ -265,5 +253,9 @@ export class ManipulationSectionComponent {
             `);
             printWindow.document.close();
         }
+    }
+
+    private escapeHtml(value: string): string {
+        return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char] as string));
     }
 }

@@ -1,45 +1,46 @@
 # IRIS
 
-Web (y base móvil) para trabajar la prevención de violencia de género con adolescentes. La idea central es un simulador de chat con IA donde se practican conversaciones y se aprende a pillar señales que a veces pasan desapercibidas.
+Web para trabajar la prevención de la violencia de género con adolescentes. La idea central es un simulador de chat con IA donde se practican conversaciones y se aprende a detectar señales de control que a veces pasan desapercibidas.
 
-Proyecto de FP (CPIFP Alan Turing + IES Ben Gabirol). Mención honorífica en los Premios InnoSocial Málaga 2026, categoría Talento Joven.
+Proyecto de FP (CPIFP Alan Turing + IES Ben Gabirol, Málaga). Mención honorífica en los Premios InnoSocial Málaga 2026, categoría Talento Joven.
 
-**Demo:** https://proyecto-iris-lyart.vercel.app
+**Web:** https://irisapp.es
 
 ## Qué incluye
 
-- Landing del proyecto (ES/EN, tema claro/oscuro)
-- Simulador de chat con IA (Gemini / Ollama)
-- Backend Node en `/server`
-- Auth y perfil con Firebase
-- Empaquetado con Capacitor (Android)
+- Landing del proyecto (tema claro/oscuro)
+- **Consejero IRIS**: chat con IA que orienta sobre relaciones sanas y detecta situaciones de riesgo real
+- **Simulador de pareja celosa** con 3 niveles de dificultad, **banderas rojas** que explican cada táctica de control y un **informe final** que evalúa tus respuestas
+- **Dojo de Defensa**: 4 cinturones con bancos de preguntas propios
+- Cuenta y progreso con Firebase
+- Botón de salida rápida (borra el rastro local, cierra sesión y sale a Google)
 
-Hay también una app nativa en Kotlin (Compose) en otro repo del equipo.
+## Repositorios
+
+| Repo | Qué es |
+|---|---|
+| [javana24/Iris](https://github.com/javana24/Iris) | Esta web (Angular), desplegada en Vercel |
+| [javana24/iris-node](https://github.com/javana24/iris-node) | Backend de IA (Vercel): Ollama en el Spark del instituto + Groq de respaldo |
+| [javana24/IRISAPPMOVIL](https://github.com/javana24/IRISAPPMOVIL) | App Android nativa (Kotlin + Compose) |
 
 ## Stack
 
-Angular 17 · TypeScript · Tailwind · Node/Express · Firebase · Gemini/Ollama · Capacitor
+Angular 17 · TypeScript · Tailwind · Firebase · Capacitor
 
 ## Arrancar en local
 
 ```bash
 npm install
-cd server && npm install && cd ..
+npm start          # http://localhost:4200
 ```
 
-En `server/` copia `.env.example` a `.env` y pon tu `GEMINI_API_KEY` (o configura Ollama).
+La web usa el backend de producción (`src/environments/environment.ts`). Para usar uno local (`npm run dev` en iris-node), en la consola del navegador:
 
-```bash
-# terminal 1
-cd server && npm start
-
-# terminal 2
-npm start
+```js
+localStorage.setItem('IRIS_API_BASE_URL', 'http://localhost:3001'); location.reload();
 ```
 
-Abre http://localhost:4200
-
-Más detalle en `GUIA_EJECUCION.md` y en `server/README.md`.
+Documentación antigua del prototipo en [docs/legacy](docs/legacy).
 
 ## Nota
 
