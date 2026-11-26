@@ -21,18 +21,21 @@
   --iris-card-shadow: 0 18px 60px rgba(83, 45, 122, 0.12);
 }
 
+/* Modo oscuro: morado muy oscuro en lugar de negro, con capas que se distinguen
+   (fondo < superficie < tarjeta < elemento elevado). */
 .dark {
-  --iris-bg: #0d0d0f;
-  --iris-bg-alt: #120c16;
-  --iris-card: #1e1e24;
-  --iris-surface: #17151c;
-  --iris-surface-strong: #0f0b12;
-  --iris-header: rgba(13, 13, 15, 0.9);
-  --iris-footer: #120c16;
+  --iris-bg: #16111d;
+  --iris-bg-alt: #1b1524;
+  --iris-card: #272034;
+  --iris-surface: #211a2b;
+  --iris-surface-strong: #1a1422;
+  --iris-elevated: #31283f;
+  --iris-header: rgba(22, 17, 29, 0.88);
+  --iris-footer: #120e18;
   --iris-text: #ffffff;
-  --iris-muted: #c9c9d4;
-  --iris-soft: #9a9aa8;
-  --iris-border: rgba(255, 255, 255, 0.08);
+  --iris-muted: #d0cbdb;
+  --iris-soft: #a59eb3;
+  --iris-border: rgba(255, 255, 255, 0.1);
   --iris-primary: #aa6fe0;
   --iris-primary-soft: rgba(123, 47, 190, 0.2);
   --iris-danger-surface: #2a1720;
@@ -92,6 +95,68 @@ html:not(.dark) [class*="bg-[#120C16]"] {
   background-color: var(--iris-bg) !important;
 }
 
+/* Modo claro: el lila claro pensado para fondos oscuros no se lee sobre blanco. */
+html:not(.dark) main [class*="text-[#D4A7FF]"],
+html:not(.dark) main [class*="text-[#C996FF]"],
+html:not(.dark) header [class*="text-[#C996FF]"],
+html:not(.dark) footer [class*="text-[#D4A7FF]"],
+html:not(.dark) footer [class*="text-[#C996FF]"] {
+  color: #6d28a8 !important;
+}
+
+/* ── Modo oscuro: los componentes usan colores fijos casi negros; aquí se pasan a la paleta oscura. ── */
+html.dark [class*="bg-[#0D0D0F]"] {
+  background-color: var(--iris-bg) !important;
+}
+
+html.dark [class*="bg-[#120C16]"] {
+  background-color: var(--iris-bg-alt) !important;
+}
+
+html.dark [class*="bg-[#17151C]"],
+html.dark [class*="bg-[#17131A]"],
+html.dark [class*="bg-[#18141B]"] {
+  background-color: var(--iris-surface) !important;
+}
+
+html.dark [class*="bg-[#1E1E24]"] {
+  background-color: var(--iris-card) !important;
+}
+
+html.dark [class*="bg-[#0F0B12]"],
+html.dark [class*="bg-[#100E14]"] {
+  background-color: var(--iris-surface-strong) !important;
+}
+
+html.dark [class*="bg-[#232329]"],
+html.dark [class*="bg-[#2A242E]"],
+html.dark [class*="bg-[#2B2030]"] {
+  background-color: var(--iris-elevated) !important;
+}
+
+/* Variantes semitransparentes (cabecera fija, menús) */
+html.dark [class*="bg-[#0D0D0F]/"] {
+  background-color: var(--iris-header) !important;
+}
+
+html.dark [class*="bg-[#17151C]/"] {
+  background-color: rgba(33, 26, 43, 0.9) !important;
+}
+
+html.dark app-header > div[class*="fixed"] {
+  background-color: var(--iris-header) !important;
+  border-color: var(--iris-border) !important;
+}
+
+html.dark footer {
+  background-color: var(--iris-footer) !important;
+}
+
+html.dark [class*="border-white/[0.06]"],
+html.dark [class*="border-white/[0.08]"] {
+  border-color: var(--iris-border) !important;
+}
+
 html:not(.dark) header,
 html:not(.dark) header + div {
   color: var(--iris-text);
@@ -116,9 +181,13 @@ html:not(.dark) [class*="bg-[#232329]"] {
 }
 
 html:not(.dark) [class*="bg-[#0F0B12]"],
-html:not(.dark) [class*="bg-[#100E14]"],
-html:not(.dark) [class*="bg-[#2A242E]"] {
+html:not(.dark) [class*="bg-[#100E14]"] {
   background-color: var(--iris-surface) !important;
+}
+
+/* Burbujas de chat del otro interlocutor: lavanda suave para que se distingan del fondo blanco. */
+html:not(.dark) [class*="bg-[#2A242E]"] {
+  background-color: #f1e9fb !important;
 }
 
 html:not(.dark) [class*="bg-[#2A1720]"],
